@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "DProfile"
 
 include(":libraries:viewmodel")
+include(":libraries:feature")
