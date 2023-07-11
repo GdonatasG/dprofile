@@ -57,13 +57,13 @@ object Dependencies {
             const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
             const val animationAndroid = "androidx.compose.animation:animation-android:1.5.0-beta01"
             const val lottie = "com.airbnb.android:lottie-compose:${Versions.lottieCompose}"
-        }
 
-        object Destinations {
-            const val core = "io.github.raamcosta.compose-destinations:core:${Versions.composeDestinations}"
-            const val animations =
-                "io.github.raamcosta.compose-destinations:animations-core:${Versions.composeDestinations}"
-            const val ksp = "io.github.raamcosta.compose-destinations:ksp:${Versions.composeDestinations}"
+            object Destinations {
+                const val core = "io.github.raamcosta.compose-destinations:core:${Versions.composeDestinations}"
+                const val animations =
+                    "io.github.raamcosta.compose-destinations:animations-core:${Versions.composeDestinations}"
+                const val ksp = "io.github.raamcosta.compose-destinations:ksp:${Versions.composeDestinations}"
+            }
         }
     }
 
