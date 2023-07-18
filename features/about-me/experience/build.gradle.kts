@@ -3,7 +3,7 @@ plugins {
     id("com.android.library")
 }
 
-val module = ":features:about-me"
+val module = ":features:about-me:experience"
 
 kotlin {
     android()
@@ -47,9 +47,6 @@ kotlin {
                 implementation(project(":libraries:feature"))
                 implementation(project(":libraries:viewmodel"))
                 api(project("$module:presentation"))
-
-                implementation(project("experience"))
-
                 implementation(Dependencies.KotlinX.coroutinesCore)
                 implementation(Dependencies.Koin.core)
             }
@@ -60,7 +57,6 @@ kotlin {
                 implementation(project(":android:compose-components"))
                 implementation(Dependencies.Koin.android)
                 implementation(Dependencies.Koin.compose)
-                implementation(Dependencies.Android.Compose.Destinations.animations)
             }
         }
         val iosX64Main by getting
@@ -83,7 +79,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.donatas.dprofile.features.aboutme"
+    namespace = "com.donatas.dprofile.features.aboutme.experience"
     compileSdk = Dependencies.Android.compileSDK
     defaultConfig {
         minSdk = Dependencies.Android.minSDK

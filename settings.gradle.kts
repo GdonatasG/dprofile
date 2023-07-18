@@ -35,6 +35,11 @@ include(":features:about-me:presentation")
 include(":features:about-me:ui:ios")
 include(":features:about-me:ui:android")
 
+include(":features:about-me:experience")
+include(":features:about-me:experience:presentation")
+include(":features:about-me:experience:ui:ios")
+include(":features:about-me:experience:ui:android")
+
 
 //include(":features:template")
 //include(":features:template:presentation")

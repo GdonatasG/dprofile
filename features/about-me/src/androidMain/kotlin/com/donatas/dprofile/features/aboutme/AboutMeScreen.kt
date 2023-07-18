@@ -1,21 +1,32 @@
 package com.donatas.dprofile.features.aboutme
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.donatas.dprofile.compose.components.animation.EnterAnimation
 import com.donatas.dprofile.compose.components.layout.AppScaffold
 import com.donatas.dprofile.feature.Screen
+import com.donatas.dprofile.features.aboutme.experience.ExperienceFeature
+import com.donatas.dprofile.features.aboutme.experience.presentation.Tab
 import com.donatas.dprofile.features.aboutme.presentation.AboutMeViewModel
 import com.donatas.dprofile.features.aboutme.ui.AboutMeView
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
 actual class AboutMeScreen actual constructor() : Screen {
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     override fun Compose() {
         val viewModel: AboutMeViewModel = getViewModel<AboutMeViewModel>()
+        val navController: NavHostController = rememberAnimatedNavController()
 
         AppScaffold(
             tabBar = {
@@ -51,7 +62,28 @@ actual class AboutMeScreen actual constructor() : Screen {
                 }
             }
         ) {
-            AboutMeView(viewModel)
+            NavHost(navController = navController, startDestination = Tab.EXPERIENCE.route) {
+                composable(Tab.EXPERIENCE.route) {
+                    EnterAnimation {
+                        get<ExperienceFeature>().screen().Compose()
+                    }
+                }
+                composable(Tab.EDUCATION.route) {
+                    EnterAnimation {
+
+                    }
+                }
+                composable(Tab.SKILLS.route) {
+                    EnterAnimation {
+
+                    }
+                }
+                composable(Tab.ROAD_TO_PROGRAMMING.route) {
+                    EnterAnimation {
+
+                    }
+                }
+            }
         }
     }
 }
