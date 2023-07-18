@@ -64,6 +64,11 @@ include(":features:github:search:presentation")
 include(":features:github:search:ui:ios")
 include(":features:github:search:ui:android")
 
+include(":features:filter")
+include(":features:filter:presentation")
+include(":features:filter:ui:ios")
+include(":features:filter:ui:android")
+
 
 //include(":features:template")
 //include(":features:template:presentation")

@@ -1,6 +1,7 @@
 package com.donatas.dprofile.composition.di
 
 import com.donatas.dprofile.features.aboutme.AboutMeFeature
+import com.donatas.dprofile.features.filter.FilterFeature
 import com.donatas.dprofile.features.github.GithubFeature
 import com.donatas.dprofile.features.github.search.GithubSearchFeature
 import org.koin.core.module.Module
@@ -17,5 +18,9 @@ internal val featureModule: Module = module {
 
     single<GithubSearchFeature>() {
         GithubSearchFeature()
+    }
+
+    single<FilterFeature>() {
+        FilterFeature()
     }
 }
