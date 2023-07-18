@@ -41,7 +41,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.donatas.dprofile.features.template"
+    namespace = "com.donatas.dprofile.features.aboutme"
     compileSdk = Dependencies.Android.compileSDK
     defaultConfig {
         minSdk = Dependencies.Android.minSDK

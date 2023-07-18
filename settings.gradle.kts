@@ -17,6 +17,9 @@ rootProject.name = "DProfile"
 
 include(":android:compose-components")
 
+include(":composition")
+include(":android:app")
+
 include(":libraries:viewmodel")
 include(":libraries:feature")
 include(":libraries:alerts")
@@ -27,10 +30,13 @@ include(":libraries:preferences")
 include(":libraries:test")
 include(":libraries:utils")
 
+include(":features:about-me")
+include(":features:about-me:presentation")
+include(":features:about-me:ui:ios")
+include(":features:about-me:ui:android")
+
 
 //include(":features:template")
 //include(":features:template:presentation")
 //include(":features:template:ui:ios")
 //include(":features:template:ui:android")
-include(":composition")
-include(":android:app")
