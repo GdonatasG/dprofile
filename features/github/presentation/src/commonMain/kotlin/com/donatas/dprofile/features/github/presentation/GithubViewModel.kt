@@ -6,4 +6,5 @@ class GithubViewModel(
     private val delegate: GithubDelegate
 ) : ViewModel() {
     fun onSearch() = delegate.onSearch()
+    fun onDetails() = delegate.onDetails(repoUrl = "https://www.google.com")
 }

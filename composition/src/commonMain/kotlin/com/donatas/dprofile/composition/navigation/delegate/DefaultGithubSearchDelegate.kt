@@ -16,7 +16,7 @@ class DefaultGithubSearchDelegate(
         filterFlow.start()
     }
 
-    override fun onDetails() {
-        navigator.openBrowser("https://www.google.com")
+    override fun onDetails(repoUrl: String) {
+        navigator.openBrowser(repoUrl)
     }
 }
