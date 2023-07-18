@@ -12,6 +12,7 @@ import com.donatas.dprofile.compose.components.animation.EnterAnimation
 import com.donatas.dprofile.compose.provider.LocalParentNavController
 import com.donatas.dprofile.composition.presentation.screen.modalRoute
 import com.donatas.dprofile.features.aboutme.AboutMeFeature
+import com.donatas.dprofile.features.github.GithubFeature
 import org.koin.androidx.compose.get
 
 @Composable
@@ -36,12 +37,21 @@ fun MainScreenBottomNavigation(
     }
 
     NavHost(
-        navController = bottomNavController,
-        startDestination = Tab.ABOUT_ME.route
+        navController = bottomNavController, startDestination = Tab.ABOUT_ME.route
     ) {
         composable(Tab.ABOUT_ME.route) {
             EnterAnimation {
                 get<AboutMeFeature>().screen().Compose()
+            }
+        }
+        composable(Tab.GITHUB.route) {
+            EnterAnimation {
+                get<GithubFeature>().screen().Compose()
+            }
+        }
+        composable(Tab.CONTACTS.route) {
+            EnterAnimation {
+
             }
         }
     }

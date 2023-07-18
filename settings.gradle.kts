@@ -54,6 +54,11 @@ include(":features:about-me:road-to-programming:presentation")
 include(":features:about-me:road-to-programming:ui:ios")
 include(":features:about-me:road-to-programming:ui:android")
 
+include(":features:github")
+include(":features:github:presentation")
+include(":features:github:ui:ios")
+include(":features:github:ui:android")
+
 
 //include(":features:template")
 //include(":features:template:presentation")

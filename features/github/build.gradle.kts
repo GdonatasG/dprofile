@@ -1,56 +1,62 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
     id("com.android.library")
-    id("com.google.devtools.ksp") version Versions.ksp
 }
 
-group = "com.donatas.dprofile.composition"
-version = "1.0.0"
+val module = ":features:github"
 
 kotlin {
     android()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    macosX64()
-    macosArm64()
 
-    cocoapods {
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
-        ios.deploymentTarget = "14.0"
-        framework {
-            baseName = "Dprofile"
+    val config: org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.(String) -> Unit = Config@{
+        if (org.jetbrains.kotlin.cli.common.isWindows) return@Config
+
+        val platform = when (name) {
+            "iosX64", "iosSimulatorArm64" -> "iphonesimulator"
+            "iosArm64" -> "iphoneos"
+            else -> error("Unsupported target: $name")
+        }
+
+        compilations.getByName("main") {
+            cinterops.create("UI") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn("$module:ui:ios:build${platform.capitalize()}")
+                includeDirs.headerFilterOnly("$projectDir/ui/ios/build/Release-$platform/include")
+            }
         }
     }
+
+    iosX64 {
+        config(name)
+    }
+
+    iosArm64 {
+        config(name)
+    }
+
+    iosSimulatorArm64 {
+        config(name)
+    }
+
+    macosX64()
+    macosArm64()
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(Dependencies.Koin.core)
-
-                implementation(project(":features:about-me"))
-                implementation(project(":features:github"))
-
                 implementation(project(":libraries:feature"))
-                implementation(project(":libraries:alerts"))
-                implementation(project(":libraries:logger"))
-                api(project(":libraries:utils"))
+                implementation(project(":libraries:viewmodel"))
+                api(project("$module:presentation"))
+                implementation(Dependencies.KotlinX.coroutinesCore)
+                implementation(Dependencies.Koin.core)
             }
         }
         val androidMain by getting {
             dependencies {
+                implementation(project("$module:ui:android"))
                 implementation(project(":android:compose-components"))
-
-                implementation(Dependencies.Android.splashScreen)
-                implementation(Dependencies.Android.Accompanist.systemUiController)
-
-                implementation(Dependencies.Android.Compose.Destinations.core)
-                implementation(Dependencies.Android.Compose.Destinations.animations)
-
+                implementation(Dependencies.Koin.android)
                 implementation(Dependencies.Koin.compose)
-                api(Dependencies.Koin.android)
             }
         }
         val iosX64Main by getting
@@ -73,7 +79,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.donatas.dprofile.composition"
+    namespace = "com.donatas.dprofile.features.github"
     compileSdk = Dependencies.Android.compileSDK
     defaultConfig {
         minSdk = Dependencies.Android.minSDK
@@ -91,8 +97,4 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
-}
-
-dependencies {
-    add("kspAndroid", Dependencies.Android.Compose.Destinations.ksp)
 }

@@ -1,6 +1,7 @@
 package com.donatas.dprofile.composition
 
 import android.app.Application
+import com.donatas.dprofile.composition.di.delegateModule
 import com.donatas.dprofile.composition.di.featureModule
 import com.donatas.dprofile.composition.di.flowModule
 import com.donatas.dprofile.composition.di.navigationModule
@@ -21,7 +22,8 @@ actual open class App : Application(), KoinComponent {
             )
             modules(
                 flowModule,
-                featureModule
+                featureModule,
+                delegateModule
             )
         }
     }
