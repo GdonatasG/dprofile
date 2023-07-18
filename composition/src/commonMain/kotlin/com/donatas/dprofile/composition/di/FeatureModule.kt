@@ -1,6 +1,7 @@
 package com.donatas.dprofile.composition.di
 
 import com.donatas.dprofile.features.aboutme.AboutMeFeature
+import com.donatas.dprofile.features.contacts.ContactsFeature
 import com.donatas.dprofile.features.filter.FilterFeature
 import com.donatas.dprofile.features.github.GithubFeature
 import com.donatas.dprofile.features.github.search.GithubSearchFeature
@@ -22,5 +23,9 @@ internal val featureModule: Module = module {
 
     single<FilterFeature>() {
         FilterFeature()
+    }
+
+    single<ContactsFeature>() {
+        ContactsFeature()
     }
 }

@@ -69,6 +69,11 @@ include(":features:filter:presentation")
 include(":features:filter:ui:ios")
 include(":features:filter:ui:android")
 
+include(":features:contacts")
+include(":features:contacts:presentation")
+include(":features:contacts:ui:ios")
+include(":features:contacts:ui:android")
+
 
 //include(":features:template")
 //include(":features:template:presentation")

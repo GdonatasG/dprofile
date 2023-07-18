@@ -12,6 +12,7 @@ import com.donatas.dprofile.compose.components.animation.EnterAnimation
 import com.donatas.dprofile.compose.provider.LocalParentNavController
 import com.donatas.dprofile.composition.presentation.screen.modalRoute
 import com.donatas.dprofile.features.aboutme.AboutMeFeature
+import com.donatas.dprofile.features.contacts.ContactsFeature
 import com.donatas.dprofile.features.github.GithubFeature
 import org.koin.androidx.compose.get
 
@@ -51,7 +52,7 @@ fun MainScreenBottomNavigation(
         }
         composable(Tab.CONTACTS.route) {
             EnterAnimation {
-
+                get<ContactsFeature>().screen().Compose()
             }
         }
     }
