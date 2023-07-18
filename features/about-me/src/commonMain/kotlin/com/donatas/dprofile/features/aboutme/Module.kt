@@ -2,6 +2,7 @@ package com.donatas.dprofile.features.aboutme
 
 import com.donatas.dprofile.features.aboutme.education.EducationFeature
 import com.donatas.dprofile.features.aboutme.experience.ExperienceFeature
+import com.donatas.dprofile.features.aboutme.roadtoprogramming.RoadToProgrammingFeature
 import com.donatas.dprofile.features.aboutme.skills.SkillsFeature
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -28,6 +29,10 @@ internal val commonModule = module {
 
     single<SkillsFeature>() {
         SkillsFeature()
+    }
+
+    single<RoadToProgrammingFeature>() {
+        RoadToProgrammingFeature()
     }
 }
 

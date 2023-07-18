@@ -15,10 +15,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "DProfile"
 
-include(":android:compose-components")
-
 include(":composition")
 include(":android:app")
+include(":android:compose-components")
 
 include(":libraries:viewmodel")
 include(":libraries:feature")
@@ -49,6 +48,11 @@ include(":features:about-me:skills")
 include(":features:about-me:skills:presentation")
 include(":features:about-me:skills:ui:ios")
 include(":features:about-me:skills:ui:android")
+
+include(":features:about-me:road-to-programming")
+include(":features:about-me:road-to-programming:presentation")
+include(":features:about-me:road-to-programming:ui:ios")
+include(":features:about-me:road-to-programming:ui:android")
 
 
 //include(":features:template")

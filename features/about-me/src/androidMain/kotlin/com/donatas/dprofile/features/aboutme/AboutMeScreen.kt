@@ -18,6 +18,7 @@ import com.donatas.dprofile.features.aboutme.education.EducationFeature
 import com.donatas.dprofile.features.aboutme.experience.ExperienceFeature
 import com.donatas.dprofile.features.aboutme.experience.presentation.Tab
 import com.donatas.dprofile.features.aboutme.presentation.AboutMeViewModel
+import com.donatas.dprofile.features.aboutme.roadtoprogramming.RoadToProgrammingFeature
 import com.donatas.dprofile.features.aboutme.skills.SkillsFeature
 import com.donatas.dprofile.features.aboutme.ui.AboutMeView
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -73,7 +74,7 @@ actual class AboutMeScreen actual constructor() : Screen {
                 }
                 composable(Tab.ROAD_TO_PROGRAMMING.route) {
                     EnterAnimation {
-
+                        get<RoadToProgrammingFeature>().screen().Compose()
                     }
                 }
             }
