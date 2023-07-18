@@ -10,11 +10,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
+import com.donatas.dprofile.compose.provider.LocalParentNavController
 import com.donatas.dprofile.composition.navigation.flow.MainFlow
 import com.donatas.dprofile.composition.presentation.screen.destinations.AlertDestination
 import com.donatas.dprofile.composition.presentation.screen.destinations.ModalDestination
@@ -106,19 +108,24 @@ internal fun AppNavigation(
         }
     }
 
-    ModalBottomSheetLayout(
-        bottomSheetNavigator = bottomSheetNavigator,
-        sheetBackgroundColor = MaterialTheme.colorScheme.background,
-        sheetShape = RoundedCornerShape(
-            topEnd = 14.dp, topStart = 14.dp
-        )
+    CompositionLocalProvider(
+        LocalParentNavController provides navHostController
     ) {
-        Scaffold {
-            DestinationsNavHost(
-                navGraph = navGraph,
-                engine = navEngine,
-                navController = navHostController
+        ModalBottomSheetLayout(
+            bottomSheetNavigator = bottomSheetNavigator,
+            sheetBackgroundColor = MaterialTheme.colorScheme.background,
+            sheetShape = RoundedCornerShape(
+                topEnd = 14.dp, topStart = 14.dp
             )
+        ) {
+            Scaffold {
+                DestinationsNavHost(
+                    navGraph = navGraph,
+                    engine = navEngine,
+                    navController = navHostController
+                )
+            }
         }
     }
+
 }

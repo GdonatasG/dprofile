@@ -1,6 +1,7 @@
 package com.donatas.dprofile.composition
 
 import android.app.Application
+import com.donatas.dprofile.composition.di.featureModule
 import com.donatas.dprofile.composition.di.flowModule
 import com.donatas.dprofile.composition.di.navigationModule
 import org.koin.android.ext.koin.androidContext
@@ -19,7 +20,8 @@ actual open class App : Application(), KoinComponent {
                 navigationModule
             )
             modules(
-                flowModule
+                flowModule,
+                featureModule
             )
         }
     }

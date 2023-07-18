@@ -30,6 +30,8 @@ kotlin {
             dependencies {
                 implementation(Dependencies.Koin.core)
 
+                implementation(project(":features:about-me"))
+
                 implementation(project(":libraries:feature"))
                 implementation(project(":libraries:alerts"))
                 implementation(project(":libraries:logger"))

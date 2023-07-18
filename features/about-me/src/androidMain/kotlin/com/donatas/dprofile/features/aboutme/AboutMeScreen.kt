@@ -17,4 +17,3 @@ actual class AboutMeScreen actual constructor() : Screen {
         }
     }
 }
-}
