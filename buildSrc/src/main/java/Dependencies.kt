@@ -28,8 +28,6 @@ object Dependencies {
         const val compileSDK = 33
         const val maxSDK = 33
 
-        const val lottieCompose = "com.airbnb.android:lottie-compose${Versions.lottieCompose}"
-
         object Accompanist {
             const val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist}"
             const val systemUiController =
@@ -58,14 +56,14 @@ object Dependencies {
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:1.3.3"
             const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
             const val animationAndroid = "androidx.compose.animation:animation-android:1.5.0-beta01"
+            const val lottie = "com.airbnb.android:lottie-compose:${Versions.lottieCompose}"
 
-        }
-
-        object Destinations {
-            const val core = "io.github.raamcosta.compose-destinations:core:${Versions.composeDestinations}"
-            const val animations =
-                "io.github.raamcosta.compose-destinations:animations-core:${Versions.composeDestinations}"
-            const val ksp = "io.github.raamcosta.compose-destinations:ksp:${Versions.composeDestinations}"
+            object Destinations {
+                const val core = "io.github.raamcosta.compose-destinations:core:${Versions.composeDestinations}"
+                const val animations =
+                    "io.github.raamcosta.compose-destinations:animations-core:${Versions.composeDestinations}"
+                const val ksp = "io.github.raamcosta.compose-destinations:ksp:${Versions.composeDestinations}"
+            }
         }
     }
 
