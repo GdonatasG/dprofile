@@ -39,6 +39,8 @@ dependencies {
     implementation(Dependencies.Android.Compose.viewModel)
     implementation(Dependencies.Android.Compose.lottie)
     implementation(Dependencies.Koin.compose)
+    implementation(Dependencies.Android.Compose.Destinations.core)
+    implementation(Dependencies.Android.Compose.Destinations.animations)
 
     with(Dependencies.Android.Compose) {
         api(platform(composeBom))

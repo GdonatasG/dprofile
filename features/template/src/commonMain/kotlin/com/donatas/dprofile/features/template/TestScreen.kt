@@ -1,3 +1,5 @@
 package com.donatas.dprofile.features.template
 
-expect class TestScreen()
+import com.donatas.dprofile.feature.Screen
+
+expect class TestScreen(): Screen

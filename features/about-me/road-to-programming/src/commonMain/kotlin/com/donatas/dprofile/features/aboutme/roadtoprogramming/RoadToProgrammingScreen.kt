@@ -1,3 +1,5 @@
 package com.donatas.dprofile.features.aboutme.roadtoprogramming
 
-expect class RoadToProgrammingScreen()
+import com.donatas.dprofile.feature.Screen
+
+expect class RoadToProgrammingScreen(): Screen

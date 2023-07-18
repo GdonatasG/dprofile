@@ -1,3 +1,5 @@
 package com.donatas.dprofile.features.aboutme.education
 
-expect class EducationScreen()
+import com.donatas.dprofile.feature.Screen
+
+expect class EducationScreen() : Screen

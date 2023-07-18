@@ -78,7 +78,7 @@ internal fun AppNavigation(
     LaunchedEffect(navigateBack) {
         navigateBack?.let {
             navHostController.navigateUp()
-            navigator.resetModalAction()
+            navigator.resetBackAction()
         }
     }
 

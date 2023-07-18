@@ -1,3 +1,5 @@
 package com.donatas.dprofile.features.github
 
-expect class GithubScreen()
+import com.donatas.dprofile.feature.Screen
+
+expect class GithubScreen(): Screen

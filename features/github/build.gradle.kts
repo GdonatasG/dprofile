@@ -47,6 +47,9 @@ kotlin {
                 implementation(project(":libraries:feature"))
                 implementation(project(":libraries:viewmodel"))
                 api(project("$module:presentation"))
+
+                api(project("search"))
+
                 implementation(Dependencies.KotlinX.coroutinesCore)
                 implementation(Dependencies.Koin.core)
             }

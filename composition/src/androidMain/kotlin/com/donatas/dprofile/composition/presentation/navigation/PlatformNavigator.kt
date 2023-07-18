@@ -2,9 +2,11 @@ package com.donatas.dprofile.composition.presentation.navigation
 
 import com.donatas.dprofile.composition.MainScreen
 import com.donatas.dprofile.composition.navigation.Navigator
+import com.donatas.dprofile.composition.presentation.screen.destinations.GithubSearchScreenDestination
 import com.donatas.dprofile.composition.presentation.screen.destinations.MainScreenDestination
 import com.donatas.dprofile.feature.Modal
 import com.donatas.dprofile.feature.Screen
+import com.donatas.dprofile.features.github.search.GithubSearchScreen
 import com.ramcosta.composedestinations.spec.Direction
 import java.lang.RuntimeException
 
@@ -40,5 +42,6 @@ internal class PlatformNavigator(
 
 private fun Screen.toDestination(): Direction = when (this) {
     is MainScreen -> MainScreenDestination
+    is GithubSearchScreen -> GithubSearchScreenDestination
     else -> throw RuntimeException("Destination not found!")
 }

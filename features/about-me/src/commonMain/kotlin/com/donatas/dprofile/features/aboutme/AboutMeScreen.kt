@@ -1,3 +1,5 @@
 package com.donatas.dprofile.features.aboutme
 
-expect class AboutMeScreen()
+import com.donatas.dprofile.feature.Screen
+
+expect class AboutMeScreen(): Screen
