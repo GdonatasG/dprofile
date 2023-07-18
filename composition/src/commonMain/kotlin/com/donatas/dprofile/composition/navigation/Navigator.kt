@@ -7,5 +7,6 @@ interface Navigator {
     fun set(screen: Screen)
     fun push(screen: Screen)
     fun push(modal: Modal)
+    fun openBrowser(url: String)
     fun pop()
 }

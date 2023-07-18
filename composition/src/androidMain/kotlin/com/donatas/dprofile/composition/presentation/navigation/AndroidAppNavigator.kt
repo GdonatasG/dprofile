@@ -27,6 +27,12 @@ internal class AndroidAppNavigator(
     }
     override val modalAction: StateFlow<Unit?> get() = _modalAction.asStateFlow()
 
+    private val _urlNavActions: MutableStateFlow<String?> by lazy {
+        MutableStateFlow(null)
+    }
+
+    override val urlNavActions: StateFlow<String?> get() = _urlNavActions.asStateFlow()
+
     override fun navigate(action: NavigationAction) {
         _navAction.update { action }
     }
@@ -40,6 +46,10 @@ internal class AndroidAppNavigator(
         _navigateBackAction.update { }
     }
 
+    override fun navigateToUrl(url: String) {
+        _urlNavActions.update { url }
+    }
+
     override fun resetNavigationAction() {
         _navAction.value = null
     }
@@ -51,20 +61,27 @@ internal class AndroidAppNavigator(
     override fun resetBackAction() {
         _navigateBackAction.value = null
     }
+
+    override fun resetNavigateToUrlAction() {
+        _urlNavActions.value = null
+    }
 }
 
 internal interface AndroidNavigator {
     fun navigate(action: NavigationAction)
     fun showModal(screen: Modal)
     fun navigateBack()
+    fun navigateToUrl(url: String)
 
     val navigateBackAction: StateFlow<Unit?>
     val navAction: StateFlow<NavigationAction?>
     val modalAction: StateFlow<Unit?>
+    val urlNavActions: StateFlow<String?>
 
     fun resetNavigationAction()
     fun resetModalAction()
     fun resetBackAction()
+    fun resetNavigateToUrlAction()
 }
 
 internal data class NavigationAction(
