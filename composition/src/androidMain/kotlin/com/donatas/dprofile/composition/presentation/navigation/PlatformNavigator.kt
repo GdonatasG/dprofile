@@ -35,6 +35,10 @@ internal class PlatformNavigator(
         androidNavigator.showModal(modal)
     }
 
+    override fun openBrowser(url: String) {
+        androidNavigator.navigateToUrl(url)
+    }
+
     override fun pop() {
         androidNavigator.navigateBack()
     }

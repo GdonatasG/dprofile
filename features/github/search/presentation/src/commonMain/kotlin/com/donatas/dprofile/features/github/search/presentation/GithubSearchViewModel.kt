@@ -7,4 +7,5 @@ class GithubSearchViewModel(
 ) : ViewModel() {
     fun onBack() = delegate.onBack()
     fun onFilter() = delegate.onFilter()
+    fun onDetails() = delegate.onDetails()
 }

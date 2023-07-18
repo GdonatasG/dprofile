@@ -21,6 +21,9 @@ fun GithubSearchView(model: GithubSearchViewModel) {
             ElevatedButton(onClick = model::onFilter) {
                 Text(text = "Filter")
             }
+            ElevatedButton(onClick = model::onDetails) {
+                Text(text = "Repo details")
+            }
         }
     }
 }

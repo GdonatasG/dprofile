@@ -8,13 +8,13 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.provider.LocalParentNavController
 import com.donatas.dprofile.composition.navigation.flow.MainFlow
@@ -53,9 +53,12 @@ internal fun AppNavigation(
     val navAction by navigator.navAction.collectAsState()
     val modalAction by navigator.modalAction.collectAsState()
     val navigateBack by navigator.navigateBackAction.collectAsState()
+    val urlAction by navigator.urlNavActions.collectAsState()
 
     val alertAction by alertController.navigationAction.collectAsState()
     val closeAlertAction by alertController.closeAlert.collectAsState()
+
+    val uriHandler = LocalUriHandler.current
 
     LaunchedEffect(true) {
         mainFlow.start()
@@ -79,6 +82,13 @@ internal fun AppNavigation(
         navigateBack?.let {
             navHostController.navigateUp()
             navigator.resetBackAction()
+        }
+    }
+
+    LaunchedEffect(urlAction) {
+        urlAction?.let {
+            uriHandler.openUri(it)
+            navigator.resetNavigateToUrlAction()
         }
     }
 
