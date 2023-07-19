@@ -5,7 +5,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.donatas.dprofile.compose.components.R
 
-val OpenSans = FontFamily(
-    Font(R.font.opensans_regular, FontWeight(400)),
-    Font(R.font.opensans_semibold, FontWeight(600))
+val SpaceGrotesk = FontFamily(
+    Font(R.font.spacegrotesk_regular, FontWeight(300)),
+    Font(R.font.spacegrotesk_medium, FontWeight(400))
 )
