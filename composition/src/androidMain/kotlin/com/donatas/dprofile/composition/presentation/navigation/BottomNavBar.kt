@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -34,7 +35,9 @@ enum class Tab(val route: String, val title: String, val image: @Composable () -
 @Composable
 fun BottomNavBar(navController: NavController, tabs: List<Tab>) {
     NavigationBar(
-        modifier = Modifier.shadow(8.dp)
+        modifier = Modifier.shadow(8.dp),
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.primary
     ) {
         val current by navController.currentBottomNavScreenAsState()
         tabs.forEach { destination ->

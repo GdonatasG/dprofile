@@ -33,7 +33,6 @@ actual class MainScreen() : Screen {
             MainScreenBottomNavigation(
                 bottomNavController = bottomNavController
             )
-
         }
     }
 }
