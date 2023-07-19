@@ -1,5 +1,7 @@
 package com.donatas.dprofile.composition.presentation.navigation
 
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Info
@@ -7,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -24,11 +27,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.donatas.dprofile.compose.theme.surfaceDarkColor
 import com.donatas.dprofile.composition.R
 
 enum class Tab(val route: String, val title: String, val image: @Composable () -> ImageVector) {
-    ABOUT_ME(route = "about_me", title = "About Me", image = { Icons.Outlined.Info }),
-    GITHUB(route = "github", title = "Github", image = { ImageVector.vectorResource(id = R.drawable.github) }),
+    ABOUT_ME(route = "about_me", title = "About Me", image = { Icons.Outlined.Info }), GITHUB(
+        route = "github",
+        title = "Github",
+        image = { ImageVector.vectorResource(id = R.drawable.github) }),
     CONTACTS(route = "contacts", title = "Contacts", image = { Icons.Outlined.AccountBox }),
 }
 
@@ -46,17 +52,14 @@ fun BottomNavBar(navController: NavController, tabs: List<Tab>) {
             NavigationBarItem(
                 icon = {
                     Icon(
-                        imageVector = destination.image(),
-                        contentDescription = destination.title
+                        imageVector = destination.image(), contentDescription = destination.title
                     )
                 },
                 selected = selected,
                 alwaysShowLabel = true,
                 label = {
                     Text(
-                        text = destination.title,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        text = destination.title, maxLines = 1, overflow = TextOverflow.Ellipsis
                     )
                 },
                 onClick = Click@{
@@ -67,7 +70,12 @@ fun BottomNavBar(navController: NavController, tabs: List<Tab>) {
                             saveState = true
                         }
                     }
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = MaterialTheme.colorScheme.background,
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary
+                )
             )
         }
     }
