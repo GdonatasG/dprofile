@@ -22,8 +22,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 with(Dependencies.Android.Compose) {
-                    api(platform(composeBom))
-                    api(runtime)
+                    implementation(project(":android:compose-components"))
                 }
             }
         }

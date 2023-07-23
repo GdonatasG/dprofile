@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import com.donatas.dprofile.compose.components.animation.EnterAnimation
 import com.donatas.dprofile.compose.provider.LocalParentNavController
 import com.donatas.dprofile.composition.presentation.screen.modalRoute
+import com.donatas.dprofile.feature.Components
 import com.donatas.dprofile.features.aboutme.AboutMeFeature
 import com.donatas.dprofile.features.contacts.ContactsFeature
 import com.donatas.dprofile.features.github.GithubFeature
@@ -42,17 +43,17 @@ fun MainScreenBottomNavigation(
     ) {
         composable(Tab.ABOUT_ME.route) {
             EnterAnimation {
-                get<AboutMeFeature>().screen().Compose()
+                get<AboutMeFeature>().screen().Compose(components = Components())
             }
         }
         composable(Tab.GITHUB.route) {
             EnterAnimation {
-                get<GithubFeature>().screen().Compose()
+                get<GithubFeature>().screen().Compose(components = Components())
             }
         }
         composable(Tab.CONTACTS.route) {
             EnterAnimation {
-                get<ContactsFeature>().screen().Compose()
+                get<ContactsFeature>().screen().Compose(components = Components())
             }
         }
     }
