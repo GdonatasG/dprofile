@@ -1,4 +1,4 @@
-package com.donatas.dprofile.compose.components.appbar
+package com.donatas.dprofile.compose.components.layout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,10 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.donatas.dprofile.compose.components.appbar.DAppBar
 import com.donatas.dprofile.compose.components.extension.calculateScrollOffset
 
 class TabBar(
@@ -157,7 +157,7 @@ private fun AppBar(
 }
 
 @Composable
-fun TabBar(
+private fun TabBar(
     listState: LazyListState,
     flexibleSpaceHeight: Dp,
     tabBar: TabBar
