@@ -84,12 +84,14 @@ private val toolbarHeight = 60.dp
 
 @Composable
 private fun Header(
+    modifier: Modifier = Modifier,
     scroll: LazyListState,
     headerHeightPx: Float,
-    modifier: Modifier = Modifier
+    backgroundColor: Color = MaterialTheme.colorScheme.background
 ) {
     Box(
         modifier = modifier
+            .background(backgroundColor)
             .graphicsLayer {
                 val scrollOffset = scroll.calculateScrollOffset(headerHeightPx)
                 translationY = -scrollOffset // Parallax effect
@@ -99,7 +101,6 @@ private fun Header(
         Column(
             Modifier
                 .fillMaxSize()
-                .background(Color.Red)
         ) {
             repeat(10) {
                 Text("header")
@@ -140,8 +141,7 @@ private fun Body(
 private fun Toolbar(
     scroll: LazyListState,
     headerHeightPx: Float,
-    toolbarHeightPx: Float,
-    modifier: Modifier = Modifier
+    toolbarHeightPx: Float
 ) {
     val toolbarBottom by remember {
         mutableFloatStateOf(headerHeightPx - toolbarHeightPx)
@@ -154,12 +154,7 @@ private fun Toolbar(
         }
     }
 
-    AnimatedVisibility(
-        modifier = modifier,
-        visible = showToolbar,
-        enter = fadeIn(animationSpec = tween(300)),
-        exit = fadeOut(animationSpec = tween(300))
-    ) {
+    if (showToolbar) {
         TopAppBar(
             modifier = Modifier.background(
                 brush = Brush.horizontalGradient(
@@ -246,11 +241,11 @@ actual class AboutMeScreen actual constructor() : Screen {
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Header(
-                    scroll = listState,
-                    headerHeightPx = headerHeightPx,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(headerHeight)
+                        .height(headerHeight),
+                    scroll = listState,
+                    headerHeightPx = headerHeightPx,
                 )
                 Body(
                     scroll = listState,
