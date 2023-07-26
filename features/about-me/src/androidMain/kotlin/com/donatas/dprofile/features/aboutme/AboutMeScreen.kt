@@ -112,7 +112,6 @@ private fun Header(
 private fun Body(
     scroll: LazyListState
 ) {
-
     BoxWithConstraints {
         LazyColumn(
             state = scroll
@@ -122,9 +121,11 @@ private fun Body(
             }
             item {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    repeat(100) {
+                    repeat(
+                        50
+                    ) { value ->
                         Text(
-                            text = "Body",
+                            text = "Body$value",
                         )
                     }
                 }
