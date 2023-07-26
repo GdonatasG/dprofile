@@ -1,84 +1,99 @@
 package com.donatas.dprofile.features.aboutme
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.donatas.dprofile.compose.components.animation.EnterAnimation
-import com.donatas.dprofile.compose.components.layout.AppScaffold
+import com.donatas.dprofile.compose.components.layout.FlexibleAppBarScaffold
+import com.donatas.dprofile.compose.components.layout.TabBar
+import com.donatas.dprofile.feature.Components
 import com.donatas.dprofile.feature.Screen
-import com.donatas.dprofile.features.aboutme.education.EducationFeature
-import com.donatas.dprofile.features.aboutme.experience.ExperienceFeature
 import com.donatas.dprofile.features.aboutme.experience.presentation.Tab
 import com.donatas.dprofile.features.aboutme.presentation.AboutMeViewModel
-import com.donatas.dprofile.features.aboutme.roadtoprogramming.RoadToProgrammingFeature
-import com.donatas.dprofile.features.aboutme.skills.SkillsFeature
-import com.donatas.dprofile.features.aboutme.ui.AboutMeView
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
 actual class AboutMeScreen actual constructor() : Screen {
     @OptIn(ExperimentalAnimationApi::class)
     @Composable
-    override fun Compose() {
+    override fun Compose(components: Components) {
         val viewModel: AboutMeViewModel = getViewModel<AboutMeViewModel>()
         val navController: NavHostController = rememberAnimatedNavController()
 
-        AppScaffold(tabBar = {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ElevatedButton(onClick = {
-                    navController.changeTab(Tab.EXPERIENCE)
-                }) {
-                    Text(text = "Exp")
-                }
-                ElevatedButton(onClick = {
-                    navController.changeTab(Tab.EDUCATION)
-                }) {
-                    Text(text = "Edu")
-                }
-                ElevatedButton(onClick = {
-                    navController.changeTab(Tab.SKILLS)
-                }) {
-                    Text(text = "Skills")
-                }
-                ElevatedButton(onClick = {
-                    navController.changeTab(Tab.ROAD_TO_PROGRAMMING)
-                }) {
-                    Text(text = "Road")
-                }
-            }
-        }) {
-            NavHost(navController = navController, startDestination = Tab.EXPERIENCE.route) {
-                composable(Tab.EXPERIENCE.route) {
-                    EnterAnimation {
-                        get<ExperienceFeature>().screen().Compose()
+        val listState = rememberLazyListState()
+
+        FlexibleAppBarScaffold(
+            listState = listState,
+            title = "About Me",
+            flexibleSpace = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    repeat(10) {
+                        Text("header")
                     }
                 }
-                composable(Tab.EDUCATION.route) {
-                    EnterAnimation {
-                        get<EducationFeature>().screen().Compose()
+            },
+            flexibleSpaceHeight = 200.dp,
+            tabBar = TabBar(
+                height = 40.dp,
+                content = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Blue)
+                    ) {
+                        Text(text = "dasds")
                     }
                 }
-                composable(Tab.SKILLS.route) {
-                    EnterAnimation {
-                        get<SkillsFeature>().screen().Compose()
-                    }
-                }
-                composable(Tab.ROAD_TO_PROGRAMMING.route) {
-                    EnterAnimation {
-                        get<RoadToProgrammingFeature>().screen().Compose()
-                    }
+            )
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                repeat(
+                    50
+                ) { value ->
+                    Text(
+                        text = "Body$value",
+                    )
                 }
             }
         }
+
+        /*Row(
+            modifier = Modifier
+                .height(50.dp)
+                .background(MaterialTheme.colorScheme.background),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ElevatedButton(onClick = {
+                navController.changeTab(Tab.EXPERIENCE)
+            }) {
+                Text(text = "Exp")
+            }
+            ElevatedButton(onClick = {
+                navController.changeTab(Tab.EDUCATION)
+            }) {
+                Text(text = "Edu")
+            }
+            ElevatedButton(onClick = {
+                navController.changeTab(Tab.SKILLS)
+            }) {
+                Text(text = "Skills")
+            }
+            ElevatedButton(onClick = {
+                navController.changeTab(Tab.ROAD_TO_PROGRAMMING)
+            }) {
+                Text(text = "Road")
+            }
+        }*/
     }
 
     private fun NavHostController.changeTab(tab: Tab) {

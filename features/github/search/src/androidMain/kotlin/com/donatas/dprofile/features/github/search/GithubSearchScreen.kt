@@ -2,6 +2,7 @@ package com.donatas.dprofile.features.github.search
 
 import androidx.compose.runtime.Composable
 import com.donatas.dprofile.compose.components.layout.AppScaffold
+import com.donatas.dprofile.feature.Components
 import com.donatas.dprofile.feature.Screen
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewModel
 import com.donatas.dprofile.features.github.search.ui.GithubSearchView
@@ -14,7 +15,7 @@ actual class GithubSearchScreen actual constructor() : Screen {
     }
 
     @Composable
-    override fun Compose() {
+    override fun Compose(components: Components) {
         val viewModel: GithubSearchViewModel = getViewModel<GithubSearchViewModel>()
         AppScaffold {
             GithubSearchView(viewModel)
