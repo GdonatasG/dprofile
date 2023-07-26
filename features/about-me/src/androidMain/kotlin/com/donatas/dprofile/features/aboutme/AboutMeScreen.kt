@@ -1,191 +1,31 @@
 package com.donatas.dprofile.features.aboutme
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.mapSaver
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.donatas.dprofile.compose.components.animation.EnterAnimation
-import com.donatas.dprofile.compose.components.appbar.AppBarHeader
-import com.donatas.dprofile.compose.components.appbar.DAppBar
 import com.donatas.dprofile.compose.components.appbar.FlexibleAppBarScaffold
-import com.donatas.dprofile.compose.components.extension.calculateScrollOffset
-import com.donatas.dprofile.compose.components.layout.AppScaffold
+import com.donatas.dprofile.compose.components.appbar.TabBar
 import com.donatas.dprofile.feature.Components
 import com.donatas.dprofile.feature.Screen
-import com.donatas.dprofile.features.aboutme.education.EducationFeature
-import com.donatas.dprofile.features.aboutme.experience.ExperienceFeature
 import com.donatas.dprofile.features.aboutme.experience.presentation.Tab
 import com.donatas.dprofile.features.aboutme.presentation.AboutMeViewModel
-import com.donatas.dprofile.features.aboutme.roadtoprogramming.RoadToProgrammingFeature
-import com.donatas.dprofile.features.aboutme.skills.SkillsFeature
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
-private val headerHeight = 250.dp
-private val toolbarHeight = 60.dp
-
-@Composable
-private fun Header(
-    modifier: Modifier = Modifier,
-    scroll: LazyListState,
-    headerHeightPx: Float,
-    backgroundColor: Color = MaterialTheme.colorScheme.background
-) {
-    Box(
-        modifier = modifier
-            .background(backgroundColor)
-            .graphicsLayer {
-                val scrollOffset = scroll.calculateScrollOffset(headerHeightPx)
-                translationY = -scrollOffset // Parallax effect
-                alpha = (-1f / headerHeightPx) * scrollOffset + 1
-            }
-    ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-        ) {
-            repeat(10) {
-                Text("header")
-            }
-        }
-    }
-}
-
-@Composable
-private fun Body(
-    scroll: LazyListState
-) {
-    BoxWithConstraints {
-        LazyColumn(
-            state = scroll
-        ) {
-            item {
-                Spacer(Modifier.height(headerHeight + 40.dp))
-            }
-            item {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    repeat(
-                        50
-                    ) { value ->
-                        Text(
-                            text = "Body$value",
-                        )
-                    }
-                }
-
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun Toolbar(
-    scroll: LazyListState,
-    headerHeightPx: Float,
-    toolbarHeightPx: Float
-) {
-    val toolbarBottom by remember {
-        mutableFloatStateOf(headerHeightPx - toolbarHeightPx)
-    }
-
-    val showToolbar by remember {
-        derivedStateOf {
-            val scrollOffset = scroll.calculateScrollOffset(headerHeightPx)
-            scrollOffset >= toolbarBottom
-        }
-    }
-
-    if (showToolbar) {
-        TopAppBar(
-            modifier = Modifier.background(
-                brush = Brush.horizontalGradient(
-                    listOf(Color.Black, Color.Red)
-                )
-            ),
-            navigationIcon = {
-                IconButton(
-                    onClick = {},
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-                }
-            },
-            title = {},
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent
-            )
-        )
-    }
-}
-
 actual class AboutMeScreen actual constructor() : Screen {
-    @OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     override fun Compose(components: Components) {
         val viewModel: AboutMeViewModel = getViewModel<AboutMeViewModel>()
@@ -203,7 +43,19 @@ actual class AboutMeScreen actual constructor() : Screen {
                     }
                 }
             },
-            flexibleSpaceHeight = 200.dp
+            flexibleSpaceHeight = 200.dp,
+            tabBar = TabBar(
+                height = 40.dp,
+                content = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Blue)
+                    ) {
+                        Text(text = "dasds")
+                    }
+                }
+            )
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 repeat(

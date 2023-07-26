@@ -2,9 +2,11 @@ package com.donatas.dprofile.compose.components.appbar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +28,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.extension.calculateScrollOffset
 
+class TabBar(
+    val height: Dp,
+    val content: @Composable () -> Unit
+)
+
 @Composable
 fun FlexibleAppBarScaffold(
     listState: LazyListState,
@@ -36,7 +43,7 @@ fun FlexibleAppBarScaffold(
     color: Color = MaterialTheme.colorScheme.background,
     flexibleSpace: @Composable () -> Unit,
     flexibleSpaceHeight: Dp,
-    tabBar: (@Composable () -> Unit)? = null,
+    tabBar: TabBar? = null,
     content: @Composable () -> Unit = {}
 ) {
     Surface(
@@ -56,7 +63,7 @@ fun FlexibleAppBarScaffold(
             Body(
                 listState = listState,
                 flexibleSpaceHeight = flexibleSpaceHeight,
-                tabBarHeightPx = 0
+                tabBarHeight = tabBar?.height ?: 0.dp
             ) {
                 content()
             }
@@ -69,6 +76,13 @@ fun FlexibleAppBarScaffold(
                 actions = actions,
                 color = color
             )
+            tabBar?.let {
+                TabBar(
+                    listState = listState,
+                    flexibleSpaceHeight = flexibleSpaceHeight,
+                    tabBar = it
+                )
+            }
         }
     }
 
@@ -95,13 +109,9 @@ private fun Header(
 private fun Body(
     listState: LazyListState,
     flexibleSpaceHeight: Dp,
-    tabBarHeightPx: Int,
+    tabBarHeight: Dp,
     content: @Composable () -> Unit
 ) {
-    val density = LocalDensity.current
-
-    val tabBarHeight = with(density) { tabBarHeightPx.toDp() }
-
     LazyColumn(
         state = listState
     ) {
@@ -126,7 +136,7 @@ private fun AppBar(
 ) {
     val density = LocalDensity.current
     val flexibleSpaceBarHeightPx = with(density) { flexibleSpaceHeight.toPx() }
-    val appBarHeightPx = with(density) { 64.dp.toPx().toInt() }
+    val appBarHeightPx = with(density) { appBarHeight.toPx().toInt() }
 
     val toolbarBottom by remember {
         mutableFloatStateOf(flexibleSpaceBarHeightPx - appBarHeightPx)
@@ -145,3 +155,43 @@ private fun AppBar(
         )
     }
 }
+
+@Composable
+fun TabBar(
+    listState: LazyListState,
+    flexibleSpaceHeight: Dp,
+    tabBar: TabBar
+) {
+    val density = LocalDensity.current
+    val flexibleSpaceBarHeightPx = with(density) { flexibleSpaceHeight.toPx() }
+    val appBarHeightPx = with(density) { appBarHeight.toPx().toInt() }
+
+    val toolbarBottom by remember {
+        mutableFloatStateOf(flexibleSpaceBarHeightPx - appBarHeightPx)
+    }
+
+    val showToolbar by remember {
+        derivedStateOf {
+            val scrollOffset = listState.calculateScrollOffset(flexibleSpaceBarHeightPx)
+            scrollOffset >= toolbarBottom
+        }
+    }
+
+    Column {
+        Spacer(modifier = Modifier.height(if (showToolbar) appBarHeight else flexibleSpaceHeight))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(tabBar.height)
+                .graphicsLayer {
+                    if (showToolbar) return@graphicsLayer
+                    val scrollOffset = listState.calculateScrollOffset(flexibleSpaceBarHeightPx)
+                    translationY = -scrollOffset // Parallax effect
+                }
+        ) {
+            tabBar.content()
+        }
+    }
+}
+
+private val appBarHeight: Dp = 64.dp
