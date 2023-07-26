@@ -65,6 +65,7 @@ import androidx.navigation.compose.composable
 import com.donatas.dprofile.compose.components.animation.EnterAnimation
 import com.donatas.dprofile.compose.components.appbar.AppBarHeader
 import com.donatas.dprofile.compose.components.appbar.DAppBar
+import com.donatas.dprofile.compose.components.appbar.FlexibleAppBarScaffold
 import com.donatas.dprofile.compose.components.extension.calculateScrollOffset
 import com.donatas.dprofile.compose.components.layout.AppScaffold
 import com.donatas.dprofile.feature.Components
@@ -190,56 +191,40 @@ actual class AboutMeScreen actual constructor() : Screen {
         val viewModel: AboutMeViewModel = getViewModel<AboutMeViewModel>()
         val navController: NavHostController = rememberAnimatedNavController()
 
-        val density = LocalDensity.current
-        val headerHeightPx = with(density) { headerHeight.toPx() }
-        val appBarHeightPx = with(density) { toolbarHeight.toPx() }
-
         val listState = rememberLazyListState()
-        val scrollState = rememberScrollState(0)
 
-        val toolbarBottom by remember {
-            mutableFloatStateOf(headerHeightPx - appBarHeightPx)
-        }
-
-        val showToolbar by remember {
-            derivedStateOf {
-                val scrollOffset = listState.calculateScrollOffset(headerHeightPx)
-                scrollOffset >= toolbarBottom
-            }
-        }
-
-        val padding by remember {
-            derivedStateOf {
-                val scrollOffset = listState.calculateScrollOffset(headerHeightPx)
-                with(density) { scrollOffset.toDp() + (if (showToolbar) toolbarHeight else 0.dp) }
-            }
-        }
-
-
-        val header: AppBarHeader = AppBarHeader(
-            lazyListState = listState, headerHeight = headerHeight
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(headerHeight)
-                    .background(Color.Red)
-            ) {
+        FlexibleAppBarScaffold(
+            listState = listState,
+            title = "About Me",
+            flexibleSpace = {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    repeat(15) {
-                        Text(text = "header")
+                    repeat(10) {
+                        Text("header")
                     }
+                }
+            },
+            flexibleSpaceHeight = 200.dp
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                repeat(
+                    50
+                ) { value ->
+                    Text(
+                        text = "Body$value",
+                    )
                 }
             }
         }
-        Surface(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background)
-                .statusBarsPadding(),
-            color = MaterialTheme.colorScheme.background,
-            contentColor = contentColorFor(MaterialTheme.colorScheme.background)
-        ) {
-            Box(modifier = Modifier.fillMaxSize()) {
+
+
+        /* Surface(
+             modifier = Modifier
+                 .background(color = MaterialTheme.colorScheme.background)
+                 .statusBarsPadding(),
+             color = MaterialTheme.colorScheme.background,
+             contentColor = contentColorFor(MaterialTheme.colorScheme.background)
+         ) {
+             *//*Box(modifier = Modifier.fillMaxSize()) {
                 Header(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -277,7 +262,7 @@ actual class AboutMeScreen actual constructor() : Screen {
                     }
 
                 }
-                /* Row(
+                *//**//* Row(
                      modifier = Modifier
                          .height(50.dp)
                          .background(MaterialTheme.colorScheme.background),
@@ -303,9 +288,9 @@ actual class AboutMeScreen actual constructor() : Screen {
                      }) {
                          Text(text = "Road")
                      }
-                 }*/
-            }
-            /* Row(
+                 }*//**//*
+            }*//*
+            *//* Row(
                  modifier = Modifier.background(MaterialTheme.colorScheme.background),
                  horizontalArrangement = Arrangement.spacedBy(8.dp)
              ) {
@@ -329,8 +314,8 @@ actual class AboutMeScreen actual constructor() : Screen {
                  }) {
                      Text(text = "Road")
                  }
-             }*/
-            /*LazyColumn(state = listState) {
+             }*//*
+            *//*LazyColumn(state = listState) {
                 item {
                     Spacer(Modifier.height(calculatedHeight))
                     NavHost(navController = navController, startDestination = Tab.EXPERIENCE.route) {
@@ -360,8 +345,8 @@ actual class AboutMeScreen actual constructor() : Screen {
                         }
                     }
                 }
-            }*/
-        }
+            }*//*
+        }*/
     }
 
 
