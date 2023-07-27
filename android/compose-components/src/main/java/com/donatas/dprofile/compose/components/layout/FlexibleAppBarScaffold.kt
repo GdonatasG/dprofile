@@ -160,7 +160,8 @@ private fun AppBar(
 private fun TabBar(
     listState: LazyListState,
     flexibleSpaceHeight: Dp,
-    tabBar: TabBar
+    tabBar: TabBar,
+    color: Color = MaterialTheme.colorScheme.background
 ) {
     val density = LocalDensity.current
     val flexibleSpaceBarHeightPx = with(density) { flexibleSpaceHeight.toPx() }
@@ -189,7 +190,9 @@ private fun TabBar(
                     translationY = -scrollOffset // Parallax effect
                 }
         ) {
-            tabBar.content()
+            Box(modifier = Modifier.background(color)) {
+                tabBar.content()
+            }
         }
     }
 }
