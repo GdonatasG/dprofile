@@ -2,6 +2,7 @@ package com.donatas.dprofile.compose.components.layout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -48,6 +51,7 @@ fun FlexibleAppBarScaffold(
 ) {
     Surface(
         modifier = Modifier
+            .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
         color = MaterialTheme.colorScheme.background,
@@ -112,7 +116,9 @@ private fun Body(
     tabBarHeight: Dp,
     content: @Composable () -> Unit
 ) {
+
     LazyColumn(
+        modifier = Modifier.fillMaxSize(),
         state = listState
     ) {
         item {

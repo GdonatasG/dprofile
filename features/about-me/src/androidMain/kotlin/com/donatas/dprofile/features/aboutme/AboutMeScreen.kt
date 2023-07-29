@@ -76,39 +76,19 @@ actual class AboutMeScreen actual constructor() : Screen {
             },
             flexibleSpaceHeight = 200.dp,
             tabBar = TabBar(
-                height = 51.dp,
+                height = 75.dp,
                 content = {
                     Column(modifier = Modifier.fillMaxSize()) {
                         DLazyTabRow(
                             selectedIndex = selectedTab.toInt(),
                             items = listOf("Experience", "Education", "Skills", "Road to programming"),
-                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                            contentPadding = PaddingValues(16.dp),
                             onTabClick = { index ->
                                 val newTab: Tab = index.toTab()
                                 viewModel.setTab(newTab)
                                 navController.changeTab(newTab)
                             }
                         )
-                        /* Row(
-                             modifier = Modifier
-                                 .weight(1f)
-                                 .padding(horizontal = 16.dp),
-                             verticalAlignment = Alignment.CenterVertically,
-                             horizontalArrangement = Arrangement.spacedBy(8.dp)
-                         ) {
-                             DChip(
-                                 backgroundColor = MaterialTheme.colorScheme.primary,
-                                 onClick = {}
-                             ) {
-                                 Text(text = "Experience", style = DChipTextStyle())
-                             }
-                             DChip(
-                                 backgroundColor = Color.White.copy(alpha = 0.05f),
-                                 onClick = {}
-                             ) {
-                                 Text(text = "Education", style = DChipTextStyle())
-                             }
-                         }*/
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -147,34 +127,6 @@ actual class AboutMeScreen actual constructor() : Screen {
                 }
             }
         }
-
-        /*Row(
-            modifier = Modifier
-                .height(50.dp)
-                .background(MaterialTheme.colorScheme.background),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            ElevatedButton(onClick = {
-                navController.changeTab(Tab.EXPERIENCE)
-            }) {
-                Text(text = "Exp")
-            }
-            ElevatedButton(onClick = {
-                navController.changeTab(Tab.EDUCATION)
-            }) {
-                Text(text = "Edu")
-            }
-            ElevatedButton(onClick = {
-                navController.changeTab(Tab.SKILLS)
-            }) {
-                Text(text = "Skills")
-            }
-            ElevatedButton(onClick = {
-                navController.changeTab(Tab.ROAD_TO_PROGRAMMING)
-            }) {
-                Text(text = "Road")
-            }
-        }*/
     }
 
     private fun NavHostController.changeTab(tab: Tab) {
