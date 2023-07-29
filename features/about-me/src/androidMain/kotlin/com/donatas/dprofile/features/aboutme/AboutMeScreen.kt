@@ -1,49 +1,57 @@
 package com.donatas.dprofile.features.aboutme
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.AppBarDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.donatas.dprofile.compose.components.chip.DChip
-import com.donatas.dprofile.compose.components.chip.DChipTextStyle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.donatas.dprofile.compose.components.animation.EnterAnimation
 import com.donatas.dprofile.compose.components.layout.FlexibleAppBarScaffold
 import com.donatas.dprofile.compose.components.layout.TabBar
 import com.donatas.dprofile.compose.components.tab.DLazyTabRow
 import com.donatas.dprofile.feature.Components
 import com.donatas.dprofile.feature.Screen
-import com.donatas.dprofile.features.aboutme.experience.presentation.Tab
+import com.donatas.dprofile.features.aboutme.education.EducationFeature
+import com.donatas.dprofile.features.aboutme.experience.ExperienceFeature
 import com.donatas.dprofile.features.aboutme.presentation.AboutMeViewModel
+import com.donatas.dprofile.features.aboutme.presentation.Tab
+import com.donatas.dprofile.features.aboutme.roadtoprogramming.RoadToProgrammingFeature
+import com.donatas.dprofile.features.aboutme.skills.SkillsFeature
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
+
+private fun Tab.toInt(): Int = when (this) {
+    Tab.EXPERIENCE -> 0
+    Tab.EDUCATION -> 1
+    Tab.SKILLS -> 2
+    Tab.ROAD_TO_PROGRAMMING -> 3
+}
+
+private fun Int.toTab(): Tab = when (this) {
+    0 -> Tab.EXPERIENCE
+    1 -> Tab.EDUCATION
+    2 -> Tab.SKILLS
+    3 -> Tab.ROAD_TO_PROGRAMMING
+    else -> throw RuntimeException("Tab not implemented")
+}
 
 actual class AboutMeScreen actual constructor() : Screen {
     @OptIn(ExperimentalAnimationApi::class)
@@ -51,7 +59,8 @@ actual class AboutMeScreen actual constructor() : Screen {
     override fun Compose(components: Components) {
         val viewModel: AboutMeViewModel = getViewModel<AboutMeViewModel>()
         val navController: NavHostController = rememberAnimatedNavController()
-        var selectedIndex by remember { mutableIntStateOf(0) }
+
+        val selectedTab by viewModel.selectedTab.collectAsState()
 
         val listState = rememberLazyListState()
 
@@ -71,11 +80,13 @@ actual class AboutMeScreen actual constructor() : Screen {
                 content = {
                     Column(modifier = Modifier.fillMaxSize()) {
                         DLazyTabRow(
-                            selectedIndex = selectedIndex,
+                            selectedIndex = selectedTab.toInt(),
                             items = listOf("Experience", "Education", "Skills", "Road to programming"),
                             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 8.dp),
                             onTabClick = { index ->
-                                selectedIndex = index
+                                val newTab: Tab = index.toTab()
+                                viewModel.setTab(newTab)
+                                navController.changeTab(newTab)
                             }
                         )
                         /* Row(
@@ -110,13 +121,29 @@ actual class AboutMeScreen actual constructor() : Screen {
                 }
             )
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                repeat(
-                    50
-                ) { value ->
-                    Text(
-                        text = "Body$value",
-                    )
+            NavHost(
+                navController = navController,
+                startDestination = Tab.EXPERIENCE.route
+            ) {
+                composable(Tab.EXPERIENCE.route) {
+                    EnterAnimation {
+                        get<ExperienceFeature>().screen().Compose(components = Components())
+                    }
+                }
+                composable(Tab.EDUCATION.route) {
+                    EnterAnimation {
+                        get<EducationFeature>().screen().Compose(components = Components())
+                    }
+                }
+                composable(Tab.SKILLS.route) {
+                    EnterAnimation {
+                        get<SkillsFeature>().screen().Compose(components = Components())
+                    }
+                }
+                composable(Tab.ROAD_TO_PROGRAMMING.route) {
+                    EnterAnimation {
+                        get<RoadToProgrammingFeature>().screen().Compose(components = Components())
+                    }
                 }
             }
         }
