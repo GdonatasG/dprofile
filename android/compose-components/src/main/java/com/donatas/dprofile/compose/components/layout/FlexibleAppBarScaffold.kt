@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,12 +18,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -30,10 +34,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.appbar.DAppBar
 import com.donatas.dprofile.compose.components.extension.calculateScrollOffset
+import com.donatas.dprofile.compose.components.tab.DLazyTabRow
+import kotlinx.coroutines.launch
 
 class TabBar(
-    val height: Dp,
-    val content: @Composable () -> Unit
+    val tabs: List<String>,
+    val selectedTabIndex: Int,
+    val onChanged: (index: Int) -> Unit
 )
 
 @Composable
@@ -49,6 +56,8 @@ fun FlexibleAppBarScaffold(
     tabBar: TabBar? = null,
     content: @Composable () -> Unit = {}
 ) {
+    var selectedTabIndex: Int? by remember { mutableStateOf(tabBar?.selectedTabIndex) }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -67,7 +76,7 @@ fun FlexibleAppBarScaffold(
             Body(
                 listState = listState,
                 flexibleSpaceHeight = flexibleSpaceHeight,
-                tabBarHeight = tabBar?.height ?: 0.dp
+                selectedTabIndex = selectedTabIndex
             ) {
                 content()
             }
@@ -84,7 +93,10 @@ fun FlexibleAppBarScaffold(
                 TabBar(
                     listState = listState,
                     flexibleSpaceHeight = flexibleSpaceHeight,
-                    tabBar = it
+                    tabBar = it,
+                    onChanged = { index ->
+                        selectedTabIndex = index
+                    }
                 )
             }
         }
@@ -113,19 +125,58 @@ private fun Header(
 private fun Body(
     listState: LazyListState,
     flexibleSpaceHeight: Dp,
-    tabBarHeight: Dp,
+    selectedTabIndex: Int?,
     content: @Composable () -> Unit
 ) {
+    val density = LocalDensity.current
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState
-    ) {
-        item {
-            Spacer(Modifier.height(flexibleSpaceHeight + tabBarHeight))
+    val lastTabIndex: Int? by remember { mutableStateOf(selectedTabIndex) }
+
+    val scope = rememberCoroutineScope()
+
+    val flexibleSpaceBarHeightPx = with(density) { flexibleSpaceHeight.toPx() }
+    val appBarHeightPx: Float = with(density) { appBarHeight.toPx() }
+
+    val toolbarBottom by remember {
+        mutableFloatStateOf(flexibleSpaceBarHeightPx - appBarHeightPx)
+    }
+
+    val showToolbar by remember {
+        derivedStateOf {
+            val scrollOffset = listState.calculateScrollOffset(flexibleSpaceBarHeightPx)
+            scrollOffset >= toolbarBottom
         }
-        item {
-            content()
+    }
+
+    LaunchedEffect(selectedTabIndex) {
+        if (lastTabIndex != selectedTabIndex) {
+            if (showToolbar) {
+                scope.launch {
+                    listState.scrollToItem(0, (flexibleSpaceBarHeightPx - appBarHeightPx).toInt())
+                }
+            }
+        }
+    }
+
+    BoxWithConstraints {
+        val constraints = this.constraints
+        val tabBarHeightPx: Float = with(density) { tabBarHeight.toPx() }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            state = listState
+        ) {
+            item {
+                Spacer(Modifier.height(flexibleSpaceHeight + tabBarHeight))
+            }
+            item {
+                Box(
+                    modifier = Modifier
+                        .defaultMinSize(minHeight = with(density) { (constraints.maxHeight - (appBarHeightPx + tabBarHeightPx)).toDp() })
+                ) {
+                    content()
+                }
+            }
         }
     }
 }
@@ -167,6 +218,7 @@ private fun TabBar(
     listState: LazyListState,
     flexibleSpaceHeight: Dp,
     tabBar: TabBar,
+    onChanged: (index: Int) -> Unit,
     color: Color = MaterialTheme.colorScheme.background
 ) {
     val density = LocalDensity.current
@@ -189,18 +241,27 @@ private fun TabBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(tabBar.height)
+                .height(tabBarHeight)
                 .graphicsLayer {
                     if (showToolbar) return@graphicsLayer
                     val scrollOffset = listState.calculateScrollOffset(flexibleSpaceBarHeightPx)
                     translationY = -scrollOffset // Parallax effect
                 }
         ) {
-            Box(modifier = Modifier.background(color)) {
-                tabBar.content()
+            Column(modifier = Modifier.fillMaxSize()) {
+                DLazyTabRow(
+                    selectedIndex = tabBar.selectedTabIndex,
+                    items = tabBar.tabs,
+                    contentPadding = PaddingValues(16.dp),
+                    onTabClick = { index ->
+                        tabBar.onChanged(index)
+                        onChanged(index)
+                    }
+                )
             }
         }
     }
 }
 
 private val appBarHeight: Dp = 64.dp
+private val tabBarHeight: Dp = 75.dp

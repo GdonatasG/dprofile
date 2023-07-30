@@ -12,16 +12,13 @@ import com.donatas.dprofile.features.aboutme.experience.presentation.ExperienceV
 
 @Composable
 fun ExperienceView(
-    model: ExperienceViewModel,
-    lazyListState: LazyListState? = null
+    model: ExperienceViewModel
 ) {
-    val listState: LazyListState = lazyListState ?: rememberLazyListState()
-
-    Column(
+    LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
-        repeat(100) {
-            Text(text = "ExperienceView")
+        items(100){
+            Text(text = "ExperienceView$it")
         }
     }
 }

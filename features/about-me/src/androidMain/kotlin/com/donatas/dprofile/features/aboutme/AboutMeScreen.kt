@@ -1,32 +1,25 @@
 package com.donatas.dprofile.features.aboutme
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.donatas.dprofile.compose.components.animation.EnterAnimation
-import com.donatas.dprofile.compose.components.layout.FlexibleAppBarScaffold
-import com.donatas.dprofile.compose.components.layout.TabBar
+import com.donatas.dprofile.compose.components.appbar.DAppBar
+import com.donatas.dprofile.compose.components.layout.AppScaffold
 import com.donatas.dprofile.compose.components.tab.DLazyTabRow
-import com.donatas.dprofile.feature.Components
 import com.donatas.dprofile.feature.Screen
 import com.donatas.dprofile.features.aboutme.education.EducationFeature
 import com.donatas.dprofile.features.aboutme.experience.ExperienceFeature
@@ -56,50 +49,36 @@ private fun Int.toTab(): Tab = when (this) {
 actual class AboutMeScreen actual constructor() : Screen {
     @OptIn(ExperimentalAnimationApi::class)
     @Composable
-    override fun Compose(components: Components) {
+    override fun Compose() {
         val viewModel: AboutMeViewModel = getViewModel<AboutMeViewModel>()
         val navController: NavHostController = rememberAnimatedNavController()
 
         val selectedTab by viewModel.selectedTab.collectAsState()
 
-        val listState = rememberLazyListState()
+        LaunchedEffect(selectedTab) {
+            navController.changeTab(selectedTab)
+        }
 
-        FlexibleAppBarScaffold(
-            listState = listState,
-            title = "About Me",
-            flexibleSpace = {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    repeat(10) {
-                        Text("header")
-                    }
-                }
+        AppScaffold(
+            appBar = {
+                DAppBar(title = "About me")
             },
-            flexibleSpaceHeight = 200.dp,
-            tabBar = TabBar(
-                height = 75.dp,
-                content = {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        DLazyTabRow(
-                            selectedIndex = selectedTab.toInt(),
-                            items = listOf("Experience", "Education", "Skills", "Road to programming"),
-                            contentPadding = PaddingValues(16.dp),
-                            onTabClick = { index ->
-                                val newTab: Tab = index.toTab()
-                                viewModel.setTab(newTab)
-                                navController.changeTab(newTab)
-                            }
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .shadow(1.dp)
-                        ) {
-                            Box(modifier = Modifier)
-                        }
+            tabBar = {
+                DLazyTabRow(
+                    selectedIndex = selectedTab.toInt(),
+                    items = listOf(
+                        "Experience",
+                        "Education",
+                        "Skills",
+                        "Road to programming"
+                    ),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    onTabClick = { index ->
+                        val newTab: Tab = index.toTab()
+                        viewModel.setTab(newTab)
                     }
-                }
-            )
+                )
+            }
         ) {
             NavHost(
                 navController = navController,
@@ -107,22 +86,22 @@ actual class AboutMeScreen actual constructor() : Screen {
             ) {
                 composable(Tab.EXPERIENCE.route) {
                     EnterAnimation {
-                        get<ExperienceFeature>().screen().Compose(components = Components())
+                        get<ExperienceFeature>().screen().Compose()
                     }
                 }
                 composable(Tab.EDUCATION.route) {
                     EnterAnimation {
-                        get<EducationFeature>().screen().Compose(components = Components())
+                        get<EducationFeature>().screen().Compose()
                     }
                 }
                 composable(Tab.SKILLS.route) {
                     EnterAnimation {
-                        get<SkillsFeature>().screen().Compose(components = Components())
+                        get<SkillsFeature>().screen().Compose()
                     }
                 }
                 composable(Tab.ROAD_TO_PROGRAMMING.route) {
                     EnterAnimation {
-                        get<RoadToProgrammingFeature>().screen().Compose(components = Components())
+                        get<RoadToProgrammingFeature>().screen().Compose()
                     }
                 }
             }
