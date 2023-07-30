@@ -1,5 +1,6 @@
 package com.donatas.dprofile.features.aboutme
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
@@ -80,31 +81,31 @@ actual class AboutMeScreen actual constructor() : Screen {
                 )
             }
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = Tab.EXPERIENCE.route
-            ) {
-                composable(Tab.EXPERIENCE.route) {
-                    EnterAnimation {
-                        get<ExperienceFeature>().screen().Compose()
-                    }
-                }
-                composable(Tab.EDUCATION.route) {
-                    EnterAnimation {
-                        get<EducationFeature>().screen().Compose()
-                    }
-                }
-                composable(Tab.SKILLS.route) {
-                    EnterAnimation {
-                        get<SkillsFeature>().screen().Compose()
-                    }
-                }
-                composable(Tab.ROAD_TO_PROGRAMMING.route) {
-                    EnterAnimation {
-                        get<RoadToProgrammingFeature>().screen().Compose()
-                    }
-                }
-            }
+             NavHost(
+                 navController = navController,
+                 startDestination = Tab.EXPERIENCE.route
+             ) {
+                 composable(Tab.EXPERIENCE.route) {
+                     EnterAnimation {
+                         get<ExperienceFeature>().screen().Compose()
+                     }
+                 }
+                 composable(Tab.EDUCATION.route) {
+                     EnterAnimation {
+                         get<EducationFeature>().screen().Compose()
+                     }
+                 }
+                 composable(Tab.SKILLS.route) {
+                     EnterAnimation {
+                         get<SkillsFeature>().screen().Compose()
+                     }
+                 }
+                 composable(Tab.ROAD_TO_PROGRAMMING.route) {
+                     EnterAnimation {
+                         get<RoadToProgrammingFeature>().screen().Compose()
+                     }
+                 }
+             }
         }
     }
 

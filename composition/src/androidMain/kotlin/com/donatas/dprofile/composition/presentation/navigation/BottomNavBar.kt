@@ -1,7 +1,5 @@
 package com.donatas.dprofile.composition.presentation.navigation
 
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Info
@@ -18,16 +16,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.donatas.dprofile.compose.theme.surfaceDarkColor
 import com.donatas.dprofile.composition.R
 
 enum class Tab(val route: String, val title: String, val image: @Composable () -> ImageVector) {
@@ -41,7 +35,7 @@ enum class Tab(val route: String, val title: String, val image: @Composable () -
 @Composable
 fun BottomNavBar(navController: NavController, tabs: List<Tab>) {
     NavigationBar(
-        modifier = Modifier.shadow(8.dp),
+        // modifier = Modifier.shadow(8.dp),
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.primary
     ) {
