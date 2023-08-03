@@ -1,5 +1,6 @@
 package com.donatas.dprofile.features.aboutme.skills.ui
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,10 +16,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +38,7 @@ import com.donatas.dprofile.compose.components.card.DCard
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.features.aboutme.skills.presentation.Skill
 import com.donatas.dprofile.features.aboutme.skills.presentation.SkillsViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -56,10 +65,9 @@ fun SkillsView(model: SkillsViewModel) {
             item {
                 Spacer(modifier = Modifier.height(6.dp))
             }
-            item {
+            item(key = category.name) {
                 FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     category.skills.forEach { skill ->
                         Skill(skill = skill)
@@ -91,29 +99,47 @@ private fun Skill(skill: Skill) {
                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
             )
             Spacer(modifier = Modifier.height(10.dp))
-            LevelRow(level = skill.level, maxLevel = skill.maxLevel)
+            LevelRow(level = skill.level, maxLevel = skill.maxLevel, animate = !skill.animated, onFinished = {
+                skill.animated = true
+            })
         }
     }
 }
 
 @Composable
-private fun LevelRow(level: Int, maxLevel: Int) {
+private fun LevelRow(level: Int, maxLevel: Int, animate: Boolean, onFinished: () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         repeat(maxLevel) { index ->
             val currentLevel = index + 1
-            LevelItem(active = currentLevel <= level)
+            LevelItem(level = currentLevel, active = currentLevel <= level, animate = animate).also {
+                if (currentLevel == maxLevel) {
+                    onFinished()
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun LevelItem(active: Boolean) {
+private fun LevelItem(level: Int, active: Boolean, animate: Boolean) {
+    val levelDelayInMillis: Long = 150L
+    val inactiveColor: Color = Color.White.copy(alpha = 0.25f)
+    val activeColor: Color = Color.White.copy(alpha = 0.95f)
+    var backgroundColor by remember { mutableStateOf(if (active && animate) inactiveColor else if (active) activeColor else inactiveColor) }
+
+    LaunchedEffect(active) {
+        if (active && animate) {
+            delay(levelDelayInMillis * level-1)
+            backgroundColor = activeColor
+        }
+    }
+
     Box(
         modifier = Modifier
             .width(18.dp)
             .height(6.dp)
-            .background(Color.White.copy(alpha = if (active) 0.95f else 0.25f))
+            .background(backgroundColor)
     )
 }
