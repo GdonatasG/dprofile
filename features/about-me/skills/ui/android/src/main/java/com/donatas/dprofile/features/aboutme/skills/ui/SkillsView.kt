@@ -131,7 +131,7 @@ private fun LevelItem(level: Int, active: Boolean, animate: Boolean) {
 
     LaunchedEffect(active) {
         if (active && animate) {
-            delay(levelDelayInMillis * level-1)
+            delay(levelDelayInMillis * level)
             backgroundColor = activeColor
         }
     }
