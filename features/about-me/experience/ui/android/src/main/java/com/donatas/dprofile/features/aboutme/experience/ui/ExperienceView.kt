@@ -1,5 +1,8 @@
 package com.donatas.dprofile.features.aboutme.experience.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +26,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -39,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
 import com.donatas.dprofile.features.aboutme.experience.presentation.ExperienceViewModel
+import com.donatas.dprofile.features.aboutme.experience.presentation.TimelineItem
+import kotlinx.coroutines.delay
 
 @Composable
 fun ExperienceView(
@@ -49,38 +59,20 @@ fun ExperienceView(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        TimelineNode { modifier ->
-            TimelineItemContent(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        bottom = 16.dp
-                    ),
-                title = "Mobile applications developer",
-                subtitle = "2022 - present",
-                description = "Developing Android applications using Kotlin Multiplatform " +
-                        "and Jetpack Compose",
-                location = "Teltonika Networks",
-                icon = Icons.Outlined.Code
-            )
-        }
-        TimelineNode { modifier ->
-            TimelineItemContent(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        bottom = 16.dp
-                    ),
-                title = "Flutter internship",
-                subtitle = "2022 (3 mos.)",
-                description = "Practising mobile applications development using Flutter framework",
-                location = "Visma Lithuania",
-                icon = Icons.Outlined.School
-            )
+        model.timeline.forEachIndexed { index, timelineItem ->
+            TimelineNode { modifier ->
+                TimelineItemContent(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        ),
+                    item = timelineItem,
+                    index = index
+                )
+            }
         }
     }
 }
@@ -96,35 +88,41 @@ fun TimelineNode(content: @Composable BoxScope.(modifier: Modifier) -> Unit) {
     val circleColor: Color = Color.Transparent
     val circleStrokeColor: Color = MaterialTheme.colorScheme.primary
 
+    val paddingTop = circleRadius / 2
+    val paddingBottom = circleRadius
+
+    val verticalPaddingSizeInPx = with(density) { (paddingTop + paddingBottom).toPx() }
+
     BoxWithConstraints(modifier = Modifier
         .fillMaxWidth()
         .drawBehind {
-            drawLine(
-                color = lineColor,
-                start = Offset(circleRadiusInPx, (circleRadiusInPx * 2) + circleRadiusInPx),
-                end = Offset(
-                    circleRadiusInPx, this.size.height - circleRadiusInPx
-                ),
-                strokeWidth = 1.5.dp.toPx(),
-            )
+            if (this.size.height > verticalPaddingSizeInPx) {
+                drawLine(
+                    color = lineColor,
+                    start = Offset(circleRadiusInPx, (circleRadiusInPx * 2) + circleRadiusInPx),
+                    end = Offset(
+                        circleRadiusInPx, this.size.height - circleRadiusInPx
+                    ),
+                    strokeWidth = 1.5.dp.toPx(),
+                )
+                drawCircle(
+                    circleColor, circleRadiusInPx, center = Offset(circleRadiusInPx, circleRadiusInPx)
+                )
 
-            drawCircle(
-                circleColor, circleRadiusInPx, center = Offset(circleRadiusInPx, circleRadiusInPx)
-            )
-
-            drawCircle(
-                color = circleStrokeColor,
-                radius = circleRadiusInPx - circleStrokeRadiusInPx / 2,
-                center = Offset(x = circleRadiusInPx, y = circleRadiusInPx),
-                style = Stroke(width = circleStrokeRadiusInPx)
-            )
+                drawCircle(
+                    color = circleStrokeColor,
+                    radius = circleRadiusInPx - circleStrokeRadiusInPx / 2,
+                    center = Offset(x = circleRadiusInPx, y = circleRadiusInPx),
+                    style = Stroke(width = circleStrokeRadiusInPx)
+                )
+            }
         }) {
         Box(
             modifier = Modifier
                 .padding(
                     start = circleRadius * 2,
-                    top = circleRadius / 2,
-                    bottom = circleRadius
+                    top = paddingTop,
+                    bottom = paddingBottom
                 )
         ) {
             content(Modifier)
@@ -134,40 +132,59 @@ fun TimelineNode(content: @Composable BoxScope.(modifier: Modifier) -> Unit) {
 
 @Composable
 fun TimelineItemContent(
-    modifier: Modifier, title: String, subtitle: String, description: String, location: String, icon: ImageVector
+    modifier: Modifier,
+    item: TimelineItem,
+    index: Int
 ) {
+    val animationDelayInMillis: Long = 300L * index
+
+    var visible by remember { mutableStateOf(item.animated) }
+
+    LaunchedEffect(true) {
+        if (!visible) {
+            delay(animationDelayInMillis)
+            visible = true
+            item.animated = true
+        }
+    }
+
     val secondaryColor = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
     val titleTextStyle = MaterialTheme.typography.titleMedium.copy(color = secondaryColor)
     val subtitleTextStyle = MaterialTheme.typography.labelLarge.copy(color = MaterialTheme.colorScheme.primary)
     val descriptionTextStyle = MaterialTheme.typography.bodyMedium
     val locationTextStyle = MaterialTheme.typography.labelLarge.copy(color = secondaryColor)
 
-    Card(
-        modifier = modifier,
-        shape = MaterialTheme.shapes.small.copy(topStart = ZeroCornerSize),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.05f)
-        )
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn() + expandIn()
     ) {
-        Column(
-            modifier = Modifier
-                .padding(vertical = 12.dp, horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+        Card(
+            modifier = modifier,
+            shape = MaterialTheme.shapes.small.copy(topStart = ZeroCornerSize),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White.copy(alpha = 0.05f)
+            )
         ) {
-            Text(text = title, style = titleTextStyle)
-            Text(text = subtitle, style = subtitleTextStyle)
-            Text(text = description, style = descriptionTextStyle)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 12.dp, horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Outlined.LocationOn,
-                    contentDescription = "location",
-                    tint = locationTextStyle.color
-                )
-                Text(text = location, style = locationTextStyle)
+                Text(text = item.title, style = titleTextStyle)
+                Text(text = item.subtitle, style = subtitleTextStyle)
+                Text(text = item.description, style = descriptionTextStyle)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        imageVector = Icons.Outlined.LocationOn,
+                        contentDescription = "location",
+                        tint = locationTextStyle.color
+                    )
+                    Text(text = item.location, style = locationTextStyle)
+                }
             }
         }
     }
