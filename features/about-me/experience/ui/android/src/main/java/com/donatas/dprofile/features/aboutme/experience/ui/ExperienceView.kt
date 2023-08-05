@@ -1,26 +1,40 @@
 package com.donatas.dprofile.features.aboutme.experience.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.School
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
@@ -35,21 +49,37 @@ fun ExperienceView(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        TimelineNode {
-            Box(
-                modifier = it
+        TimelineNode { modifier ->
+            TimelineItemContent(
+                modifier = modifier
                     .fillMaxWidth()
-                    .height(400.dp)
-                    .padding(bottom = 16.dp)
-                    .background(Color.Red)
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    ),
+                title = "Mobile applications developer",
+                subtitle = "2022 - present",
+                description = "Developing Android applications using Kotlin Multiplatform " +
+                        "and Jetpack Compose",
+                location = "Teltonika Networks",
+                icon = Icons.Outlined.Code
             )
         }
-        TimelineNode {
-            Box(
-                modifier = it
+        TimelineNode { modifier ->
+            TimelineItemContent(
+                modifier = modifier
                     .fillMaxWidth()
-                    .height(300.dp)
-                    .background(Color.Green)
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    ),
+                title = "Flutter internship",
+                subtitle = "2022 (3 mos.)",
+                description = "Practising mobile applications development using Flutter framework",
+                location = "Visma Lithuania",
+                icon = Icons.Outlined.School
             )
         }
     }
@@ -64,13 +94,7 @@ fun TimelineNode(content: @Composable BoxScope.(modifier: Modifier) -> Unit) {
     val circleStrokeRadiusInPx = with(density) { circleStrokeRadius.toPx() }
     val lineColor: Color = Color.White.copy(alpha = 0.1f)
     val circleColor: Color = Color.Transparent
-
     val circleStrokeColor: Color = MaterialTheme.colorScheme.primary
-    val secondaryColor = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
-    val titleTextStyle = MaterialTheme.typography.titleSmall.copy(color = secondaryColor)
-    val subtitleTextStyle = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.primary)
-    val descriptionTextStyle = MaterialTheme.typography.labelSmall
-    val locationTextStyle = MaterialTheme.typography.labelSmall.copy(color = secondaryColor)
 
     BoxWithConstraints(modifier = Modifier
         .fillMaxWidth()
@@ -78,8 +102,10 @@ fun TimelineNode(content: @Composable BoxScope.(modifier: Modifier) -> Unit) {
             drawLine(
                 color = lineColor,
                 start = Offset(circleRadiusInPx, (circleRadiusInPx * 2) + circleRadiusInPx),
-                end = Offset(circleRadiusInPx, this.size.height - circleRadiusInPx),
-                strokeWidth = 2.dp.toPx(),
+                end = Offset(
+                    circleRadiusInPx, this.size.height - circleRadiusInPx
+                ),
+                strokeWidth = 1.5.dp.toPx(),
             )
 
             drawCircle(
@@ -93,14 +119,56 @@ fun TimelineNode(content: @Composable BoxScope.(modifier: Modifier) -> Unit) {
                 style = Stroke(width = circleStrokeRadiusInPx)
             )
         }) {
-        content(
-            Modifier.padding(
-                    top = circleRadius / 2, start = circleRadius * 2 + 16.dp
+        Box(
+            modifier = Modifier
+                .padding(
+                    start = circleRadius * 2,
+                    top = circleRadius / 2,
+                    bottom = circleRadius
                 )
-        )
+        ) {
+            content(Modifier)
+        }
     }
 }
 
-data class TimelineItem(
-    val title: String, val subtitle: String, val description: String, val location: String, val icon: ImageVector
-)
+@Composable
+fun TimelineItemContent(
+    modifier: Modifier, title: String, subtitle: String, description: String, location: String, icon: ImageVector
+) {
+    val secondaryColor = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
+    val titleTextStyle = MaterialTheme.typography.titleMedium.copy(color = secondaryColor)
+    val subtitleTextStyle = MaterialTheme.typography.labelLarge.copy(color = MaterialTheme.colorScheme.primary)
+    val descriptionTextStyle = MaterialTheme.typography.bodyMedium
+    val locationTextStyle = MaterialTheme.typography.labelLarge.copy(color = secondaryColor)
+
+    Card(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.small.copy(topStart = ZeroCornerSize),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.05f)
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(vertical = 12.dp, horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(text = title, style = titleTextStyle)
+            Text(text = subtitle, style = subtitleTextStyle)
+            Text(text = description, style = descriptionTextStyle)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    imageVector = Icons.Outlined.LocationOn,
+                    contentDescription = "location",
+                    tint = locationTextStyle.color
+                )
+                Text(text = location, style = locationTextStyle)
+            }
+        }
+    }
+}
