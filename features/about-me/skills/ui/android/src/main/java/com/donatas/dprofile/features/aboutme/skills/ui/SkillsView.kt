@@ -1,6 +1,5 @@
 package com.donatas.dprofile.features.aboutme.skills.ui
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -124,7 +121,7 @@ private fun LevelRow(level: Int, maxLevel: Int, animate: Boolean, onFinished: ()
 
 @Composable
 private fun LevelItem(level: Int, active: Boolean, animate: Boolean) {
-    val levelDelayInMillis: Long = 150L
+    val levelDelayInMillis: Long = 80L
     val inactiveColor: Color = Color.White.copy(alpha = 0.25f)
     val activeColor: Color = Color.White.copy(alpha = 0.95f)
     var backgroundColor by remember { mutableStateOf(if (active && animate) inactiveColor else if (active) activeColor else inactiveColor) }
