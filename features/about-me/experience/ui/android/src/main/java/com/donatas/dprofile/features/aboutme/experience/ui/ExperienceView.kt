@@ -5,9 +5,6 @@ import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,9 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -33,17 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.donatas.dprofile.compose.components.timeline.TimelineNode
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
 import com.donatas.dprofile.features.aboutme.experience.presentation.ExperienceViewModel
@@ -73,59 +60,6 @@ fun ExperienceView(
                     index = index
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun TimelineNode(content: @Composable BoxScope.(modifier: Modifier) -> Unit) {
-    val density = LocalDensity.current
-    val circleRadius: Dp = 10.dp
-    val circleStrokeRadius: Dp = 4.dp
-    val circleRadiusInPx = with(density) { circleRadius.toPx() }
-    val circleStrokeRadiusInPx = with(density) { circleStrokeRadius.toPx() }
-    val lineColor: Color = Color.White.copy(alpha = 0.1f)
-    val circleColor: Color = Color.Transparent
-    val circleStrokeColor: Color = MaterialTheme.colorScheme.primary
-
-    val paddingTop = circleRadius / 2
-    val paddingBottom = circleRadius
-
-    val verticalPaddingSizeInPx = with(density) { (paddingTop + paddingBottom).toPx() }
-
-    BoxWithConstraints(modifier = Modifier
-        .fillMaxWidth()
-        .drawBehind {
-            if (this.size.height > verticalPaddingSizeInPx) {
-                drawLine(
-                    color = lineColor,
-                    start = Offset(circleRadiusInPx, (circleRadiusInPx * 2) + circleRadiusInPx),
-                    end = Offset(
-                        circleRadiusInPx, this.size.height - circleRadiusInPx
-                    ),
-                    strokeWidth = 1.5.dp.toPx(),
-                )
-                drawCircle(
-                    circleColor, circleRadiusInPx, center = Offset(circleRadiusInPx, circleRadiusInPx)
-                )
-
-                drawCircle(
-                    color = circleStrokeColor,
-                    radius = circleRadiusInPx - circleStrokeRadiusInPx / 2,
-                    center = Offset(x = circleRadiusInPx, y = circleRadiusInPx),
-                    style = Stroke(width = circleStrokeRadiusInPx)
-                )
-            }
-        }) {
-        Box(
-            modifier = Modifier
-                .padding(
-                    start = circleRadius * 2,
-                    top = paddingTop,
-                    bottom = paddingBottom
-                )
-        ) {
-            content(Modifier)
         }
     }
 }
