@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.ZeroCornerSize
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Card
@@ -29,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.donatas.dprofile.compose.components.timeline.TimelineNode
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
 import com.donatas.dprofile.features.aboutme.education.presentation.EducationViewModel
@@ -37,10 +40,26 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun EducationView(model: EducationViewModel) {
-    Box(
-        modifier = Modifier.fillMaxWidth()
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
     ) {
-        Text(text = "EducationView")
+        model.timeline.forEachIndexed { index, timelineItem ->
+            TimelineNode { modifier ->
+                TimelineItemContent(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        ),
+                    item = timelineItem,
+                    index = index
+                )
+            }
+        }
     }
 }
 
