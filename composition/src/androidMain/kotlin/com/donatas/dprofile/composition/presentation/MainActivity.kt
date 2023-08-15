@@ -34,7 +34,7 @@ class MainActivity : FragmentActivity() {
                     systemUIController.setStatusBarColor(
                         color = Color.Transparent, darkIcons = false
                     )
-                   // systemUIController.setNavigationBarColor(backgroundColor)
+                    systemUIController.setNavigationBarColor(backgroundColor)
                 }
 
                 AppNavigation(navGraph = NavGraphs.main)
