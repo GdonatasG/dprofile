@@ -14,14 +14,16 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":libraries:viewmodel"))
-                api(project(":features:github:shared"))
                 with(Dependencies.KotlinX) {
                     api(coroutinesCore)
                 }
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(project(":android:compose-components"))
+            }
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -42,9 +44,22 @@ kotlin {
 }
 
 android {
-    namespace = "com.donatas.dprofile.features.github.presentation"
+    namespace = "com.donatas.dprofile.features.github.shared"
     compileSdk = Dependencies.Android.compileSDK
     defaultConfig {
         minSdk = Dependencies.Android.minSDK
+    }
+
+    compileOptions {
+        sourceCompatibility = Dependencies.CompileOptions.sourceCompatibility
+        targetCompatibility = Dependencies.CompileOptions.targetCompatibility
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
 }
