@@ -14,11 +14,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":libraries:viewmodel"))
-                implementation(project(":features:github:shared"))
-                with(Dependencies.KotlinX) {
-                    api(coroutinesCore)
-                }
+                implementation(project(":libraries:utils"))
+                api(project(":libraries:loader"))
+                implementation(Dependencies.KotlinX.coroutinesCore)
             }
         }
         val androidMain by getting
@@ -42,7 +40,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.donatas.dprofile.features.github.presentation"
+    namespace = "com.donatas.dprofile.paginator"
     compileSdk = Dependencies.Android.compileSDK
     defaultConfig {
         minSdk = Dependencies.Android.minSDK

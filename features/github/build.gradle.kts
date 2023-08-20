@@ -49,6 +49,7 @@ kotlin {
                 api(project("$module:presentation"))
 
                 api(project("search"))
+                api(project(":features:github:shared"))
 
                 implementation(Dependencies.KotlinX.coroutinesCore)
                 implementation(Dependencies.Koin.core)
