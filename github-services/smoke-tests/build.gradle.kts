@@ -14,14 +14,16 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                with(Dependencies.KotlinX) {
-                    api(coroutinesCore)
-                }
+                implementation(project(":libraries:http"))
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(project(":libraries:test"))
+                implementation(project(":github-services"))
+
+                implementation(project(":libraries:utils"))
             }
         }
         val androidMain by getting
@@ -43,18 +45,11 @@ kotlin {
             iosArm64Test.dependsOn(this)
             iosSimulatorArm64Test.dependsOn(this)
         }
-        val macosX64Main by getting
-        val macosArm64Main by getting
-        val macosMain by creating {
-            dependsOn(commonMain)
-            macosX64Main.dependsOn(this)
-            macosArm64Main.dependsOn(this)
-        }
     }
 }
 
 android {
-    namespace = "com.donatas.dprofile.coroutines"
+    namespace = "com.donatas.dprofile.githubservices"
     compileSdk = Dependencies.Android.compileSDK
     defaultConfig {
         minSdk = Dependencies.Android.minSDK
