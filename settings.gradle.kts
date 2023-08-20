@@ -31,6 +31,7 @@ include(":libraries:logger")
 include(":libraries:preferences")
 include(":libraries:test")
 include(":libraries:utils")
+include(":libraries:loader")
 
 include(":features:about-me")
 include(":features:about-me:presentation")
