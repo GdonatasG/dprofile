@@ -13,7 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.text.SectionTitle
+import com.donatas.dprofile.compose.components.layout.EmptyView
 import com.donatas.dprofile.features.github.presentation.GithubViewModel
+import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.features.github.shared.RepositoryListTile
 import com.donatas.dprofile.loader.state.ListState
 
@@ -22,23 +24,42 @@ fun GithubView(model: GithubViewModel) {
     val listState by model.listState.collectAsState()
 
     when (val type = listState) {
-        is ListState.Data -> {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Box(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 12.dp)) {
-                    SectionTitle(title = "Repositories (${type.total})")
-                }
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    itemsIndexed(type.data) { index, repository ->
-                        RepositoryListTile(repository = repository, divided = index < type.data.size - 1, onClick = {
-                            model.onDetails(repository)
-                        })
-                    }
-                }
+        is ListState.Data -> Data(repositories = type.data, total = type.total, delegate = object : DataDelegate {
+            override fun onRepositoryClick(repository: Repository) {
+                model.onDetails(repository)
             }
-        }
+        })
+
+        is ListState.Empty -> EmptyView(
+            title = type.title,
+            paddingValues = PaddingValues(16.dp),
+            onRefresh = model::onRetry
+        )
 
         else -> {}
+    }
+}
+
+private interface DataDelegate {
+    fun onRepositoryClick(repository: Repository)
+}
+
+@Composable
+private fun Data(
+    repositories: List<Repository>, total: Int, delegate: DataDelegate
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)) {
+            SectionTitle(title = "Repositories (${total})")
+        }
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            itemsIndexed(repositories) { index, repository ->
+                RepositoryListTile(repository = repository, divided = index < repositories.size - 1, onClick = {
+                    delegate.onRepositoryClick(repository)
+                })
+            }
+        }
     }
 }

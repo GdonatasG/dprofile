@@ -7,9 +7,9 @@ sealed class ListState<out Item : Any> {
         val isFirstPage: Boolean
     ) : ListState<Item>()
 
-    data class Empty(val title: String, val message: String) : ListState<Nothing>()
+    data class Empty(val title: String, val message: String? = null) : ListState<Nothing>()
 
-    object Loading: ListState<Nothing>()
+    object Loading : ListState<Nothing>()
 
     data class Error(val title: String, val message: String) : ListState<Nothing>()
 }

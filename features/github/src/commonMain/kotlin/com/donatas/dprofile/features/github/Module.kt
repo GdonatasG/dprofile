@@ -7,6 +7,7 @@ import com.donatas.dprofile.loader.LoadingResult
 import com.donatas.dprofile.paginator.DefaultPaginator
 import com.donatas.dprofile.paginator.Paginator
 import com.donatas.dprofile.paginator.PerPage
+import kotlinx.coroutines.delay
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
@@ -56,6 +57,9 @@ internal class DefaultGetRepositoriesUseCase(
     private val repositoryService: RepositoryService
 ) : GetRepositories {
     override suspend fun invoke(page: Int, perPage: Int): LoadingResult<Repository> {
+        delay(1000)
+        return LoadingResult.Empty(title = "No results found")
+
         val result = repositoryService.getRepositories {
             this.page {
                 this.page = page
@@ -67,7 +71,7 @@ internal class DefaultGetRepositoriesUseCase(
         return suspendCoroutine<LoadingResult<Repository>> { continuation ->
             result.onSuccess { success ->
                 if (success.items.isEmpty()) {
-                    continuation.resume(LoadingResult.Empty(title = "No result", "No repositories found."))
+                    continuation.resume(LoadingResult.Empty(title = "No results"))
                 }
 
                 continuation.resume(
