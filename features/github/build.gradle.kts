@@ -46,6 +46,7 @@ kotlin {
             dependencies {
                 implementation(project(":libraries:feature"))
                 implementation(project(":libraries:viewmodel"))
+                implementation(project(":github-services"))
                 api(project("$module:presentation"))
 
                 api(project("search"))

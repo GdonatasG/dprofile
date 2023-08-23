@@ -38,6 +38,10 @@ kotlin {
                 implementation(project(":libraries:feature"))
                 implementation(project(":libraries:alerts"))
                 implementation(project(":libraries:logger"))
+                implementation(project(":libraries:http"))
+                
+
+                implementation(project(":github-services"))
                 api(project(":libraries:utils"))
             }
         }

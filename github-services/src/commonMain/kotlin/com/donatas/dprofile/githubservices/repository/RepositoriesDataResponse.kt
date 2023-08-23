@@ -12,5 +12,5 @@ data class RepositoriesDataResponse(
 data class RepositoryResponse(
     @SerialName("name") val name: String,
     @SerialName("language") val language: String,
-    @SerialName("url") val url: String
+    @SerialName("html_url") val htmlUrl: String
 )
