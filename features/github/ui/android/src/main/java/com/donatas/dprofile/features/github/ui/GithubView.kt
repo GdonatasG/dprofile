@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.compose.components.layout.EmptyView
+import com.donatas.dprofile.compose.components.layout.LoadingView
 import com.donatas.dprofile.features.github.presentation.GithubViewModel
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.features.github.shared.RepositoryListTile
@@ -31,9 +32,11 @@ fun GithubView(model: GithubViewModel) {
         })
 
         is ListState.Empty -> EmptyView(
-            title = type.title,
-            paddingValues = PaddingValues(16.dp),
-            onRefresh = model::onRetry
+            title = type.title, paddingValues = PaddingValues(16.dp), onRefresh = model::onRetry
+        )
+
+        is ListState.Loading -> LoadingView(
+            paddingValues = PaddingValues(16.dp)
         )
 
         else -> {}
