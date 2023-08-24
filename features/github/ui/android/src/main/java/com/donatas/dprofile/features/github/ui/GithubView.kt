@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.compose.components.layout.EmptyView
+import com.donatas.dprofile.compose.components.layout.ErrorView
 import com.donatas.dprofile.compose.components.layout.LoadingView
 import com.donatas.dprofile.features.github.presentation.GithubViewModel
 import com.donatas.dprofile.features.github.shared.Repository
@@ -35,11 +36,16 @@ fun GithubView(model: GithubViewModel) {
             title = type.title, paddingValues = PaddingValues(16.dp), onRefresh = model::onRetry
         )
 
+        is ListState.Error -> ErrorView(
+            title = type.title,
+            message = type.message,
+            paddingValues = PaddingValues(16.dp),
+            onRetry = model::onRetry
+        )
+
         is ListState.Loading -> LoadingView(
             paddingValues = PaddingValues(16.dp)
         )
-
-        else -> {}
     }
 }
 

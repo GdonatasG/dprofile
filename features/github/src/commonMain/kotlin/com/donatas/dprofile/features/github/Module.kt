@@ -57,9 +57,6 @@ internal class DefaultGetRepositoriesUseCase(
     private val repositoryService: RepositoryService
 ) : GetRepositories {
     override suspend fun invoke(page: Int, perPage: Int): LoadingResult<Repository> {
-        delay(1000)
-        return LoadingResult.Empty(title = "No results found")
-
         val result = repositoryService.getRepositories {
             this.page {
                 this.page = page
@@ -71,7 +68,7 @@ internal class DefaultGetRepositoriesUseCase(
         return suspendCoroutine<LoadingResult<Repository>> { continuation ->
             result.onSuccess { success ->
                 if (success.items.isEmpty()) {
-                    continuation.resume(LoadingResult.Empty(title = "No results"))
+                    continuation.resume(LoadingResult.Empty(title = "No results found"))
                 }
 
                 continuation.resume(
