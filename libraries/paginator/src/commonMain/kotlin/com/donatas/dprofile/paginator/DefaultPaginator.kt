@@ -5,7 +5,6 @@ import com.donatas.dprofile.loader.state.ListState
 import com.donatas.dprofile.loader.state.RefreshState
 import com.donatas.dprofile.paginator.state.PaginatorState
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.job
 import kotlin.coroutines.coroutineContext
@@ -115,7 +114,7 @@ open class DefaultPaginator<Item : Any>(
                 setError(this)
             }
         )
-        delay(1000)
+
         isMakingRequest = false
     }
 
