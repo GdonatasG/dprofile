@@ -20,6 +20,7 @@ fun AppScaffold(
     backgroundColor: Color = MaterialTheme.colorScheme.background,
     appBar: @Composable (() -> Unit)? = null,
     tabBar: @Composable (() -> Unit)? = null,
+    snackBar: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     Surface(
@@ -48,6 +49,12 @@ fun AppScaffold(
             }
         }
 
+        val snackBarLayout: @Composable () -> Unit = {
+            snackBar?.let {
+                it()
+            }
+        }
+
         SubcomposeLayout { constraints ->
             val layoutWidth = constraints.maxWidth
             val layoutHeight = constraints.maxHeight
@@ -62,8 +69,13 @@ fun AppScaffold(
                     it.measure(looseConstraints)
                 }
 
+                val snackBarPlaceables = subcompose(AppScaffoldContent.SNACK_BAR, snackBarLayout).map {
+                    it.measure(looseConstraints)
+                }
+
                 val topBarHeight = topBarPlaceables.maxByOrNull { it.height }?.height ?: 0
                 val tabBarHeight = tabBarPlaceables.maxByOrNull { it.height }?.height ?: 0
+                val snackBarHeight = snackBarPlaceables.maxByOrNull { it.height }?.height ?: 0
                 val bodyContentHeight = layoutHeight - topBarHeight - tabBarHeight
 
                 val bodyContentPlaceables = subcompose(AppScaffoldContent.CONTENT) {
@@ -81,6 +93,10 @@ fun AppScaffold(
                 tabBarPlaceables.forEach {
                     it.place(0, topBarHeight)
                 }
+
+                snackBarPlaceables.forEach {
+                    it.place(0, layoutHeight - snackBarHeight)
+                }
             }
         }
     }
@@ -89,5 +105,6 @@ fun AppScaffold(
 internal enum class AppScaffoldContent {
     TOP_BAR,
     TAB_BAR,
+    SNACK_BAR,
     CONTENT
 }

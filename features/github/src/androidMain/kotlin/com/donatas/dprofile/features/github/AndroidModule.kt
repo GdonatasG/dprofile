@@ -1,5 +1,6 @@
 package com.donatas.dprofile.features.github
 
+import com.donatas.dprofile.alerts.popup.DefaultPopUpController
 import com.donatas.dprofile.features.github.presentation.GithubDelegate
 import com.donatas.dprofile.features.github.presentation.GithubViewModel
 import com.donatas.dprofile.features.github.shared.Repository
@@ -12,6 +13,7 @@ internal actual val platformModule: Module = module {
     viewModel<GithubViewModel>() {
         GithubViewModel(
             paginator = get<Paginator<Repository>>(qualifier = paginatorQualifier),
+            popUpController = DefaultPopUpController(),
             delegate = get<GithubDelegate>()
         )
     }
