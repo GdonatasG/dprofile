@@ -56,14 +56,6 @@ class GithubViewModel(
                 _scrollToTop.value = state is RefreshState.Idle
             }
         }
-
-        scope.launch {
-            paginator.state.collect { state ->
-                if (state is PaginatorState.Error) {
-                    showErrorPopUp()
-                }
-            }
-        }
     }
 
     private fun showErrorPopUp() {
