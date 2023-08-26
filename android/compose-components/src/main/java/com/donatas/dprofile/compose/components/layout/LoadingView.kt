@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.donatas.dprofile.compose.components.DCircularProgressIndicator
 import com.donatas.dprofile.compose.components.state.getImeWithNavigationBarsPadding
 
 @Composable
@@ -26,9 +27,6 @@ fun LoadingView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary,
-            strokeWidth = 2.dp
-        )
+        DCircularProgressIndicator()
     }
 }

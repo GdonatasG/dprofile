@@ -2,11 +2,13 @@ package com.donatas.dprofile.features.github.ui
 
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.gestures.stopScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -14,13 +16,18 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.donatas.dprofile.compose.components.DCircularProgressIndicator
 import com.donatas.dprofile.compose.components.DPullRefreshIndicator
 import com.donatas.dprofile.compose.components.layout.EmptyView
 import com.donatas.dprofile.compose.components.layout.ErrorView
@@ -31,6 +38,8 @@ import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.features.github.shared.RepositoryListTile
 import com.donatas.dprofile.loader.state.ListState
 import com.donatas.dprofile.loader.state.RefreshState
+import com.donatas.dprofile.paginator.state.PaginatorState
+import kotlinx.coroutines.flow.flow
 
 @Composable
 fun GithubView(model: GithubViewModel) {
@@ -39,13 +48,18 @@ fun GithubView(model: GithubViewModel) {
     when (val type = listState) {
         is ListState.Data -> {
             val refreshState by model.refreshState.collectAsState()
+            val paginatorState by model.paginatorState.collectAsState()
+
             val scrollToTop by model.scrollToTop.collectAsState()
+            val endReached by model.endReached.collectAsState()
 
             Data(
                 repositories = type.data,
                 total = type.total,
                 refreshState = refreshState,
+                paginatorState = paginatorState,
                 scrollToTop = scrollToTop,
+                endReached = endReached,
                 delegate = object : DataDelegate {
                     override fun onRepositoryClick(repository: Repository) {
                         model.onDetails(repository)
@@ -57,6 +71,14 @@ fun GithubView(model: GithubViewModel) {
 
                     override fun onScrollToTopDone() {
                         model.onScrollToTopDone()
+                    }
+
+                    override fun onLoadNextPage() {
+                        model.onLoadNextPage()
+                    }
+
+                    override fun onRetry() {
+                        model.onRetry()
                     }
                 }
             )
@@ -82,8 +104,9 @@ fun GithubView(model: GithubViewModel) {
 private interface DataDelegate {
     fun onRepositoryClick(repository: Repository)
     fun onRefresh()
-
     fun onScrollToTopDone()
+    fun onLoadNextPage()
+    fun onRetry()
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -91,7 +114,9 @@ private interface DataDelegate {
 private fun Data(
     repositories: List<Repository>,
     refreshState: RefreshState,
+    paginatorState: PaginatorState,
     scrollToTop: Boolean,
+    endReached: Boolean,
     total: Int,
     delegate: DataDelegate
 ) {
@@ -105,6 +130,29 @@ private fun Data(
             listState.stopScroll(scrollPriority = MutatePriority.PreventUserInput)
             listState.scrollToItem(0)
             delegate.onScrollToTopDone()
+        }
+    }
+
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val visibleItemsInfo = listState.layoutInfo.visibleItemsInfo
+            val loadMore = if (listState.layoutInfo.totalItemsCount == 0) {
+                false
+            } else {
+                val lastVisibleItem = visibleItemsInfo.last()
+
+                lastVisibleItem.index + 1 >= listState.layoutInfo.totalItemsCount - 11
+            }
+
+            if (loadMore) {
+                delegate.onLoadNextPage()
+            }
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore.value) {
+        flow<Boolean> {
+            shouldLoadMore.value
         }
     }
 
@@ -126,6 +174,20 @@ private fun Data(
                         delegate.onRepositoryClick(repository)
                     })
                 }
+                item {
+                    if (!endReached && (paginatorState !is PaginatorState.Error || refreshState is RefreshState.Refreshing)) {
+                        EndListItem {
+                            DCircularProgressIndicator()
+                        }
+                    }
+                    if (!endReached && (paginatorState is PaginatorState.Error) && (refreshState !is RefreshState.Refreshing)) {
+                        EndListItem {
+                            ElevatedButton(onClick = delegate::onRetry) {
+                                Text(text = "Load more")
+                            }
+                        }
+                    }
+                }
             }
 
             DPullRefreshIndicator(
@@ -135,5 +197,18 @@ private fun Data(
             )
         }
 
+    }
+}
+
+@Composable
+private fun EndListItem(content: @Composable () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        content()
     }
 }

@@ -14,12 +14,6 @@ import kotlinx.coroutines.launch
 class GithubViewModel(
     private val paginator: Paginator<Repository>, private val delegate: GithubDelegate
 ) : ViewModel() {
-    val repositories: List<Repository> = List<Repository>(20) { index ->
-        Repository(
-            title = "Repository${index + 1}", language = "Language${index + 1}", htmlUrl = "https://www.google.com"
-        )
-    }
-
     val listState: StateFlow<ListState<Repository>> get() = paginator.listState
     val refreshState: StateFlow<RefreshState> get() = paginator.refreshState
     val paginatorState: StateFlow<PaginatorState> get() = paginator.state
