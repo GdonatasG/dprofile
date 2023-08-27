@@ -29,5 +29,5 @@ class RepositoryServiceSmokeTest {
     }
 
 
-    private fun makeSUT(): RepositoryService = RepositoryService(client = createGithubHttpClient())
+    private fun makeSUT(): RepositoryService = DefaultRepositoryService(client = createGithubHttpClient())
 }

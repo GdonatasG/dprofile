@@ -18,6 +18,6 @@ private fun createHttpClient(): HttpClient = HttpClient.create(ignoreTLS = true)
 
 internal fun createGithubHttpClient(): GithubHttpClient = DefaultGithubHttpClient(
     client = createHttpClient()
-).baseUrl(Config.BASE_URL).addAuthorizationHandler {
+).baseUrl(Config.BASE_URL)/*.addAuthorizationHandler {
     Token(type = TokenType.BEARER, value = throw RuntimeException("Pass token"))
-}.specifyAPIVersion(version = GithubAPIVersion.NOVEMBER_28_2022)
+}*/.specifyAPIVersion(version = GithubAPIVersion.NOVEMBER_28_2022)
