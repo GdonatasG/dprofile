@@ -62,8 +62,8 @@ internal class DefaultGetRepositoriesUseCase(
                 this.page = page
                 this.perPage = perPage
             }
-            this.language(com.donatas.dprofile.githubservices.repository.GetRepositories.Language.JAVA)
-            /* this.user("GdonatasG")*/
+          /*  this.language(com.donatas.dprofile.githubservices.repository.GetRepositories.Language.JAVA)*/
+             this.user("GdonatasG")
         }
 
         return suspendCoroutine<LoadingResult<Repository>> { continuation ->

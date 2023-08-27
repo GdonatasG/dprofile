@@ -27,11 +27,7 @@ actual class GithubScreen actual constructor() : Screen {
         val popUp by viewModel.popUp.collectAsState()
 
         AppScaffold(appBar = {
-            DAppBar(title = "Github", actions = {
-                ActionButton(onClick = { }) {
-                    Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search repositories")
-                }
-            })
+            DAppBar(title = "My Github")
         }, snackBar = {
             AnimatedVisibility(visible = popUp != null) {
                 popUp?.let {
