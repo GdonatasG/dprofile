@@ -1,6 +1,8 @@
 package com.donatas.dprofile.features.github
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -27,9 +29,13 @@ actual class GithubScreen actual constructor() : Screen {
         val popUp by viewModel.popUp.collectAsState()
 
         AppScaffold(appBar = {
-            DAppBar(title = "My Github")
+            DAppBar(title = "Github")
         }, snackBar = {
-            AnimatedVisibility(visible = popUp != null) {
+            AnimatedVisibility(
+                visible = popUp != null,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 popUp?.let {
                     ErrorPopUp(
                         modifier = Modifier

@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.DCircularProgressIndicator
 import com.donatas.dprofile.compose.components.DPullRefreshIndicator
 import com.donatas.dprofile.compose.components.button.ActionButton
+import com.donatas.dprofile.compose.components.extension.loadingShimmerEffect
 import com.donatas.dprofile.compose.components.layout.EmptyView
 import com.donatas.dprofile.compose.components.layout.ErrorView
 import com.donatas.dprofile.compose.components.layout.LoadingView
@@ -253,6 +254,44 @@ private fun Data(
             )
         }
 
+    }
+}
+
+@Composable
+private fun LoadingProfile() {
+    val shimmerBackgroundColor = MaterialTheme.colorScheme.inverseSurface
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+                .loadingShimmerEffect(shimmerBackgroundColor)
+        )
+        Box(
+            modifier = Modifier
+                .width(140.dp)
+                .height(15.dp)
+                .loadingShimmerEffect(shimmerBackgroundColor)
+        )
+        Box(
+            modifier = Modifier
+                .width(140.dp)
+                .height(15.dp)
+                .loadingShimmerEffect(shimmerBackgroundColor)
+        )
+        Box(
+            modifier = Modifier
+                .width(140.dp)
+                .height(15.dp)
+                .loadingShimmerEffect(shimmerBackgroundColor)
+        )
     }
 }
 
