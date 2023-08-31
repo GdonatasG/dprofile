@@ -27,16 +27,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.Person2
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,14 +55,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.DCircularProgressIndicator
 import com.donatas.dprofile.compose.components.DPullRefreshIndicator
-import com.donatas.dprofile.compose.components.button.ActionButton
 import com.donatas.dprofile.compose.components.extension.loadingShimmerEffect
 import com.donatas.dprofile.compose.components.layout.EmptyView
 import com.donatas.dprofile.compose.components.layout.ErrorView
 import com.donatas.dprofile.compose.components.layout.LoadingView
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.compose.theme.getSecondaryTextColor
+import com.donatas.dprofile.features.github.presentation.GithubListState
+import com.donatas.dprofile.features.github.presentation.GithubRefreshState
+import com.donatas.dprofile.features.github.presentation.GithubUser
 import com.donatas.dprofile.features.github.presentation.GithubViewModel
+import com.donatas.dprofile.features.github.presentation.UserState
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.features.github.shared.RepositoryListTile
 import com.donatas.dprofile.loader.state.ListState
@@ -77,9 +76,10 @@ import kotlinx.coroutines.flow.flow
 @Composable
 fun GithubView(model: GithubViewModel) {
     val listState by model.listState.collectAsState()
+    val userState by model.user.collectAsState()
 
     when (val type = listState) {
-        is ListState.Data -> {
+        is GithubListState.Data -> {
             val refreshState by model.refreshState.collectAsState()
             val paginatorState by model.paginatorState.collectAsState()
 
@@ -90,6 +90,7 @@ fun GithubView(model: GithubViewModel) {
                 total = type.total,
                 refreshState = refreshState,
                 paginatorState = paginatorState,
+                userState = userState,
                 scrollToTop = scrollToTop,
                 endReached = endReached,
                 delegate = object : DataDelegate {
@@ -115,16 +116,19 @@ fun GithubView(model: GithubViewModel) {
                 })
         }
 
-        is ListState.Empty -> EmptyView(
+        is GithubListState.Empty -> EmptyView(
             title = type.title, paddingValues = PaddingValues(16.dp), onRefresh = model::onRetry
         )
 
-        is ListState.Error -> ErrorView(
-            title = type.title, message = type.message, paddingValues = PaddingValues(16.dp), onRetry = model::onRetry
+        is GithubListState.Error -> ErrorView(
+            title = type.title,
+            message = type.message,
+            paddingValues = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            onRetry = model::onRetry
         )
 
-        is ListState.Loading -> LoadingView(
-            paddingValues = PaddingValues(16.dp)
+        is GithubListState.Loading -> LoadingView(
+            paddingValues = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
         )
     }
 }
@@ -141,8 +145,9 @@ private interface DataDelegate {
 @Composable
 private fun Data(
     repositories: List<Repository>,
-    refreshState: RefreshState,
+    refreshState: GithubRefreshState,
     paginatorState: PaginatorState,
+    userState: UserState,
     scrollToTop: Boolean,
     endReached: Boolean,
     total: Int,
@@ -151,14 +156,18 @@ private fun Data(
     val listState = rememberLazyListState()
 
     val pullToRefreshState =
-        rememberPullRefreshState(refreshing = refreshState is RefreshState.Refreshing, onRefresh = delegate::onRefresh)
+        rememberPullRefreshState(
+            refreshing = refreshState is GithubRefreshState.Refreshing,
+            onRefresh = delegate::onRefresh
+        )
 
     LaunchedEffect(scrollToTop) {
-        if (scrollToTop) {
+        if (scrollToTop && listState.firstVisibleItemIndex > 0) {
             listState.stopScroll(scrollPriority = MutatePriority.PreventUserInput)
-            listState.scrollToItem(0)
-            delegate.onScrollToTopDone()
+            listState.scrollToItem(1)
         }
+
+        delegate.onScrollToTopDone()
     }
 
     val shouldLoadMore = remember {
@@ -192,7 +201,9 @@ private fun Data(
                 modifier = Modifier.fillMaxSize(), state = listState
             ) {
                 item {
-                    Profile()
+                    Profile(
+                        state = userState
+                    )
                 }
                 stickyHeader {
                     Row(
@@ -223,13 +234,13 @@ private fun Data(
                     })
                 }
                 item {
-                    if (!endReached && (paginatorState !is PaginatorState.Error || refreshState is RefreshState.Refreshing)) {
+                    if (!endReached && (paginatorState !is PaginatorState.Error || refreshState is GithubRefreshState.Refreshing)) {
                         EndListItem {
                             DCircularProgressIndicator()
                         }
                     }
 
-                    if (!endReached && (paginatorState is PaginatorState.Error) && (refreshState !is RefreshState.Refreshing)) {
+                    if (!endReached && (paginatorState is PaginatorState.Error) && (refreshState !is GithubRefreshState.Refreshing)) {
                         EndListItem {
                             ElevatedButton(onClick = delegate::onRetry) {
                                 Icon(
@@ -249,11 +260,22 @@ private fun Data(
 
             DPullRefreshIndicator(
                 modifier = Modifier.align(Alignment.TopCenter),
-                refreshing = refreshState is RefreshState.Refreshing,
+                refreshing = refreshState is GithubRefreshState.Refreshing,
                 state = pullToRefreshState
             )
         }
 
+    }
+}
+
+@Composable
+private fun Profile(
+    state: UserState
+) {
+    when (state) {
+        is UserState.Loading -> LoadingProfile()
+        is UserState.Data -> LoadedProfile(user = state.user)
+        is UserState.Error -> Box {}
     }
 }
 
@@ -296,7 +318,7 @@ private fun LoadingProfile() {
 }
 
 @Composable
-private fun Profile() {
+private fun LoadedProfile(user: GithubUser) {
     val secondaryTextColor = getSecondaryTextColor()
     Column(
         modifier = Modifier
@@ -315,7 +337,7 @@ private fun Profile() {
             contentDescription = "Face"
         )
         Text(
-            text = "GdonatasG",
+            text = user.login,
             style = MaterialTheme.typography.labelLarge,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -327,7 +349,10 @@ private fun Profile() {
                 imageVector = Icons.Outlined.Group, contentDescription = null, tint = secondaryTextColor
             )
             Text(
-                text = "0", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium
+                text = user.followers.toString(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelMedium
             )
             Text(
                 text = "followers",
@@ -339,7 +364,10 @@ private fun Profile() {
                 text = "·", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium
             )
             Text(
-                text = "1", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium
+                text = user.following.toString(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelMedium
             )
             Text(
                 text = "following",
@@ -348,21 +376,24 @@ private fun Profile() {
                 style = MaterialTheme.typography.labelMedium.copy(secondaryTextColor)
             )
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                imageVector = Icons.Outlined.LocationOn,
-                contentDescription = "location"
-            )
-            Text(
-                text = "Kaunas, Lithuania",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.labelMedium
-            )
+        user.location?.let { location ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    imageVector = Icons.Outlined.LocationOn,
+                    contentDescription = "location"
+                )
+                Text(
+                    text = location,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
         }
+
     }
 }
 

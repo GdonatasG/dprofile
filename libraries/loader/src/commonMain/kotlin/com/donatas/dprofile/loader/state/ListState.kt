@@ -11,5 +11,5 @@ sealed class ListState<out Item : Any> {
 
     object Loading : ListState<Nothing>()
 
-    data class Error(val title: String, val message: String) : ListState<Nothing>()
+    data class Error(val title: String, val message: String? = null) : ListState<Nothing>()
 }
