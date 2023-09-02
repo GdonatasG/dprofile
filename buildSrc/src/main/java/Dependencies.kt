@@ -25,7 +25,7 @@ object Dependencies {
 
     object Android {
         const val minSDK = 26
-        const val compileSDK = 33
+        const val compileSDK = 34
         const val maxSDK = 33
 
         object Accompanist {
@@ -42,6 +42,8 @@ object Dependencies {
         const val testExtJunit = "androidx.test.ext:junit:1.1.5"
         const val testEspressoCore = "androidx.test.espresso:espresso-core:3.5.1"
         const val tesUIAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+
+        const val glide = "com.github.bumptech.glide:compose:1.0.0-alpha.5"
 
 
         object Compose {

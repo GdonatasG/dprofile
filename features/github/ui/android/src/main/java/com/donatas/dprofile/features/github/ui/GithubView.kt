@@ -1,11 +1,14 @@
 package com.donatas.dprofile.features.github.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.stopScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +29,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.LocationOn
@@ -34,10 +39,13 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,14 +53,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.donatas.dprofile.compose.components.DCircularProgressIndicator
 import com.donatas.dprofile.compose.components.DPullRefreshIndicator
 import com.donatas.dprofile.compose.components.extension.loadingShimmerEffect
@@ -68,10 +80,9 @@ import com.donatas.dprofile.features.github.presentation.GithubViewModel
 import com.donatas.dprofile.features.github.presentation.UserState
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.features.github.shared.RepositoryListTile
-import com.donatas.dprofile.loader.state.ListState
-import com.donatas.dprofile.loader.state.RefreshState
 import com.donatas.dprofile.paginator.state.PaginatorState
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 @Composable
 fun GithubView(model: GithubViewModel) {
@@ -110,21 +121,21 @@ fun GithubView(model: GithubViewModel) {
                         model.onLoadNextPage()
                     }
 
-                    override fun onRetry() {
-                        model.onRetry()
+                    override fun onRetryNextPage() {
+                        model.onRetryNextPage()
                     }
                 })
         }
 
         is GithubListState.Empty -> EmptyView(
-            title = type.title, paddingValues = PaddingValues(16.dp), onRefresh = model::onRetry
+            title = type.title, paddingValues = PaddingValues(16.dp), onRefresh = model::onRetryLoading
         )
 
         is GithubListState.Error -> ErrorView(
             title = type.title,
             message = type.message,
             paddingValues = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            onRetry = model::onRetry
+            onRetry = model::onRetryLoading
         )
 
         is GithubListState.Loading -> LoadingView(
@@ -138,7 +149,8 @@ private interface DataDelegate {
     fun onRefresh()
     fun onScrollToTopDone()
     fun onLoadNextPage()
-    fun onRetry()
+
+    fun onRetryNextPage()
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -153,18 +165,19 @@ private fun Data(
     total: Int,
     delegate: DataDelegate
 ) {
+    val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    val pullToRefreshState =
-        rememberPullRefreshState(
-            refreshing = refreshState is GithubRefreshState.Refreshing,
-            onRefresh = delegate::onRefresh
-        )
+    val firstVisibleItemIndex = remember { derivedStateOf { listState.firstVisibleItemIndex } }
+
+    val pullToRefreshState = rememberPullRefreshState(
+        refreshing = refreshState is GithubRefreshState.Refreshing, onRefresh = delegate::onRefresh
+    )
 
     LaunchedEffect(scrollToTop) {
-        if (scrollToTop && listState.firstVisibleItemIndex > 0) {
+        if (scrollToTop) {
             listState.stopScroll(scrollPriority = MutatePriority.PreventUserInput)
-            listState.scrollToItem(1)
+            listState.scrollToItem(0)
         }
 
         delegate.onScrollToTopDone()
@@ -242,7 +255,7 @@ private fun Data(
 
                     if (!endReached && (paginatorState is PaginatorState.Error) && (refreshState !is GithubRefreshState.Refreshing)) {
                         EndListItem {
-                            ElevatedButton(onClick = delegate::onRetry) {
+                            ElevatedButton(onClick = delegate::onRetryNextPage) {
                                 Icon(
                                     imageVector = Icons.Default.Refresh, contentDescription = "Load more repositories"
                                 )
@@ -256,6 +269,10 @@ private fun Data(
                         }
                     }
                 }
+
+                item {
+                    Spacer(modifier = Modifier.height(60.dp))
+                }
             }
 
             DPullRefreshIndicator(
@@ -263,6 +280,27 @@ private fun Data(
                 refreshing = refreshState is GithubRefreshState.Refreshing,
                 state = pullToRefreshState
             )
+
+            if (firstVisibleItemIndex.value > 1) {
+                SmallFloatingActionButton(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp, horizontal = 24.dp)
+                        .align(Alignment.BottomEnd)
+                        .size(48.dp),
+                    onClick = {
+                        scope.launch {
+                            listState.scrollToItem(0)
+                        }
+                    },
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                    contentColor = Color.White,
+                    elevation = FloatingActionButtonDefaults.elevation(
+                        0.dp, 0.dp, 0.dp, 0.dp
+                    ) // disable elevation because of background with opacity
+                ) {
+                    Icon(imageVector = Icons.Default.ArrowUpward, contentDescription = "Scroll to top")
+                }
+            }
         }
 
     }
@@ -317,9 +355,16 @@ private fun LoadingProfile() {
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun LoadedProfile(user: GithubUser) {
     val secondaryTextColor = getSecondaryTextColor()
+
+    val avatarModifier: Modifier = Modifier
+        .size(100.dp)
+        .border(BorderStroke(1.dp, secondaryTextColor), CircleShape)
+        .clip(CircleShape)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -327,15 +372,19 @@ private fun LoadedProfile(user: GithubUser) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
-        Image(
-            modifier = Modifier
-                .size(100.dp)
-                .border(BorderStroke(1.dp, secondaryTextColor), CircleShape)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            painter = painterResource(id = R.drawable.face),
-            contentDescription = "Face"
-        )
+        if (user.avatarUrl != null) {
+            GlideImage(
+                modifier = avatarModifier, model = user.avatarUrl, contentDescription = null
+            )
+        } else {
+            Image(
+                modifier = avatarModifier,
+                contentScale = ContentScale.Crop,
+                painter = painterResource(id = R.drawable.face),
+                contentDescription = null
+            )
+        }
+
         Text(
             text = user.login,
             style = MaterialTheme.typography.labelLarge,

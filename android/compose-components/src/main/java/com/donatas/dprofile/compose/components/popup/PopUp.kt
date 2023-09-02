@@ -11,11 +11,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun PopUp(
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     shape: Shape = MaterialTheme.shapes.extraSmall,
     containerColor: Color = MaterialTheme.colorScheme.inverseSurface,
     contentColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
@@ -23,16 +27,35 @@ fun PopUp(
 ) {
     val textStyle = MaterialTheme.typography.bodyMedium
 
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = shape,
-        color = containerColor,
-        contentColor = contentColor,
-        shadowElevation = 6.dp
-    ) {
-
+    val surfaceContent = @Composable {
         CompositionLocalProvider(LocalTextStyle provides textStyle) {
             content()
+        }
+    }
+
+    if (onClick != null) {
+        Surface(
+            onClick = onClick,
+            modifier = modifier
+                .fillMaxWidth()
+                .semantics { role = Role.Button },
+            shape = shape,
+            color = containerColor,
+            contentColor = contentColor,
+            shadowElevation = 6.dp
+        ) {
+            surfaceContent()
+        }
+    } else {
+        Surface(
+            modifier = modifier
+                .fillMaxWidth(),
+            shape = shape,
+            color = containerColor,
+            contentColor = contentColor,
+            shadowElevation = 6.dp
+        ) {
+            surfaceContent()
         }
     }
 }

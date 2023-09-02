@@ -78,8 +78,7 @@ internal class DefaultGetRepositoriesUseCase(
                 this.page = page
                 this.perPage = perPage
             }
-            /*  this.language(com.donatas.dprofile.githubservices.repository.GetRepositories.Language.JAVA)*/
-            this.user(githubUserLogin.value)
+              this.user(githubUserLogin.value)
         }
 
         return suspendCoroutine<LoadingResult<Repository>> { continuation ->
@@ -121,13 +120,13 @@ internal class DefaultGetUserUseCase(
     private val userService: UserService
 ) : GetUser {
     override suspend fun invoke(user: String): Result<GithubUser> {
-
         return userService.getUser(user).map {
             GithubUser(
                 login = it.login,
                 location = it.location,
                 followers = it.followers,
-                following = it.following
+                following = it.following,
+                avatarUrl = it.avatarUrl
             )
         }
     }

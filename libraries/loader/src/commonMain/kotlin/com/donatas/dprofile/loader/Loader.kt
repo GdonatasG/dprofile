@@ -17,7 +17,6 @@ abstract class Loader<Item : Any> {
 
     abstract suspend fun init()
     abstract suspend fun refresh()
-    abstract suspend fun retry()
 
     abstract fun reset()
 }

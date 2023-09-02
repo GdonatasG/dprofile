@@ -8,32 +8,12 @@ import com.donatas.dprofile.loader.state.RefreshState
 import com.donatas.dprofile.paginator.Paginator
 import com.donatas.dprofile.paginator.state.PaginatorState
 import com.donatas.dprofile.viewmodel.ViewModel
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
-sealed class GithubRefreshState {
-    object Idle : GithubRefreshState()
-    object Refreshing : GithubRefreshState()
-}
-
-sealed class GithubListState {
-    data class Data(
-        val data: List<Repository>,
-        val total: Int,
-        val isFirstPage: Boolean
-    ) : GithubListState()
-
-    data class Empty(val title: String, val message: String? = null) : GithubListState()
-
-    object Loading : GithubListState()
-
-    data class Error(val title: String, val message: String? = null) : GithubListState()
-}
 
 class GithubViewModel(
     private val githubUserLogin: String,
@@ -60,23 +40,25 @@ class GithubViewModel(
     val user: StateFlow<UserState> = _user.asStateFlow()
 
     init {
-        scope.launch {
-            _listState.value = GithubListState.Loading
-            awaitAll(
-                async {
-                    paginator.init()
-                },
-                async {
-                    getUser(githubUserLogin).onSuccess {
-                        _user.value = UserState.Data(user = it)
-                    }.onFailure {
-                        _user.value = UserState.Error(title = "Unable to load Github profile, try again")
-                    }
-                }
-            )
+        loadInitially()
+    }
 
-            handleListStateAfterLoading()
-        }
+    private fun loadInitially() = scope.launch {
+        _listState.value = GithubListState.Loading
+        awaitAll(
+            async {
+                paginator.init()
+            },
+            async {
+                getUser(githubUserLogin).onSuccess {
+                    _user.value = UserState.Data(user = it)
+                }.onFailure {
+                    _user.value = UserState.Error(title = "Unable to load Github profile, try again")
+                }
+            }
+        )
+
+        handleListStateAfterLoading()
     }
 
     private fun handleListStateAfterLoading() {
@@ -108,6 +90,17 @@ class GithubViewModel(
         }
     }
 
+    private fun handleListStateAfterPagination() {
+        val listState = paginator.listState.value
+        if (paginator.state.value is PaginatorState.Idle && listState is ListState.Data) {
+            _listState.value = GithubListState.Data(
+                data = listState.data,
+                total = listState.total,
+                isFirstPage = listState.isFirstPage
+            )
+        }
+    }
+
     private fun showRefreshErrorPopUp() {
         scope.launch {
             popUpController.show(PopUp {
@@ -123,10 +116,9 @@ class GithubViewModel(
         _scrollToTop.value = false
     }
 
-    fun onLoadNextPage() {
-        scope.launch {
-            paginator.loadNextItems()
-        }
+    fun onLoadNextPage() = scope.launch {
+        paginator.loadNextItems()
+        handleListStateAfterPagination()
     }
 
     fun onRefresh() {
@@ -157,34 +149,11 @@ class GithubViewModel(
         }
     }
 
-    fun onRetry() = scope.launch {
+    fun onRetryLoading() = loadInitially()
 
-        val deferred: MutableList<Deferred<Unit>> = mutableListOf()
-
-        if (_listState.value is GithubListState.Error || _listState.value is GithubListState.Empty) {
-            deferred.add(async { paginator.retry() })
-        }
-
-        if (_user.value is UserState.Error) {
-            _user.value = UserState.Loading
-            deferred.add(async {
-                getUser(githubUserLogin).onSuccess {
-                    _user.value = UserState.Data(user = it)
-                }.onFailure {
-                    _user.value = UserState.Error(title = "Unable to load Github profile, try again")
-                }
-
-                Unit
-            })
-        }
-
-        if (deferred.isEmpty()) return@launch
-
-        _listState.value = GithubListState.Loading
-
-        awaitAll(*deferred.toTypedArray())
-
-        handleListStateAfterLoading()
+    fun onRetryNextPage() = scope.launch {
+        paginator.retryNextPage()
+        handleListStateAfterPagination()
     }
 
     fun onSearch() = delegate.onSearch()

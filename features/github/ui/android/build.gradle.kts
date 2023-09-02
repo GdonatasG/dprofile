@@ -45,6 +45,7 @@ dependencies {
         implementation(coreKtx)
         implementation(appCompat)
         implementation(material)
+        implementation(glide)
     }
 
     implementation(project(":android:compose-components"))

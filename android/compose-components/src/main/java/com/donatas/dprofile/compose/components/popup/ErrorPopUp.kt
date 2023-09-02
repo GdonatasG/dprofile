@@ -20,9 +20,11 @@ import androidx.compose.ui.unit.dp
 fun ErrorPopUp(
     modifier: Modifier,
     title: String,
+    onClick: (() -> Unit)? = null
 ) {
     PopUp(
-        modifier = modifier
+        modifier = modifier,
+        onClick = onClick,
     ) {
         Row(
             modifier = Modifier

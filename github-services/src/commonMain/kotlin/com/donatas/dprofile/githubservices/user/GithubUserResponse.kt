@@ -12,5 +12,7 @@ data class GithubUserResponse(
     @SerialName("followers")
     val followers: Int,
     @SerialName("following")
-    val following: Int
+    val following: Int,
+    @SerialName("avatar_url")
+    val avatarUrl: String? = null
 )

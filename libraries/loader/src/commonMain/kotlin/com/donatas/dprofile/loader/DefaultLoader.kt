@@ -46,7 +46,7 @@ class DefaultLoader<Item : Any>(
         })
     }
 
-    override suspend fun retry() {
+    /*override suspend fun retry() {
         if (_listState.value is ListState.Error) {
             return init()
         }
@@ -54,7 +54,7 @@ class DefaultLoader<Item : Any>(
         if (_refreshState.value is RefreshState.Error) {
             return refresh()
         }
-    }
+    }*/
 
     override fun reset() {
         isMakingRequest = false

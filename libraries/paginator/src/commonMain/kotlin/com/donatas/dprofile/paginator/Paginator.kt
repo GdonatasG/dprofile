@@ -17,4 +17,6 @@ abstract class Paginator<Item : Any> : Loader<Item>() {
         get() = _endReached.asStateFlow()
 
     abstract suspend fun loadNextItems()
+
+    abstract suspend fun retryNextPage()
 }

@@ -116,7 +116,15 @@ open class DefaultPaginator<Item : Any>(
             }
         )
 
+        delay(50)
+
         isMakingRequest = false
+    }
+
+    override suspend fun retryNextPage() {
+        if (_state.value !is PaginatorState.Error) return
+
+        _loadNextItems()
     }
 
     override suspend fun refresh() {
@@ -155,7 +163,7 @@ open class DefaultPaginator<Item : Any>(
         )
     }
 
-    override suspend fun retry() {
+    /*override suspend fun retry() {
         if (_state.value is PaginatorState.Error) {
             return _loadNextItems()
         }
@@ -163,7 +171,7 @@ open class DefaultPaginator<Item : Any>(
         if (_listState.value is ListState.Empty || _listState.value is ListState.Error) {
             return init()
         }
-    }
+    }*/
 
     // region HELPERS
     private fun LoadingResult<Item>.on(

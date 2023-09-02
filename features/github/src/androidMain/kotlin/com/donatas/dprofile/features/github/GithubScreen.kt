@@ -39,9 +39,9 @@ actual class GithubScreen actual constructor() : Screen {
                 popUp?.let {
                     ErrorPopUp(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                            .then(if (it.onClick != null) Modifier.clickable { it.onClick?.invoke() } else Modifier),
-                        title = it.title
+                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        title = it.title,
+                        onClick = it.onClick
                     )
                 }
 
