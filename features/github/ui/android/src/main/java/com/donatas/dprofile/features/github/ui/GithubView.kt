@@ -1,14 +1,11 @@
 package com.donatas.dprofile.features.github.ui
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.stopScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,9 +24,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Refresh
@@ -39,7 +37,6 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,6 +59,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -70,7 +68,6 @@ import com.donatas.dprofile.compose.components.DPullRefreshIndicator
 import com.donatas.dprofile.compose.components.extension.loadingShimmerEffect
 import com.donatas.dprofile.compose.components.layout.EmptyView
 import com.donatas.dprofile.compose.components.layout.ErrorView
-import com.donatas.dprofile.compose.components.layout.LoadingView
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.compose.theme.getSecondaryTextColor
 import com.donatas.dprofile.features.github.presentation.GithubListState
@@ -138,10 +135,99 @@ fun GithubView(model: GithubViewModel) {
             onRetry = model::onRetryLoading
         )
 
-        is GithubListState.Loading -> LoadingView(
-            paddingValues = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
-        )
+        is GithubListState.Loading -> Loading()
     }
+}
+
+@Composable
+private fun Loading() {
+    val shimmerBackgroundColor = MaterialTheme.colorScheme.inverseSurface
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .loadingShimmerEffect(shimmerBackgroundColor)
+            )
+            Box(
+                modifier = Modifier
+                    .width(160.dp)
+                    .height(15.dp)
+                    .loadingShimmerEffect(shimmerBackgroundColor)
+            )
+            Box(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(15.dp)
+                    .loadingShimmerEffect(shimmerBackgroundColor)
+            )
+            Box(
+                modifier = Modifier
+                    .width(130.dp)
+                    .height(15.dp)
+                    .loadingShimmerEffect(shimmerBackgroundColor)
+            )
+        }
+        Spacer(modifier = Modifier.height(60.dp))
+        repeat(15) {
+            Row(modifier = Modifier.padding(vertical = 16.dp)) {
+                Box(
+                    modifier = Modifier
+                        .width(32.dp)
+                        .height(32.dp)
+                        .loadingShimmerEffect(shimmerBackgroundColor)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .width(randomWidth())
+                            .height(15.dp)
+                            .loadingShimmerEffect(shimmerBackgroundColor)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .width(randomWidth())
+                            .height(15.dp)
+                            .loadingShimmerEffect(shimmerBackgroundColor)
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Box(
+                    modifier = Modifier
+                        .width(24.dp)
+                        .height(24.dp)
+                        .loadingShimmerEffect(shimmerBackgroundColor)
+                )
+            }
+        }
+    }
+}
+
+private fun randomWidth(): Dp {
+    val dps = listOf(
+        100.dp,
+        120.dp,
+        140.dp,
+        180.dp,
+        200.dp
+    )
+
+    return dps.random()
 }
 
 private interface DataDelegate {
@@ -311,9 +397,8 @@ private fun Profile(
     state: UserState
 ) {
     when (state) {
-        is UserState.Loading -> LoadingProfile()
         is UserState.Data -> LoadedProfile(user = state.user)
-        is UserState.Error -> Box {}
+        else -> {}
     }
 }
 
