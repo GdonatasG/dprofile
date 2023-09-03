@@ -50,8 +50,9 @@ fun DSearchField(
 ) {
     var isFocused by remember { mutableStateOf(requestFocus) }
 
-    val textStyle = MaterialTheme.typography.labelMedium.copy(color = getSecondaryTextColor())
-    val placeHolderTextStyle = textStyle.copy(color = textStyle.color.copy(alpha = 0.7f))
+    val textStyle = MaterialTheme.typography.labelMedium.copy(color = Color.White)
+    val placeHolderTextStyle =
+        textStyle.copy(color = getSecondaryTextColor())
     val placeHolderIconSize by animateDpAsState(targetValue = if (isFocused) 24.dp else 20.dp)
 
     val focusManager = LocalFocusManager.current

@@ -85,6 +85,8 @@ internal class DefaultGetRepositoriesUseCase(
             result.onSuccess { success ->
                 if (success.items.isEmpty()) {
                     continuation.resume(LoadingResult.Empty(title = "No results found"))
+
+                    return@onSuccess
                 }
 
                 continuation.resume(

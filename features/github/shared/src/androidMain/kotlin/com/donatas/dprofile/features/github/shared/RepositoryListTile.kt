@@ -59,12 +59,15 @@ fun RepositoryListTile(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = repository.language,
-                    style = MaterialTheme.typography.labelMedium.copy(color = secondaryTextColor),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                repository.language?.let { language ->
+                    Text(
+                        text = language,
+                        style = MaterialTheme.typography.labelMedium.copy(color = secondaryTextColor),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
             }
             Icon(
                 imageVector = Icons.Default.ChevronRight, contentDescription = null, tint = secondaryTextColor

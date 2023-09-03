@@ -27,3 +27,18 @@ fun getImeWithNavigationBarsPadding(initialPadding: Dp = 16.dp): State<Dp> {
         }
     }
 }
+
+@Composable
+fun getImePadding(initialPadding: Dp = 16.dp): State<Dp> {
+    val imeBottom = WindowInsets.ime.asPaddingValues()
+    val captionBar = WindowInsets.captionBar.asPaddingValues()
+
+    return remember(imeBottom, captionBar) {
+        derivedStateOf {
+            maxOf(
+                initialPadding + captionBar.calculateBottomPadding(),
+                imeBottom.calculateBottomPadding() + 8.dp + captionBar.calculateBottomPadding()
+            )
+        }
+    }
+}

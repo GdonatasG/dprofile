@@ -15,6 +15,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":libraries:viewmodel"))
+                api(project(":libraries:paginator"))
+                implementation(project(":features:github:shared"))
                 with(Dependencies.KotlinX) {
                     api(coroutinesCore)
                 }

@@ -3,16 +3,21 @@ package com.donatas.dprofile.features.github.search
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.appbar.DAppBar
 import com.donatas.dprofile.compose.components.button.ActionButton
 import com.donatas.dprofile.compose.components.button.BackActionButton
 import com.donatas.dprofile.compose.components.layout.AppScaffold
+import com.donatas.dprofile.compose.components.state.getImePadding
+import com.donatas.dprofile.compose.components.state.getImeWithNavigationBarsPadding
 import com.donatas.dprofile.compose.components.textfield.DSearchField
 import com.donatas.dprofile.feature.Screen
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewModel
@@ -28,6 +33,9 @@ actual class GithubSearchScreen actual constructor() : Screen {
     @Composable
     override fun Compose() {
         val viewModel: GithubSearchViewModel = getViewModel<GithubSearchViewModel>()
+
+        val searchField by viewModel.searchField.collectAsState()
+
         AppScaffold(
             appBar = {
                 DAppBar(
@@ -41,11 +49,13 @@ actual class GithubSearchScreen actual constructor() : Screen {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(42.dp),
-                            value = "",
-                            onValueChange = {},
+                            value = searchField,
+                            onValueChange = viewModel::onSearch,
                             placeHolder = "Search repositories",
                             contentPadding = PaddingValues(0.dp),
-                            onClear = {}
+                            onClear = {
+                                viewModel.onSearch("")
+                            }
                         )
                     },
                     centerTitle = false,
@@ -55,9 +65,9 @@ actual class GithubSearchScreen actual constructor() : Screen {
                         }
                     }
                 )
-            }
+            },
         ) {
-            GithubSearchView(viewModel)
+            GithubSearchView(model = viewModel)
         }
     }
 }
