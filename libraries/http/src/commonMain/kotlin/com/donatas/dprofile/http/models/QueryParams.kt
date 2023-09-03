@@ -2,20 +2,34 @@ package com.donatas.dprofile.http.models
 
 import kotlin.jvm.JvmName
 
+data class QueryParam(
+    val key: String,
+    val value: String,
+    val encoded: Boolean
+) {
+    override fun equals(other: Any?): Boolean {
+        return other is QueryParam && other.key == key
+    }
+
+    override fun hashCode(): Int {
+        return key.hashCode()
+    }
+}
+
 class QueryParams {
-    private val _parameters = mutableMapOf<String, String>()
-    val parameters: Map<String, String>
+    private val _parameters = mutableSetOf<QueryParam>()
+    val parameters: Set<QueryParam>
         get() = _parameters
 
-    fun put(key: String, value: Int?) {
+    fun put(key: String, value: Int?, encoded: Boolean) {
         value?.let {
-            _parameters[key] = it.toString()
+            _parameters.add(QueryParam(key = key, value = value.toString(), encoded = encoded))
         }
     }
 
-    fun put(key: String, value: String?) {
+    fun put(key: String, value: String?, encoded: Boolean) {
         value?.let {
-            _parameters[key] = it
+            _parameters.add(QueryParam(key = key, value = value, encoded = encoded))
         }
     }
 
@@ -24,9 +38,9 @@ class QueryParams {
      * It will be converted into "value1,value2" String
      */
     @JvmName("queryParamsPutStringList")
-    fun put(key: String, value: List<String>) {
+    fun put(key: String, value: List<String>, encoded: Boolean) {
         if (value.isNotEmpty()) {
-            _parameters[key] = value.joinToString(",")
+            _parameters.add(QueryParam(key = key, value = value.joinToString(","), encoded = encoded))
         }
     }
 
@@ -35,16 +49,14 @@ class QueryParams {
      * It will be converted into "value1,value2" String
      */
     @JvmName("queryParamsPutIntList")
-    fun put(key: String, value: List<Int>) {
+    fun put(key: String, value: List<Int>, encoded: Boolean) {
         if (value.isNotEmpty()) {
-            _parameters[key] = value.joinToString(",")
+            _parameters.add(QueryParam(key = key, value = value.joinToString(","), encoded = encoded))
         }
     }
 
     operator fun plus(params: QueryParams): QueryParams {
-        params.parameters.forEach { param ->
-            _parameters[param.key] = param.value
-        }
+        _parameters.addAll(params._parameters)
 
         return this
     }

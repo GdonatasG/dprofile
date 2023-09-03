@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation(project(":features:github:presentation"))
+    implementation(project(":features:github:shared"))
 
     implementation(project(":libraries:utils"))
 
@@ -44,6 +45,7 @@ dependencies {
         implementation(coreKtx)
         implementation(appCompat)
         implementation(material)
+        implementation(glide)
     }
 
     implementation(project(":android:compose-components"))

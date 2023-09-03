@@ -11,6 +11,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.util.appendAll
 import kotlin.coroutines.cancellation.CancellationException
 
 internal class KtorHttpClient(
@@ -59,7 +60,11 @@ internal class KtorHttpClient(
         try {
             this.url.takeFrom(URLBuilder(baseUrl + httpRequest.endpoint).apply {
                 httpRequest.params?.parameters?.map { param ->
-                    this.parameters.append(param.key, param.value)
+                    if (param.encoded) {
+                        this.encodedParameters.append(param.key, param.value)
+                    } else {
+                        this.parameters.append(param.key, param.value)
+                    }
                 }
             }.build())
         } catch (exception: URLParserException) {

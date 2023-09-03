@@ -1,6 +1,8 @@
 package com.donatas.dprofile.compose.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 val primaryColor = Color(0xFF6DB9B0)
@@ -46,7 +48,8 @@ val AppDarkColorScheme = darkColorScheme(
     surfaceVariant = backgroundColorDark,
     onSurfaceVariant = onBackgroundColorDark,
     surfaceTint = Color.Black,
-    inverseSurface = Color.White,
+    inverseSurface = Color(0xFF282c30), /* SnackBar */
+    inverseOnSurface = Color.White, /* SnackBar */
     error = errorDarkColor,
     onError = Color.White,
     errorContainer = Color(0xFFFFDAD6),
@@ -55,4 +58,7 @@ val AppDarkColorScheme = darkColorScheme(
     outlineVariant = secondaryVariant,
     scrim = Color.White
 )
+
+@Composable
+fun getSecondaryTextColor(): Color = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
 
