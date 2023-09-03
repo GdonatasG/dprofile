@@ -121,6 +121,10 @@ fun GithubView(model: GithubViewModel) {
                     override fun onRetryNextPage() {
                         model.onRetryNextPage()
                     }
+
+                    override fun onSearch() {
+                        model.onSearch()
+                    }
                 })
         }
 
@@ -235,8 +239,8 @@ private interface DataDelegate {
     fun onRefresh()
     fun onScrollToTopDone()
     fun onLoadNextPage()
-
     fun onRetryNextPage()
+    fun onSearch()
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -319,7 +323,8 @@ private fun Data(
                             overflow = TextOverflow.Ellipsis
                         )
                         IconButton(
-                            onClick = {}, colors = IconButtonDefaults.iconButtonColors(
+                            onClick = delegate::onSearch,
+                            colors = IconButtonDefaults.iconButtonColors(
                                 contentColor = getSecondaryTextColor()
                             )
                         ) {
