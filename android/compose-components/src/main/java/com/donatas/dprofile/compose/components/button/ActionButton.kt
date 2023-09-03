@@ -19,7 +19,7 @@ fun ActionButton(
     val contentColor = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
 
     val colors = IconButtonDefaults.iconButtonColors(
-        contentColor = contentColor
+       /* contentColor = contentColor*/
     )
 
     IconButton(

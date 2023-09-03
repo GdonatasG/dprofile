@@ -44,14 +44,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.DCircularProgressIndicator
 import com.donatas.dprofile.compose.components.DPullRefreshIndicator
 import com.donatas.dprofile.compose.components.layout.EmptyView
 import com.donatas.dprofile.compose.components.layout.ErrorView
 import com.donatas.dprofile.compose.components.layout.LoadingView
-import com.donatas.dprofile.compose.components.state.getImePadding
 import com.donatas.dprofile.compose.components.state.getImeWithNavigationBarsPadding
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewModel

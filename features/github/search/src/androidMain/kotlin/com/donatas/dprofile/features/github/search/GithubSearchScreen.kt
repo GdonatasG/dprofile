@@ -3,7 +3,6 @@ package com.donatas.dprofile.features.github.search
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material3.Icon
@@ -16,8 +15,6 @@ import com.donatas.dprofile.compose.components.appbar.DAppBar
 import com.donatas.dprofile.compose.components.button.ActionButton
 import com.donatas.dprofile.compose.components.button.BackActionButton
 import com.donatas.dprofile.compose.components.layout.AppScaffold
-import com.donatas.dprofile.compose.components.state.getImePadding
-import com.donatas.dprofile.compose.components.state.getImeWithNavigationBarsPadding
 import com.donatas.dprofile.compose.components.textfield.DSearchField
 import com.donatas.dprofile.feature.Screen
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewModel

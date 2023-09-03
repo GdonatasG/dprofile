@@ -45,11 +45,25 @@ class GithubSearchViewModel(
     private val _searchField: MutableStateFlow<String> = MutableStateFlow("")
     val searchField: StateFlow<String> = _searchField.asStateFlow()
 
+    init {
+        scope.launch {
+            paginator.listState.collect { state ->
+                when (state) {
+                    is ListState.Data -> {
+                        _scrollToTop.value = state.isFirstPage
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
     fun onSearch(query: String) {
         if (query.trim().isEmpty()) {
             searchJob?.cancel()
             searchJob = null
-            _viewState.value = GithubSearchViewState.defaultIdle()
+            resetViewState()
             _searchField.value = query
             searchQueryHolder.setQuery(query)
             return
@@ -89,7 +103,14 @@ class GithubSearchViewModel(
         paginator.retryNextPage()
     }
 
+    private fun resetViewState() {
+        _viewState.value = GithubSearchViewState.defaultIdle()
+        paginator.reset()
+    }
+
+    // region NAVIGATION
     fun onBack() = delegate.onBack()
     fun onFilter() = delegate.onFilter()
     fun onDetails(repository: Repository) = delegate.onDetails(repoUrl = repository.htmlUrl)
+    // endregion
 }

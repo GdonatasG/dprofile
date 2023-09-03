@@ -185,7 +185,10 @@ private fun Loading() {
         }
         Spacer(modifier = Modifier.height(60.dp))
         repeat(15) {
-            Row(modifier = Modifier.padding(vertical = 16.dp)) {
+            Row(
+                modifier = Modifier.padding(vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Box(
                     modifier = Modifier
                         .width(32.dp)
@@ -323,10 +326,7 @@ private fun Data(
                             overflow = TextOverflow.Ellipsis
                         )
                         IconButton(
-                            onClick = delegate::onSearch,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = getSecondaryTextColor()
-                            )
+                            onClick = delegate::onSearch
                         ) {
                             Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search repositories")
                         }
