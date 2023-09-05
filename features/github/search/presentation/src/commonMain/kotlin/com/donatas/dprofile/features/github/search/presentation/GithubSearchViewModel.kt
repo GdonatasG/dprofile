@@ -1,5 +1,7 @@
 package com.donatas.dprofile.features.github.search.presentation
 
+import com.donatas.dprofile.alerts.popup.PopUp
+import com.donatas.dprofile.alerts.popup.PopUpController
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.loader.SearchQueryHolder
 import com.donatas.dprofile.loader.state.ListState
@@ -26,6 +28,7 @@ sealed class GithubSearchViewState {
 class GithubSearchViewModel(
     private val searchQueryHolder: SearchQueryHolder,
     private val paginator: Paginator<Repository>,
+    private val popUpController: PopUpController,
     private val delegate: GithubSearchDelegate
 ) : ViewModel() {
     private val _viewState: MutableStateFlow<GithubSearchViewState> =
@@ -45,12 +48,25 @@ class GithubSearchViewModel(
     private val _searchField: MutableStateFlow<String> = MutableStateFlow("")
     val searchField: StateFlow<String> = _searchField.asStateFlow()
 
+    val popUp: StateFlow<PopUp?> = popUpController.popUp
+
     init {
         scope.launch {
             paginator.listState.collect { state ->
                 when (state) {
                     is ListState.Data -> {
                         _scrollToTop.value = state.isFirstPage
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+        scope.launch {
+            paginator.refreshState.collect { state ->
+                when (state) {
+                    is RefreshState.Error -> {
+                        showRefreshErrorPopUp()
                     }
 
                     else -> {}
@@ -68,9 +84,9 @@ class GithubSearchViewModel(
             searchQueryHolder.setQuery(query)
             return
         }
-        if (searchQueryHolder.query.value == query) return
 
         _searchField.value = query
+        if (searchQueryHolder.query.value == query) return
 
         searchJob?.cancel()
         searchJob = null
@@ -106,6 +122,17 @@ class GithubSearchViewModel(
     private fun resetViewState() {
         _viewState.value = GithubSearchViewState.defaultIdle()
         paginator.reset()
+    }
+
+    private fun showRefreshErrorPopUp() {
+        scope.launch {
+            popUpController.show(PopUp {
+                title = "Unable to refresh repositories! Please try again."
+                onClick = {
+                    popUpController.dismiss()
+                }
+            })
+        }
     }
 
     // region NAVIGATION

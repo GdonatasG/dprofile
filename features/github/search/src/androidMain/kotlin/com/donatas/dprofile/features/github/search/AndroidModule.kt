@@ -1,5 +1,6 @@
 package com.donatas.dprofile.features.github.search
 
+import com.donatas.dprofile.alerts.popup.DefaultPopUpController
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchDelegate
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewModel
 import com.donatas.dprofile.features.github.shared.Repository
@@ -14,6 +15,7 @@ internal actual val platformModule: Module = module {
         GithubSearchViewModel(
             searchQueryHolder = get<SearchQueryHolder>(qualifier = queryHolderQualifier),
             paginator = get<Paginator<Repository>>(qualifier = paginatorQualifier),
+            popUpController = DefaultPopUpController(),
             delegate = get<GithubSearchDelegate>()
         )
     }

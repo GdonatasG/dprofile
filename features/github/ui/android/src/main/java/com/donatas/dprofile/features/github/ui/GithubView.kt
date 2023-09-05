@@ -372,7 +372,7 @@ private fun Data(
                 state = pullToRefreshState
             )
 
-            if (firstVisibleItemIndex.value > 1) {
+            if (firstVisibleItemIndex.value > 0) {
                 SmallFloatingActionButton(
                     modifier = Modifier
                         .padding(vertical = 16.dp, horizontal = 24.dp)

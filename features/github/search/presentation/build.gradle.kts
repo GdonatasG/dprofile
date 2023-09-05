@@ -16,6 +16,7 @@ kotlin {
             dependencies {
                 api(project(":libraries:viewmodel"))
                 api(project(":libraries:paginator"))
+                api(project(":libraries:alerts"))
                 implementation(project(":features:github:shared"))
                 with(Dependencies.KotlinX) {
                     api(coroutinesCore)
