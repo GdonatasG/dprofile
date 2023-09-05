@@ -15,7 +15,7 @@ import org.koin.dsl.module
 internal val delegateModule: Module = module {
     single<GithubDelegate>() {
         DefaultGithubDelegate(
-            navigator = get<Navigator>(), githubSearchFlow = get<GithubSearchFlow>()
+            navigator = get<Navigator>()
         )
     }
 

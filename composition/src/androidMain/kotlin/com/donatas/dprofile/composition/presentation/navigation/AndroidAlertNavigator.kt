@@ -1,6 +1,7 @@
 package com.donatas.dprofile.composition.presentation.navigation
 
 import com.donatas.dprofile.alerts.Alert
+import com.donatas.dprofile.composition.presentation.alert.AlertController
 
 internal class AndroidAlertNavigator(
     private val alert: AlertController

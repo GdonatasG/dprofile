@@ -11,8 +11,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.alerts.Alert
-import com.donatas.dprofile.alerts.AlertController
-import com.donatas.dprofile.alerts.AlertState
+import com.donatas.dprofile.composition.presentation.alert.AlertController
+import com.donatas.dprofile.composition.presentation.alert.AlertState
 import com.donatas.dprofile.composition.presentation.navigation.MainNavGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.spec.DestinationStyle
@@ -21,7 +21,7 @@ import org.koin.androidx.compose.get
 @Composable
 @Destination(style = DestinationStyle.Dialog::class)
 @MainNavGraph
-fun Alert(alertState: AlertState = get(), navigator: AlertController = get()) {
+internal fun Alert(alertState: AlertState = get(), navigator: AlertController = get()) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

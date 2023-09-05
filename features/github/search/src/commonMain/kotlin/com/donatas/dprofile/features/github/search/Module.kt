@@ -1,5 +1,6 @@
 package com.donatas.dprofile.features.github.search
 
+import com.donatas.dprofile.features.github.search.presentation.GlobalSearchHandler
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.githubservices.repository.RepositoryResponse
 import com.donatas.dprofile.githubservices.repository.RepositoryService
@@ -18,6 +19,7 @@ import kotlin.coroutines.suspendCoroutine
 
 internal val paginatorQualifier: StringQualifier = named("search_repositories_paginator")
 internal val queryHolderQualifier: StringQualifier = named("search_repositories_query_holder")
+internal val globalSearchHandlerQualifier: StringQualifier = named("search_repositories_global_search_handler")
 
 internal fun loadModules() = loadKoinModules(
     listOf(
@@ -27,12 +29,17 @@ internal fun loadModules() = loadKoinModules(
 )
 
 internal val commonModule = module {
+    single<GlobalSearchHandler>(qualifier = globalSearchHandlerQualifier) {
+        GlobalSearchHandler(initiallySearchGlobally = false)
+    }
+
     single<SearchQueryHolder>(qualifier = queryHolderQualifier) {
         SearchQueryHolder()
     }
 
     single<GetRepositories> {
         DefaultGetRepositoriesUseCase(
+            globalSearchHandler = get<GlobalSearchHandler>(qualifier = globalSearchHandlerQualifier),
             searchQueryHolder = get<SearchQueryHolder>(qualifier = queryHolderQualifier),
             repositoryService = get<RepositoryService>()
         )
@@ -60,11 +67,13 @@ internal val commonModule = module {
 internal expect val platformModule: Module
 
 internal class DefaultGetRepositoriesUseCase(
+    private val globalSearchHandler: GlobalSearchHandler,
     private val searchQueryHolder: SearchQueryHolder,
     private val repositoryService: RepositoryService
 ) : GetRepositories {
     override suspend fun invoke(page: Int, perPage: Int): LoadingResult<Repository> {
         val query = searchQueryHolder.get()
+        val searchGlobally = globalSearchHandler.value.value
 
         val result = repositoryService.getRepositories {
             this.page {
@@ -73,6 +82,9 @@ internal class DefaultGetRepositoriesUseCase(
             }
             if (query.isNotEmpty()) {
                 this.query(query)
+            }
+            if (!searchGlobally) {
+                this.user("GdonatasG")
             }
         }
 

@@ -1,5 +1,6 @@
 package com.donatas.dprofile.features.github.search.presentation
 
+import com.donatas.dprofile.alerts.Alert
 import com.donatas.dprofile.alerts.popup.PopUp
 import com.donatas.dprofile.alerts.popup.PopUpController
 import com.donatas.dprofile.features.github.shared.Repository
@@ -16,6 +17,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+class GlobalSearchHandler(initiallySearchGlobally: Boolean) {
+    private var _value: MutableStateFlow<Boolean> = MutableStateFlow(initiallySearchGlobally)
+    val value: StateFlow<Boolean> = _value.asStateFlow()
+
+    fun change(value: Boolean) {
+        _value.value = value
+    }
+}
+
 sealed class GithubSearchViewState {
     data class Idle(val message: String) : GithubSearchViewState()
     object Searched : GithubSearchViewState()
@@ -26,10 +36,12 @@ sealed class GithubSearchViewState {
 }
 
 class GithubSearchViewModel(
+    private val globalSearchHandler: GlobalSearchHandler,
     private val searchQueryHolder: SearchQueryHolder,
     private val paginator: Paginator<Repository>,
     private val popUpController: PopUpController,
-    private val delegate: GithubSearchDelegate
+    private val delegate: GithubSearchDelegate,
+    private val alert: Alert.Coordinator,
 ) : ViewModel() {
     private val _viewState: MutableStateFlow<GithubSearchViewState> =
         MutableStateFlow(GithubSearchViewState.defaultIdle())
@@ -47,6 +59,8 @@ class GithubSearchViewModel(
     private var searchJob: Job? = null
     private val _searchField: MutableStateFlow<String> = MutableStateFlow("")
     val searchField: StateFlow<String> = _searchField.asStateFlow()
+
+    val globalSearch: StateFlow<Boolean> = globalSearchHandler.value
 
     val popUp: StateFlow<PopUp?> = popUpController.popUp
 
@@ -76,7 +90,7 @@ class GithubSearchViewModel(
     }
 
     fun onSearch(query: String) {
-        if (query.trim().isEmpty()) {
+        if (query.isEmpty()) {
             searchJob?.cancel()
             searchJob = null
             resetViewState()
@@ -87,7 +101,6 @@ class GithubSearchViewModel(
 
         _searchField.value = query
         if (searchQueryHolder.query.value == query) return
-
         searchJob?.cancel()
         searchJob = null
 
@@ -97,6 +110,34 @@ class GithubSearchViewModel(
             _viewState.value = GithubSearchViewState.Searched
             paginator.init()
         }
+    }
+
+    fun onGlobalSearchChanged(value: Boolean) {
+        if (globalSearchHandler.value.value == value) return
+
+        globalSearchHandler.change(value)
+
+        if (_searchField.value.isNotEmpty()) {
+            searchJob?.cancel()
+            searchJob = null
+
+            searchJob = scope.launch {
+                _viewState.value = GithubSearchViewState.Searched
+                paginator.init()
+            }
+        }
+
+    }
+
+    fun onDescribeGlobalSearch() {
+        alert.show(Alert {
+            title = "Global Search"
+            message =
+                "When this functionality is enabled, you will see repositories fetched from all Github accounts,\n" + " otherwise - only that belong to me (GdonatasG)"
+            buttons = listOf(
+                Alert.Button.Cancel("OK")
+            )
+        })
     }
 
     fun onRetryLoading() = scope.launch {
