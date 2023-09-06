@@ -131,7 +131,7 @@ class GithubSearchViewModel(
 
     fun onDescribeGlobalSearch() {
         alert.show(Alert {
-            title = "Global Search"
+            title = "Global search"
             message =
                 "When this functionality is enabled, you will see repositories fetched from all Github accounts,\n" + " otherwise - only that belong to me (GdonatasG)"
             buttons = listOf(

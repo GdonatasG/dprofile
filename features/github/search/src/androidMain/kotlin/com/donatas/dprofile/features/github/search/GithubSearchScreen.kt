@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.appbar.DAppBar
@@ -59,83 +61,96 @@ actual class GithubSearchScreen actual constructor() : Screen {
         val popUp by viewModel.popUp.collectAsState()
         val globalSearch by viewModel.globalSearch.collectAsState()
 
-        AppScaffold(appBar = {
-            DAppBar(navigationIcon = {
-                BackActionButton(
-                    onClick = viewModel::onBack
-                )
-            }, title = {
-                DSearchField(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(42.dp),
-                    value = searchField,
-                    onValueChange = viewModel::onSearch,
-                    placeHolder = "Search repositories",
-                    contentPadding = PaddingValues(0.dp),
-                    onClear = {
-                        viewModel.onSearch("")
-                    })
-            }, centerTitle = false, actions = {
-                ActionButton(onClick = viewModel::onFilter) {
-                    Icon(imageVector = Icons.Outlined.FilterAlt, contentDescription = "Filter repositories")
-                }
-            })
-        }, tabBar = {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier.clickable(interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {
-                            viewModel.onDescribeGlobalSearch()
-                        }), verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(imageVector = Icons.Outlined.Info, contentDescription = "Describe global search")
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        modifier = Modifier.weight(1f, fill = false),
-                        text = "Global search",
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+        val focusRequester = remember { FocusRequester() }
+        val focusManager = LocalFocusManager.current
+        val interactionSource = remember { MutableInteractionSource() }
+
+
+        Box(
+            modifier = Modifier.clickable(interactionSource = interactionSource, indication = null) {
+                focusManager.clearFocus(true)
+            }
+        ) {
+            AppScaffold(appBar = {
+                DAppBar(navigationIcon = {
+                    BackActionButton(
+                        onClick = viewModel::onBack
                     )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Switch(modifier = Modifier
-                    .scale(0.75f),
-                    thumbContent = {
-                        Box(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clip(CircleShape)
-                        )
-                    },
-                    checked = globalSearch,
-                    onCheckedChange = {
-                        viewModel.onGlobalSearchChanged(it)
+                }, title = {
+                    DSearchField(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(42.dp),
+                        focusRequester = focusRequester,
+                        value = searchField,
+                        onValueChange = viewModel::onSearch,
+                        placeHolder = "Search repositories",
+                        contentPadding = PaddingValues(0.dp),
+                        onClear = {
+                            viewModel.onSearch("")
+                        })
+                }, centerTitle = false, actions = {
+                    ActionButton(onClick = viewModel::onFilter) {
+                        Icon(imageVector = Icons.Outlined.FilterAlt, contentDescription = "Filter repositories")
                     }
-                )
-            }
-        }, snackBar = {
-            AnimatedVisibility(
-                modifier = Modifier.padding(bottom = getImeWithNavigationBarsPadding(initialPadding = 0.dp).value),
-                visible = popUp != null,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                popUp?.let {
-                    ErrorPopUp(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                        title = it.title,
-                        onClick = it.onClick
+                })
+            }, tabBar = {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier.clickable(interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                focusManager.clearFocus(true)
+                                viewModel.onDescribeGlobalSearch()
+                            }), verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(imageVector = Icons.Outlined.Info, contentDescription = "Describe global search")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            modifier = Modifier.weight(1f, fill = false),
+                            text = "Global search",
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Switch(modifier = Modifier
+                        .scale(0.75f),
+                        thumbContent = {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(CircleShape)
+                            )
+                        },
+                        checked = globalSearch,
+                        onCheckedChange = {
+                            viewModel.onGlobalSearchChanged(it)
+                        }
                     )
                 }
+            }, snackBar = {
+                AnimatedVisibility(
+                    modifier = Modifier.padding(bottom = getImeWithNavigationBarsPadding(initialPadding = 0.dp).value),
+                    visible = popUp != null,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    popUp?.let {
+                        ErrorPopUp(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                            title = it.title,
+                            onClick = it.onClick
+                        )
+                    }
 
+                }
+
+            }) {
+                GithubSearchView(model = viewModel)
             }
-
-        }) {
-            GithubSearchView(model = viewModel)
         }
     }
 }
