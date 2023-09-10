@@ -28,7 +28,7 @@ internal val flowModule: Module = module {
     single<FilterFlow> {
         FilterFlow(
             navigator = get<Navigator>(),
-            filterModal = get<FilterFeature>().modal()
+            filterFeature = get<FilterFeature>()
         )
     }
 }

@@ -1,5 +1,10 @@
 package com.donatas.dprofile.features.github.search
 
+import com.donatas.dprofile.features.filter.shared.FilterStore
+import com.donatas.dprofile.features.filter.shared.FilterValue
+import com.donatas.dprofile.features.filter.shared.ParentData
+import com.donatas.dprofile.features.filter.shared.model.SingleChoicePredefinedFilterModel
+import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
 import com.donatas.dprofile.features.github.search.presentation.GlobalSearchHandler
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.githubservices.repository.RepositoryResponse
@@ -61,6 +66,81 @@ internal val commonModule = module {
 
     single<GithubSearchScreen> {
         GithubSearchScreen()
+    }
+
+    single<FilterStoreObservableCache> {
+        FilterStoreObservableCache(
+            initial = FilterStore(
+                data = listOf(
+                    SingleChoicePredefinedFilterModel(
+                        key = "language",
+                        title = "Language",
+                        list = listOf(
+                            FilterValue(
+                                id = "all",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "All",
+                                initialValue = true,
+                                neutral = true
+                            ),
+                            FilterValue(
+                                id = "java",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "Java"
+                            ),
+                            FilterValue(
+                                id = "kotlin",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "Kotlin"
+                            ),
+                            FilterValue(
+                                id = "dart",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "Dart"
+                            ),
+                            FilterValue(
+                                id = "python",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "Python"
+                            ),
+                            FilterValue(
+                                id = "javascript",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "Javascript"
+                            ),
+                            FilterValue(
+                                id = "html",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "HTML"
+                            )
+                        )
+                    ),
+                    SingleChoicePredefinedFilterModel(
+                        key = "sort",
+                        title = "Sort",
+                        list = listOf(
+                            FilterValue(
+                                id = "newest_to_oldest",
+                                parent = ParentData(
+                                    key = "sort",
+                                    title = "Sort"
+                                ),
+                                name = "Newest to oldest",
+                                initialValue = true
+                            ),
+                            FilterValue(
+                                id = "oldest_to_newest",
+                                parent = ParentData(
+                                    key = "sort",
+                                    title = "Sort"
+                                ),
+                                name = "Oldest to newest",
+                            )
+                        )
+                    )
+                )
+            )
+        )
     }
 }
 

@@ -14,13 +14,11 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":features:filter:shared"))
-
-                api(project(":libraries:viewmodel"))
-                api(project(":libraries:utils"))
+                implementation(project(":libraries:viewmodel"))
                 with(Dependencies.KotlinX) {
-                    api(coroutinesCore)
+                    implementation(coroutinesCore)
                 }
+                api(project(":libraries:utils"))
             }
         }
         val androidMain by getting
@@ -44,7 +42,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.donatas.dprofile.features.filter.presentation"
+    namespace = "com.donatas.dprofile.features.filter.shared"
     compileSdk = Dependencies.Android.compileSDK
     defaultConfig {
         minSdk = Dependencies.Android.minSDK

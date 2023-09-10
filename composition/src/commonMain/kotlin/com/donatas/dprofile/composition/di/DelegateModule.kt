@@ -7,6 +7,8 @@ import com.donatas.dprofile.composition.navigation.delegate.DefaultGithubSearchD
 import com.donatas.dprofile.composition.navigation.flow.FilterFlow
 import com.donatas.dprofile.composition.navigation.flow.GithubSearchFlow
 import com.donatas.dprofile.features.contacts.presentation.ContactsDelegate
+import com.donatas.dprofile.features.filter.presentation.FiltersDelegate
+import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
 import com.donatas.dprofile.features.github.presentation.GithubDelegate
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchDelegate
 import org.koin.core.module.Module
@@ -19,9 +21,11 @@ internal val delegateModule: Module = module {
         )
     }
 
-    single<GithubSearchDelegate>() {
+    factory<GithubSearchDelegate>() {
         DefaultGithubSearchDelegate(
-            navigator = get<Navigator>(), filterFlow = get<FilterFlow>()
+            navigator = get<Navigator>(),
+            cache = get<FilterStoreObservableCache>(),
+            filterFlow = get<FilterFlow>()
         )
     }
 
@@ -29,5 +33,14 @@ internal val delegateModule: Module = module {
         DefaultContactsDelegate(
             navigator = get<Navigator>()
         )
+    }
+
+    single<FiltersDelegate> {
+        object : FiltersDelegate {
+            override fun onBack() {
+                get<Navigator>().pop()
+            }
+
+        }
     }
 }

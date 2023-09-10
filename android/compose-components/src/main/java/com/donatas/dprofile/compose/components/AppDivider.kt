@@ -10,12 +10,22 @@ import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
 
 @Composable
-fun AppDivider(modifier: Modifier = Modifier) {
-    val secondaryTextColor: Color = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
-
+fun AppDivider(
+    modifier: Modifier = Modifier,
+    color: Color = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
+) {
     Divider(
         modifier = modifier,
-        color = secondaryTextColor,
+        color = color,
         thickness = 0.25.dp
+    )
+}
+
+@Composable
+fun ModalDivider(
+    modifier: Modifier = Modifier
+) {
+    AppDivider(
+        color = Color.White.copy(alpha = 0.1f)
     )
 }

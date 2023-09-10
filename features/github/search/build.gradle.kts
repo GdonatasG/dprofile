@@ -46,6 +46,7 @@ kotlin {
             dependencies {
                 implementation(project(":libraries:feature"))
                 implementation(project(":features:github:shared"))
+                implementation(project(":features:filter:shared"))
                 implementation(project(":github-services"))
                 api(project("$module:presentation"))
                 implementation(Dependencies.KotlinX.coroutinesCore)
