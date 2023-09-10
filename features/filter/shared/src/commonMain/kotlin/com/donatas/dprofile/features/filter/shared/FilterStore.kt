@@ -9,7 +9,7 @@ data class FilterStore(
     fun getSelected(): List<FilterValue> = data.flatMap {
         it.list
     }.filter {
-        it.selected && !it.neutral
+        it.selected
     }.map {
         it.copy()
     }

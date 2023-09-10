@@ -3,12 +3,15 @@ package com.donatas.dprofile.features.github.search.presentation
 import com.donatas.dprofile.alerts.Alert
 import com.donatas.dprofile.alerts.popup.PopUp
 import com.donatas.dprofile.alerts.popup.PopUpController
+import com.donatas.dprofile.features.filter.shared.observable.AppliedFilters
+import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObservable
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.loader.SearchQueryHolder
 import com.donatas.dprofile.loader.state.ListState
 import com.donatas.dprofile.loader.state.RefreshState
 import com.donatas.dprofile.paginator.Paginator
 import com.donatas.dprofile.paginator.state.PaginatorState
+import com.donatas.dprofile.utils.observer.Observer
 import com.donatas.dprofile.viewmodel.ViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -38,6 +41,7 @@ sealed class GithubSearchViewState {
 class GithubSearchViewModel(
     private val globalSearchHandler: GlobalSearchHandler,
     private val searchQueryHolder: SearchQueryHolder,
+    private val appliedFiltersObservable: AppliedFiltersObservable,
     private val paginator: Paginator<Repository>,
     private val popUpController: PopUpController,
     private val delegate: GithubSearchDelegate,
@@ -64,6 +68,15 @@ class GithubSearchViewModel(
 
     val popUp: StateFlow<PopUp?> = popUpController.popUp
 
+    private val appliedFiltersObserver: Observer<AppliedFilters> = object : Observer<AppliedFilters> {
+        override fun update(value: AppliedFilters) {
+            if (value.updateRequired) {
+                println("filters changed")
+                println(value.filters)
+            }
+        }
+    }
+
     init {
         scope.launch {
             paginator.listState.collect { state ->
@@ -87,6 +100,11 @@ class GithubSearchViewModel(
                 }
             }
         }
+    }
+
+    override fun onAppear() {
+        super.onAppear()
+        appliedFiltersObservable.add(appliedFiltersObserver)
     }
 
     fun onSearch(query: String) {
@@ -174,6 +192,11 @@ class GithubSearchViewModel(
                 }
             })
         }
+    }
+
+    override fun onDisappear() {
+        super.onDisappear()
+        appliedFiltersObservable.remove(appliedFiltersObserver)
     }
 
     // region NAVIGATION

@@ -21,7 +21,13 @@ class AppliedFiltersObservable(
     override fun update(value: FilterStore) {
         notifyObservers(
             AppliedFilters(
-                filters = value.getSelected(), updateRequired = store != value
+                filters = value.data.flatMap {
+                    it.list
+                }.filter {
+                    it.selected && !it.neutral && !it.initialValue
+                }.map {
+                    it.copy()
+                }, updateRequired = store != value
             )
         )
 

@@ -4,6 +4,7 @@ import com.donatas.dprofile.features.filter.shared.FilterStore
 import com.donatas.dprofile.features.filter.shared.FilterValue
 import com.donatas.dprofile.features.filter.shared.ParentData
 import com.donatas.dprofile.features.filter.shared.model.SingleChoicePredefinedFilterModel
+import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObservable
 import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
 import com.donatas.dprofile.features.github.search.presentation.GlobalSearchHandler
 import com.donatas.dprofile.features.github.shared.Repository
@@ -140,6 +141,14 @@ internal val commonModule = module {
                     )
                 )
             )
+        )
+    }
+
+    single<AppliedFiltersObservable> {
+        val cache: FilterStoreObservableCache = get<FilterStoreObservableCache>()
+        AppliedFiltersObservable(
+            initial = cache.get(),
+            filterStoreObservable = cache
         )
     }
 }
