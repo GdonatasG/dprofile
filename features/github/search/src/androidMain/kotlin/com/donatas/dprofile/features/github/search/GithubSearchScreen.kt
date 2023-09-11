@@ -19,6 +19,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -35,6 +38,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -48,6 +52,7 @@ import com.donatas.dprofile.compose.components.popup.ErrorPopUp
 import com.donatas.dprofile.compose.components.state.getImeWithNavigationBarsPadding
 import com.donatas.dprofile.compose.components.textfield.DSearchField
 import com.donatas.dprofile.feature.Screen
+import com.donatas.dprofile.features.github.search.presentation.AppliedFiltersState
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewModel
 import com.donatas.dprofile.features.github.search.ui.GithubSearchView
 import org.koin.androidx.compose.getViewModel
@@ -58,6 +63,7 @@ actual class GithubSearchScreen actual constructor() : Screen {
         const val route: String = "github_search_screen"
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose() {
         val viewModel: GithubSearchViewModel = getViewModel<GithubSearchViewModel>()
@@ -65,6 +71,7 @@ actual class GithubSearchScreen actual constructor() : Screen {
         val searchField by viewModel.searchField.collectAsState()
         val popUp by viewModel.popUp.collectAsState()
         val globalSearch by viewModel.globalSearch.collectAsState()
+        val appliedFiltersState by viewModel.appliedFiltersState.collectAsState()
 
         val focusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
@@ -93,11 +100,9 @@ actual class GithubSearchScreen actual constructor() : Screen {
         }
 
 
-        Box(
-            modifier = Modifier.clickable(interactionSource = interactionSource, indication = null) {
-                focusManager.clearFocus(true)
-            }
-        ) {
+        Box(modifier = Modifier.clickable(interactionSource = interactionSource, indication = null) {
+            focusManager.clearFocus(true)
+        }) {
             AppScaffold(appBar = {
                 DAppBar(navigationIcon = {
                     BackActionButton(
@@ -117,20 +122,32 @@ actual class GithubSearchScreen actual constructor() : Screen {
                         })
                 }, centerTitle = false, actions = {
                     ActionButton(onClick = viewModel::onFilter) {
-                        Icon(imageVector = Icons.Outlined.FilterAlt, contentDescription = "Filter repositories")
+                        Box {
+                            Icon(
+                                painter = painterResource(id = R.drawable.filter),
+                                contentDescription = "Filter repositories"
+                            )
+                            if (appliedFiltersState is AppliedFiltersState.Content) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.filter_badge),
+                                    contentDescription = "Filter repositories",
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
                     }
+
                 })
             }, tabBar = {
                 Row(
                     modifier = Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.clickable(interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = {
-                                focusManager.clearFocus(true)
-                                viewModel.onDescribeGlobalSearch()
-                            }), verticalAlignment = Alignment.CenterVertically
+                    Row(modifier = Modifier.clickable(interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {
+                            focusManager.clearFocus(true)
+                            viewModel.onDescribeGlobalSearch()
+                        }), verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(imageVector = Icons.Outlined.Info, contentDescription = "Describe global search")
                         Spacer(modifier = Modifier.width(8.dp))
@@ -143,20 +160,15 @@ actual class GithubSearchScreen actual constructor() : Screen {
                         )
                     }
                     Spacer(modifier = Modifier.width(4.dp))
-                    Switch(modifier = Modifier
-                        .scale(0.75f),
-                        thumbContent = {
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .clip(CircleShape)
-                            )
-                        },
-                        checked = globalSearch,
-                        onCheckedChange = {
-                            viewModel.onGlobalSearchChanged(it)
-                        }
-                    )
+                    Switch(modifier = Modifier.scale(0.75f), thumbContent = {
+                        Box(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                        )
+                    }, checked = globalSearch, onCheckedChange = {
+                        viewModel.onGlobalSearchChanged(it)
+                    })
                 }
             }, snackBar = {
                 AnimatedVisibility(

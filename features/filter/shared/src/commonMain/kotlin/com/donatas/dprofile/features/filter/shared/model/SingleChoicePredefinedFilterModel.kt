@@ -4,7 +4,9 @@ import com.donatas.dprofile.features.filter.shared.FilterValue
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class SingleChoicePredefinedFilterModel(
-    override val key: String, override val title: String, override var list: List<FilterValue>
+    override val key: String,
+    override val title: String,
+    override var list: List<FilterValue>,
 ) : FilterModel() {
     override val _selected: MutableStateFlow<List<FilterValue>> = MutableStateFlow(list.filter { it.selected })
 

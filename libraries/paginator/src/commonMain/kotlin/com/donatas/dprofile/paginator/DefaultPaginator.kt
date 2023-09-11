@@ -29,6 +29,15 @@ open class DefaultPaginator<Item : Any>(
     // endregion
 
     override fun reset() {
+        initJob?.cancel()
+        initJob = null
+
+        nextPageJob?.cancel()
+        nextPageJob = null
+
+        refreshJob?.cancel()
+        refreshJob = null
+
         isMakingRequest = false
         currentPage = initialPage
         _state.value = PaginatorState.Idle

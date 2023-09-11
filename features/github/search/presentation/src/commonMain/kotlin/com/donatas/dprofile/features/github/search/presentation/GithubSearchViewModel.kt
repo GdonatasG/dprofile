@@ -3,6 +3,7 @@ package com.donatas.dprofile.features.github.search.presentation
 import com.donatas.dprofile.alerts.Alert
 import com.donatas.dprofile.alerts.popup.PopUp
 import com.donatas.dprofile.alerts.popup.PopUpController
+import com.donatas.dprofile.features.filter.shared.FilterValue
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFilters
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObservable
 import com.donatas.dprofile.features.github.shared.Repository
@@ -38,6 +39,11 @@ sealed class GithubSearchViewState {
     }
 }
 
+sealed class AppliedFiltersState {
+    object None : AppliedFiltersState()
+    data class Content(val filterValues: List<FilterValue>) : AppliedFiltersState()
+}
+
 class GithubSearchViewModel(
     private val globalSearchHandler: GlobalSearchHandler,
     private val searchQueryHolder: SearchQueryHolder,
@@ -68,12 +74,46 @@ class GithubSearchViewModel(
 
     val popUp: StateFlow<PopUp?> = popUpController.popUp
 
+    private val _appliedFiltersState: MutableStateFlow<AppliedFiltersState> = MutableStateFlow(AppliedFiltersState.None)
+    val appliedFiltersState: StateFlow<AppliedFiltersState> = _appliedFiltersState.asStateFlow()
+
     private val appliedFiltersObserver: Observer<AppliedFilters> = object : Observer<AppliedFilters> {
         override fun update(value: AppliedFilters) {
             if (value.updateRequired) {
-                println("filters changed")
-                println(value.filters)
+                _appliedFiltersState.value =
+                    if (value.filters.isNotEmpty()) AppliedFiltersState.Content(filterValues = value.filters) else AppliedFiltersState.None
+                applyChanges()
             }
+        }
+    }
+
+    private fun applyChanges() {
+        val query = _searchField.value.trim()
+
+        paginator.reset()
+
+        if (query.isEmpty() && _appliedFiltersState.value is AppliedFiltersState.None) {
+            searchJob?.cancel()
+            searchJob = null
+            searchQueryHolder.setQuery("")
+            _viewState.value = GithubSearchViewState.defaultIdle()
+
+            return
+        }
+
+        searchJob?.cancel()
+        searchJob = null
+
+        searchJob = scope.launch {
+            if (query.isNotEmpty() && query != searchQueryHolder.get()) {
+                delay(500)
+                searchQueryHolder.setQuery(query)
+            }
+
+            if (_viewState.value !is GithubSearchViewState.Searched) {
+                _viewState.value = GithubSearchViewState.Searched
+            }
+            paginator.init()
         }
     }
 
@@ -108,26 +148,18 @@ class GithubSearchViewModel(
     }
 
     fun onSearch(query: String) {
-        if (query.isEmpty()) {
-            searchJob?.cancel()
-            searchJob = null
-            resetViewState()
-            _searchField.value = query
-            searchQueryHolder.setQuery(query)
-            return
-        }
-
         _searchField.value = query
-        if (searchQueryHolder.query.value == query) return
-        searchJob?.cancel()
-        searchJob = null
+        val trimmerQuery = query.trim()
 
-        searchJob = scope.launch {
-            delay(500)
-            searchQueryHolder.setQuery(query)
-            _viewState.value = GithubSearchViewState.Searched
-            paginator.init()
-        }
+        if (searchQueryHolder.query.value == trimmerQuery) return
+
+        /* if (trimmerQuery.isEmpty()) {
+             searchQueryHolder.setQuery("")
+             applyChanges()
+             return
+         }*/
+
+        applyChanges()
     }
 
     fun onGlobalSearchChanged(value: Boolean) {
@@ -135,16 +167,7 @@ class GithubSearchViewModel(
 
         globalSearchHandler.change(value)
 
-        if (_searchField.value.isNotEmpty()) {
-            searchJob?.cancel()
-            searchJob = null
-
-            searchJob = scope.launch {
-                _viewState.value = GithubSearchViewState.Searched
-                paginator.init()
-            }
-        }
-
+        applyChanges()
     }
 
     fun onDescribeGlobalSearch() {
@@ -162,8 +185,12 @@ class GithubSearchViewModel(
         paginator.init()
     }
 
-    fun onRefresh() = scope.launch {
-        paginator.refresh()
+    fun onRefresh() {
+        searchJob?.cancel()
+        searchJob = null
+        searchJob = scope.launch {
+            paginator.refresh()
+        }
     }
 
     fun onScrollToTopDone() {
@@ -176,11 +203,6 @@ class GithubSearchViewModel(
 
     fun onRetryNextPage() = scope.launch {
         paginator.retryNextPage()
-    }
-
-    private fun resetViewState() {
-        _viewState.value = GithubSearchViewState.defaultIdle()
-        paginator.reset()
     }
 
     private fun showRefreshErrorPopUp() {
