@@ -95,7 +95,7 @@ class GetRepositories : GithubRequest, Pageable<GetRepositories> {
     }
 
     enum class Language(internal val value: String) {
-        JAVA("Java"), JAVA_SCRIPT("JavaScript"), HTML("HTML"), CSS("CSS"), SHELL("Shell"), PYTHON("Python"), TYPE_SCRIPT(
+        JAVA("Java"), JAVASCRIPT("JavaScript"), HTML("HTML"), CSS("CSS"), SHELL("Shell"), PYTHON("Python"), TYPESCRIPT(
             "TypeScript"
         ),
         KOTLIN("Kotlin"), C_PLUS_PLUS("C++"), C("C"), GO("Go"), PHP("PHP"), RUBY("Ruby"), DART("Dart")

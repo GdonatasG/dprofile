@@ -3,6 +3,7 @@ package com.donatas.dprofile.features.github.search
 import com.donatas.dprofile.features.filter.shared.FilterStore
 import com.donatas.dprofile.features.filter.shared.FilterValue
 import com.donatas.dprofile.features.filter.shared.ParentData
+import com.donatas.dprofile.features.filter.shared.filterSelected
 import com.donatas.dprofile.features.filter.shared.model.SingleChoicePredefinedFilterModel
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObservable
 import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
@@ -22,6 +23,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import com.donatas.dprofile.githubservices.repository.GetRepositories.Language
 
 internal val paginatorQualifier: StringQualifier = named("search_repositories_paginator")
 internal val queryHolderQualifier: StringQualifier = named("search_repositories_query_holder")
@@ -45,6 +47,7 @@ internal val commonModule = module {
 
     single<GetRepositories> {
         DefaultGetRepositoriesUseCase(
+            filterStoreObservableCache = get<FilterStoreObservableCache>(),
             globalSearchHandler = get<GlobalSearchHandler>(qualifier = globalSearchHandlerQualifier),
             searchQueryHolder = get<SearchQueryHolder>(qualifier = queryHolderQualifier),
             repositoryService = get<RepositoryService>()
@@ -113,29 +116,46 @@ internal val commonModule = module {
                                 id = "html",
                                 parent = ParentData(key = "language", title = "Language"),
                                 name = "HTML"
-                            )
-                        )
-                    ),
-                    SingleChoicePredefinedFilterModel(
-                        key = "sort",
-                        title = "Sort",
-                        list = listOf(
-                            FilterValue(
-                                id = "newest_to_oldest",
-                                parent = ParentData(
-                                    key = "sort",
-                                    title = "Sort"
-                                ),
-                                name = "Newest to oldest",
-                                initialValue = true
                             ),
                             FilterValue(
-                                id = "oldest_to_newest",
-                                parent = ParentData(
-                                    key = "sort",
-                                    title = "Sort"
-                                ),
-                                name = "Oldest to newest",
+                                id = "css",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "CSS"
+                            ),
+                            FilterValue(
+                                id = "shell",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "SHELL"
+                            ),
+                            FilterValue(
+                                id = "typescript",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "TypeScript"
+                            ),
+                            FilterValue(
+                                id = "c_plus_plus",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "C++"
+                            ),
+                            FilterValue(
+                                id = "c",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "C"
+                            ),
+                            FilterValue(
+                                id = "go",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "GO"
+                            ),
+                            FilterValue(
+                                id = "php",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "PHP"
+                            ),
+                            FilterValue(
+                                id = "ruby",
+                                parent = ParentData(key = "language", title = "Language"),
+                                name = "Ruby"
                             )
                         )
                     )
@@ -156,6 +176,7 @@ internal val commonModule = module {
 internal expect val platformModule: Module
 
 internal class DefaultGetRepositoriesUseCase(
+    private val filterStoreObservableCache: FilterStoreObservableCache,
     private val globalSearchHandler: GlobalSearchHandler,
     private val searchQueryHolder: SearchQueryHolder,
     private val repositoryService: RepositoryService
@@ -163,6 +184,7 @@ internal class DefaultGetRepositoriesUseCase(
     override suspend fun invoke(page: Int, perPage: Int): LoadingResult<Repository> {
         val query = searchQueryHolder.get()
         val searchGlobally = globalSearchHandler.value.value
+        val filters = filterStoreObservableCache.get()
 
         val result = repositoryService.getRepositories {
             this.page {
@@ -174,6 +196,30 @@ internal class DefaultGetRepositoriesUseCase(
             }
             if (!searchGlobally) {
                 this.user("GdonatasG")
+            }
+            filters.get("language")?.filterSelected()?.firstOrNull()?.let {
+                println("selected: $it")
+                val selectedLanguage: Language? = when (it) {
+                    "java" -> Language.JAVA
+                    "kotlin" -> Language.KOTLIN
+                    "dart" -> Language.DART
+                    "python" -> Language.PYTHON
+                    "javascript" -> Language.JAVASCRIPT
+                    "html" -> Language.HTML
+                    "css" -> Language.CSS
+                    "shell" -> Language.SHELL
+                    "typescript" -> Language.TYPESCRIPT
+                    "c_plus_plus" -> Language.C_PLUS_PLUS
+                    "c" -> Language.C
+                    "go" -> Language.GO
+                    "php" -> Language.PHP
+                    "ruby" -> Language.RUBY
+                    else -> null
+                }
+
+                selectedLanguage?.let { language ->
+                    this.language(language)
+                }
             }
         }
 
