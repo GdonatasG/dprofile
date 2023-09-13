@@ -8,7 +8,9 @@ import com.donatas.dprofile.features.filter.shared.model.SingleChoicePredefinedF
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObservable
 import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
 import com.donatas.dprofile.features.github.search.presentation.GlobalSearchHandler
+import com.donatas.dprofile.features.github.search.presentation.ListOrder
 import com.donatas.dprofile.features.github.shared.Repository
+import com.donatas.dprofile.githubservices.common.Order
 import com.donatas.dprofile.githubservices.repository.RepositoryResponse
 import com.donatas.dprofile.githubservices.repository.RepositoryService
 import com.donatas.dprofile.loader.LoadingResult
@@ -45,11 +47,16 @@ internal val commonModule = module {
         SearchQueryHolder()
     }
 
+    single<ListOrder> {
+        ListOrder()
+    }
+
     single<GetRepositories> {
         DefaultGetRepositoriesUseCase(
             filterStoreObservableCache = get<FilterStoreObservableCache>(),
             globalSearchHandler = get<GlobalSearchHandler>(qualifier = globalSearchHandlerQualifier),
             searchQueryHolder = get<SearchQueryHolder>(qualifier = queryHolderQualifier),
+            listOrder = get<ListOrder>(),
             repositoryService = get<RepositoryService>()
         )
     }
@@ -179,6 +186,7 @@ internal class DefaultGetRepositoriesUseCase(
     private val filterStoreObservableCache: FilterStoreObservableCache,
     private val globalSearchHandler: GlobalSearchHandler,
     private val searchQueryHolder: SearchQueryHolder,
+    private val listOrder: ListOrder,
     private val repositoryService: RepositoryService
 ) : GetRepositories {
     override suspend fun invoke(page: Int, perPage: Int): LoadingResult<Repository> {
@@ -221,6 +229,10 @@ internal class DefaultGetRepositoriesUseCase(
                     this.language(language)
                 }
             }
+            this.order(
+                order = if (listOrder.value.value == ListOrder.Type.DESC) Order.DESC else Order.ASC,
+                byField = com.donatas.dprofile.githubservices.repository.GetRepositories.SortField.UPDATED
+            )
         }
 
         return suspendCoroutine<LoadingResult<Repository>> { continuation ->

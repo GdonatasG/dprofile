@@ -6,6 +6,7 @@ import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObse
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchDelegate
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewModel
 import com.donatas.dprofile.features.github.search.presentation.GlobalSearchHandler
+import com.donatas.dprofile.features.github.search.presentation.ListOrder
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.loader.SearchQueryHolder
 import com.donatas.dprofile.paginator.Paginator
@@ -17,6 +18,7 @@ internal actual val platformModule: Module = module {
         GithubSearchViewModel(
             globalSearchHandler = get<GlobalSearchHandler>(qualifier = globalSearchHandlerQualifier),
             searchQueryHolder = get<SearchQueryHolder>(qualifier = queryHolderQualifier),
+            listOrder = get<ListOrder>(),
             appliedFiltersObservable = get<AppliedFiltersObservable>(),
             paginator = get<Paginator<Repository>>(qualifier = paginatorQualifier),
             popUpController = DefaultPopUpController(),

@@ -3,12 +3,15 @@ package com.donatas.dprofile.features.github.search.ui
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.stopScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +25,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -45,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.donatas.dprofile.compose.components.DCircularProgressIndicator
 import com.donatas.dprofile.compose.components.DPullRefreshIndicator
 import com.donatas.dprofile.compose.components.layout.EmptyView
@@ -54,6 +59,7 @@ import com.donatas.dprofile.compose.components.state.getImeWithNavigationBarsPad
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewModel
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchViewState
+import com.donatas.dprofile.features.github.search.presentation.ListOrder
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.features.github.shared.RepositoryListTile
 import com.donatas.dprofile.loader.state.ListState
@@ -76,6 +82,8 @@ fun GithubSearchView(model: GithubSearchViewModel) {
             val scrollToTop by model.scrollToTop.collectAsState()
             val endReached by model.endReached.collectAsState()
 
+            val orderType by model.orderType.collectAsState()
+
 
             when (val type = listState) {
                 is ListState.Data -> Box(
@@ -91,6 +99,7 @@ fun GithubSearchView(model: GithubSearchViewModel) {
                         scrollToTop = scrollToTop,
                         endReached = endReached,
                         total = type.total,
+                        orderType = orderType,
                         delegate = object : DataDelegate {
                             override fun onRepositoryClick(repository: Repository) {
                                 model.onDetails(repository)
@@ -110,6 +119,10 @@ fun GithubSearchView(model: GithubSearchViewModel) {
 
                             override fun onRetryNextPage() {
                                 model.onRetryNextPage()
+                            }
+
+                            override fun onListOrderChanged() {
+                                model.onListOrderChanged()
                             }
                         })
                 }
@@ -146,6 +159,8 @@ private interface DataDelegate {
     fun onScrollToTopDone()
     fun onLoadNextPage()
     fun onRetryNextPage()
+
+    fun onListOrderChanged()
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -157,6 +172,7 @@ private fun Data(
     scrollToTop: Boolean,
     endReached: Boolean,
     total: Int,
+    orderType: ListOrder.Type,
     delegate: DataDelegate
 ) {
     val scope = rememberCoroutineScope()
@@ -211,15 +227,50 @@ private fun Data(
                 modifier = Modifier.fillMaxSize(), state = listState
             ) {
                 stickyHeader {
-                    Box(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.background)
                             .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        SectionTitle(
-                            title = "Repositories (${total})", maxLines = 1, overflow = TextOverflow.Ellipsis
-                        )
+                        Box(modifier = Modifier.weight(1f)) {
+                            SectionTitle(
+                                title = "Repositories (${total})", maxLines = 1, overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        Column(
+                            modifier = Modifier.clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = delegate::onListOrderChanged
+                            ),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(18.dp),
+                                    imageVector = if (orderType == ListOrder.Type.DESC) Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
+                                    contentDescription = "Change list order"
+                                )
+                                Text(
+                                    text = "Order",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                            Text(
+                                text = if (orderType == ListOrder.Type.DESC) "(Newest to oldest)" else "(Oldest to newest)",
+                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
                 itemsIndexed(repositories) { index, repository ->

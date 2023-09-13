@@ -3,7 +3,6 @@ package com.donatas.dprofile.features.github.search.presentation
 import com.donatas.dprofile.alerts.Alert
 import com.donatas.dprofile.alerts.popup.PopUp
 import com.donatas.dprofile.alerts.popup.PopUpController
-import com.donatas.dprofile.features.filter.shared.FilterValue
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFilters
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObservable
 import com.donatas.dprofile.features.github.shared.Repository
@@ -21,32 +20,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class GlobalSearchHandler(initiallySearchGlobally: Boolean) {
-    private var _value: MutableStateFlow<Boolean> = MutableStateFlow(initiallySearchGlobally)
-    val value: StateFlow<Boolean> = _value.asStateFlow()
-
-    fun change(value: Boolean) {
-        _value.value = value
-    }
-}
-
-sealed class GithubSearchViewState {
-    data class Idle(val message: String) : GithubSearchViewState()
-    object Searched : GithubSearchViewState()
-
-    companion object {
-        fun defaultIdle(): Idle = Idle(message = "Search and/or filter repositories")
-    }
-}
-
-sealed class AppliedFiltersState {
-    object None : AppliedFiltersState()
-    data class Content(val filterValues: List<FilterValue>) : AppliedFiltersState()
-}
-
 class GithubSearchViewModel(
     private val globalSearchHandler: GlobalSearchHandler,
     private val searchQueryHolder: SearchQueryHolder,
+    private val listOrder: ListOrder,
     private val appliedFiltersObservable: AppliedFiltersObservable,
     private val paginator: Paginator<Repository>,
     private val popUpController: PopUpController,
@@ -73,6 +50,8 @@ class GithubSearchViewModel(
     val globalSearch: StateFlow<Boolean> = globalSearchHandler.value
 
     val popUp: StateFlow<PopUp?> = popUpController.popUp
+
+    val orderType: StateFlow<ListOrder.Type> = listOrder.value
 
     private val _appliedFiltersState: MutableStateFlow<AppliedFiltersState> = MutableStateFlow(AppliedFiltersState.None)
     val appliedFiltersState: StateFlow<AppliedFiltersState> = _appliedFiltersState.asStateFlow()
@@ -167,6 +146,11 @@ class GithubSearchViewModel(
 
         globalSearchHandler.change(value)
 
+        applyChanges()
+    }
+
+    fun onListOrderChanged() {
+        listOrder.change()
         applyChanges()
     }
 
