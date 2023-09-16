@@ -6,7 +6,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.stopScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -40,7 +43,6 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
@@ -57,6 +59,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -125,6 +128,10 @@ fun GithubView(model: GithubViewModel) {
                     override fun onSearch() {
                         model.onSearch()
                     }
+
+                    override fun onVisitProfile() {
+                        model.onVisitProfile()
+                    }
                 })
         }
 
@@ -185,7 +192,10 @@ private fun Loading() {
         }
         Spacer(modifier = Modifier.height(60.dp))
         repeat(15) {
-            Row(modifier = Modifier.padding(vertical = 16.dp)) {
+            Row(
+                modifier = Modifier.padding(vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Box(
                     modifier = Modifier
                         .width(32.dp)
@@ -241,6 +251,7 @@ private interface DataDelegate {
     fun onLoadNextPage()
     fun onRetryNextPage()
     fun onSearch()
+    fun onVisitProfile()
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -305,7 +316,8 @@ private fun Data(
             ) {
                 item {
                     Profile(
-                        state = userState
+                        state = userState,
+                        onVisitProfile = delegate::onVisitProfile
                     )
                 }
                 stickyHeader {
@@ -323,10 +335,7 @@ private fun Data(
                             overflow = TextOverflow.Ellipsis
                         )
                         IconButton(
-                            onClick = delegate::onSearch,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = getSecondaryTextColor()
-                            )
+                            onClick = delegate::onSearch
                         ) {
                             Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search repositories")
                         }
@@ -372,7 +381,7 @@ private fun Data(
                 state = pullToRefreshState
             )
 
-            if (firstVisibleItemIndex.value > 1) {
+            if (firstVisibleItemIndex.value > 0) {
                 SmallFloatingActionButton(
                     modifier = Modifier
                         .padding(vertical = 16.dp, horizontal = 24.dp)
@@ -399,10 +408,11 @@ private fun Data(
 
 @Composable
 private fun Profile(
-    state: UserState
+    state: UserState,
+    onVisitProfile: () -> Unit
 ) {
     when (state) {
-        is UserState.Data -> LoadedProfile(user = state.user)
+        is UserState.Data -> LoadedProfile(user = state.user, onVisitProfile = onVisitProfile)
         else -> {}
     }
 }
@@ -447,7 +457,7 @@ private fun LoadingProfile() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun LoadedProfile(user: GithubUser) {
+private fun LoadedProfile(user: GithubUser, onVisitProfile: () -> Unit) {
     val secondaryTextColor = getSecondaryTextColor()
 
     val avatarModifier: Modifier = Modifier
@@ -475,39 +485,64 @@ private fun LoadedProfile(user: GithubUser) {
             )
         }
 
-        Text(
-            text = user.login,
-            style = MaterialTheme.typography.labelLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
         Row(
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onVisitProfile
+            ),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = user.login,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
+            Icon(
+                modifier = Modifier.size(20.dp),
+                imageVector = Icons.Outlined.Language,
+                contentDescription = "Visit profile on Github"
+            )
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center
         ) {
             Icon(
                 imageVector = Icons.Outlined.Group, contentDescription = null, tint = secondaryTextColor
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = user.followers.toString(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelMedium
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = "followers",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelMedium.copy(secondaryTextColor)
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
-                text = "·", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium
+                text = "·",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelMedium
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = user.following.toString(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelMedium
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = "following",
                 maxLines = 1,
@@ -517,18 +552,19 @@ private fun LoadedProfile(user: GithubUser) {
         }
         user.location?.let { location ->
             Row(
-                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
                     modifier = Modifier.size(20.dp),
                     imageVector = Icons.Outlined.LocationOn,
                     contentDescription = "location"
                 )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = location,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }

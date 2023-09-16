@@ -14,7 +14,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                api(project(":features:filter:shared"))
+
                 api(project(":libraries:viewmodel"))
+                api(project(":libraries:utils"))
                 with(Dependencies.KotlinX) {
                     api(coroutinesCore)
                 }

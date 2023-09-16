@@ -1,6 +1,7 @@
-package com.donatas.dprofile.composition.presentation.navigation
+package com.donatas.dprofile.composition.presentation.alert
 
 import com.donatas.dprofile.alerts.Alert
+import com.donatas.dprofile.composition.presentation.alert.AlertState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

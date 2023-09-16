@@ -18,7 +18,7 @@ internal val flowModule: Module = module {
         )
     }
 
-    single<GithubSearchFlow> {
+    factory<GithubSearchFlow> {
         GithubSearchFlow(
             navigator = get<Navigator>(),
             githubSearchScreen = get<GithubSearchFeature>().screen()
@@ -28,7 +28,7 @@ internal val flowModule: Module = module {
     single<FilterFlow> {
         FilterFlow(
             navigator = get<Navigator>(),
-            filterModal = get<FilterFeature>().modal()
+            filterFeature = get<FilterFeature>()
         )
     }
 }

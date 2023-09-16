@@ -22,7 +22,7 @@ fun getImeWithNavigationBarsPadding(initialPadding: Dp = 16.dp): State<Dp> {
         derivedStateOf {
             maxOf(
                 initialPadding + navBar.calculateBottomPadding() + captionBar.calculateBottomPadding(),
-                imeBottom.calculateBottomPadding() + 8.dp + captionBar.calculateBottomPadding()
+                imeBottom.calculateBottomPadding() + initialPadding + captionBar.calculateBottomPadding()
             )
         }
     }

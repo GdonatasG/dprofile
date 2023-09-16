@@ -51,6 +51,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.AppDivider
@@ -109,11 +111,17 @@ fun ContactsView(model: ContactsViewModel) {
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "Donatas Žitkus",
-                    style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.primary)
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "Mobile Applications Developer", style = MaterialTheme.typography.labelLarge
+                    text = "Mobile Applications Developer",
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(
@@ -127,7 +135,8 @@ fun ContactsView(model: ContactsViewModel) {
                     )
                     Text(
                         text = "Kaunas, Lithuania",
-                        style = MaterialTheme.typography.labelLarge.copy(color = imageBorderColor)
+                        style = MaterialTheme.typography.labelMedium.copy(color = imageBorderColor),
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -212,7 +221,7 @@ private fun ContactListTile(
             Text(
                 modifier = Modifier.weight(1f),
                 text = title,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Normal),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SearchQueryHolder {
-    var _query: MutableStateFlow<String> = MutableStateFlow("")
+    private var _query: MutableStateFlow<String> = MutableStateFlow("")
     val query: StateFlow<String> get() = _query.asStateFlow()
 
     fun get(): String = _query.value

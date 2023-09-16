@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.donatas.dprofile.compose.components.timeline.TimelineNode
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
@@ -83,10 +84,10 @@ fun TimelineItemContent(
     }
 
     val secondaryColor = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
-    val titleTextStyle = MaterialTheme.typography.titleMedium.copy(color = secondaryColor)
-    val subtitleTextStyle = MaterialTheme.typography.labelLarge.copy(color = MaterialTheme.colorScheme.primary)
+    val titleTextStyle = MaterialTheme.typography.titleSmall.copy(color = secondaryColor, fontSize = 14.sp)
+    val subtitleTextStyle = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.primary)
     val descriptionTextStyle = MaterialTheme.typography.bodyMedium
-    val locationTextStyle = MaterialTheme.typography.labelLarge.copy(color = secondaryColor)
+    val locationTextStyle = MaterialTheme.typography.labelMedium.copy(color = secondaryColor)
 
     AnimatedVisibility(
         visible = visible,
@@ -102,7 +103,7 @@ fun TimelineItemContent(
             Column(
                 modifier = Modifier
                     .padding(vertical = 12.dp, horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 Text(text = item.title, style = titleTextStyle)
                 Text(text = item.subtitle, style = subtitleTextStyle)

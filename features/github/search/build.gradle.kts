@@ -45,7 +45,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":libraries:feature"))
-                implementation(project(":libraries:viewmodel"))
+                implementation(project(":features:github:shared"))
+                implementation(project(":features:filter:shared"))
+                implementation(project(":github-services"))
                 api(project("$module:presentation"))
                 implementation(Dependencies.KotlinX.coroutinesCore)
                 implementation(Dependencies.Koin.core)

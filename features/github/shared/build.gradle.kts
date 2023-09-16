@@ -17,7 +17,6 @@ kotlin {
                 with(Dependencies.KotlinX) {
                     api(coroutinesCore)
                 }
-                api(project(":libraries:paginator"))
             }
         }
         val androidMain by getting {

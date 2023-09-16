@@ -5,7 +5,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val primaryColor = Color(0xFF6DB9B0)
+val primaryColor = Color(0xFF64aba2)
 val onPrimaryColor = Color(0xFFE4E4E4)
 val onPrimaryColorDark = Color(0xFF3C4856)
 val secondaryColor = Color(0xFFfafafa)
@@ -14,7 +14,7 @@ val secondaryVariant = Color(0xFF7f8f9f)
 val black700 = Color(0xFF434343)
 val lightGreen = Color(0xFF6caf8f)
 val lightRed = Color(0xFFbc5265)
-val primaryColorDark = Color(0xFF6DB9B0)
+val primaryColorDark = Color(0xFF64aba2)
 val onBackgroundColorDark = Color(0xFFEEEEEE)
 val backgroundColorDark = Color(0xFF212429)
 val surfaceDarkColor = Color(0xFF373D44)

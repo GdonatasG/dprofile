@@ -27,17 +27,12 @@ fun FullWidthButton(
     isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
-
     val enabled = isEnabled && !isLoading
 
     val disabledAlpha: Float = 0.7f
 
     Button(
-        onClick = {
-            focusManager.clearFocus(true)
-            onClick()
-        },
+        onClick = onClick,
         modifier = modifier
             .height(46.dp)
             .fillMaxWidth(),

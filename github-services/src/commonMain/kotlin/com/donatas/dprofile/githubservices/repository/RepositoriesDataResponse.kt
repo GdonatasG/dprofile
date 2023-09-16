@@ -11,6 +11,6 @@ data class RepositoriesDataResponse(
 @Serializable
 data class RepositoryResponse(
     @SerialName("name") val name: String,
-    @SerialName("language") val language: String,
+    @SerialName("language") val language: String?,
     @SerialName("html_url") val htmlUrl: String
 )

@@ -78,13 +78,15 @@ internal class DefaultGetRepositoriesUseCase(
                 this.page = page
                 this.perPage = perPage
             }
-              this.user(githubUserLogin.value)
+            this.user(githubUserLogin.value)
         }
 
         return suspendCoroutine<LoadingResult<Repository>> { continuation ->
             result.onSuccess { success ->
                 if (success.items.isEmpty()) {
                     continuation.resume(LoadingResult.Empty(title = "No results found"))
+
+                    return@onSuccess
                 }
 
                 continuation.resume(
@@ -126,7 +128,8 @@ internal class DefaultGetUserUseCase(
                 location = it.location,
                 followers = it.followers,
                 following = it.following,
-                avatarUrl = it.avatarUrl
+                avatarUrl = it.avatarUrl,
+                htmlUrl = it.htmlUrl
             )
         }
     }

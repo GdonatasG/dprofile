@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation(project(":features:github:search:presentation"))
+    implementation(project(":features:github:shared"))
 
     implementation(project(":libraries:utils"))
 

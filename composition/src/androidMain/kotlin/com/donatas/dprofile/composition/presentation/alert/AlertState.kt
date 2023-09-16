@@ -1,13 +1,7 @@
-package com.donatas.dprofile.composition.presentation.navigation
+package com.donatas.dprofile.composition.presentation.alert
 
 import com.donatas.dprofile.alerts.Alert
-
-internal interface AlertState {
-    fun setAlert(alert: Alert)
-    fun getTitle(): String
-    fun getMessage(): String
-    fun getButtons(): List<Alert.Button>
-}
+import com.donatas.dprofile.composition.presentation.alert.AlertState
 
 internal class AlertStateAdapter : AlertState {
     private var alert: Alert? = null
@@ -20,4 +14,11 @@ internal class AlertStateAdapter : AlertState {
     override fun getMessage(): String = alert?.message ?: ""
 
     override fun getButtons(): List<Alert.Button> = alert?.buttons ?: emptyList()
+}
+
+interface AlertState {
+    fun setAlert(alert: Alert)
+    fun getTitle(): String
+    fun getMessage(): String
+    fun getButtons(): List<Alert.Button>
 }

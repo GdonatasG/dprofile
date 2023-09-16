@@ -5,5 +5,6 @@ data class GithubUser(
     val location: String?,
     val followers: Int,
     val following: Int,
-    val avatarUrl: String?
+    val avatarUrl: String?,
+    val htmlUrl: String
 )

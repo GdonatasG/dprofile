@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.AppDivider
@@ -59,12 +60,18 @@ fun RepositoryListTile(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = repository.language,
-                    style = MaterialTheme.typography.labelMedium.copy(color = secondaryTextColor),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                repository.language?.let { language ->
+                    Text(
+                        text = language,
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = secondaryTextColor,
+                            fontWeight = FontWeight.Normal
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
             }
             Icon(
                 imageVector = Icons.Default.ChevronRight, contentDescription = null, tint = secondaryTextColor

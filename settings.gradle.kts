@@ -75,6 +75,8 @@ include(":features:filter:presentation")
 include(":features:filter:ui:ios")
 include(":features:filter:ui:android")
 
+include(":features:filter:shared")
+
 include(":features:contacts")
 include(":features:contacts:presentation")
 include(":features:contacts:ui:ios")
