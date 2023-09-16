@@ -1,7 +1,7 @@
 package com.donatas.dprofile.composition.navigation.flow
 
 import com.donatas.dprofile.composition.MainScreen
-import com.donatas.dprofile.composition.navigation.Navigator
+import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.utils.isDebug
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier

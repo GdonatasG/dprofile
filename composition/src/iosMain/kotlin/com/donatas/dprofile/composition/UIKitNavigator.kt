@@ -2,7 +2,7 @@ package com.donatas.dprofile.composition
 
 import com.donatas.dprofile.alerts.Alert
 import com.donatas.dprofile.composition.di.UINavigationControllerWrapper
-import com.donatas.dprofile.composition.navigation.Navigator
+import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.feature.Modal
 import com.donatas.dprofile.feature.Screen
 import platform.UIKit.*

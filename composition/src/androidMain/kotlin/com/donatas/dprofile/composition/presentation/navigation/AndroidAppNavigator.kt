@@ -14,27 +14,38 @@ internal class AndroidAppNavigator(
     private val _navigateBackAction: MutableStateFlow<Unit?> by lazy {
         MutableStateFlow(null)
     }
-    override val navigateBackAction: StateFlow<Unit?> get() = _navigateBackAction.asStateFlow()
 
     private val _navAction: MutableStateFlow<NavigationAction?> by lazy {
         MutableStateFlow(null)
     }
-    override val navAction: StateFlow<NavigationAction?> get() = _navAction.asStateFlow()
-
 
     private val _modalAction: MutableStateFlow<Unit?> by lazy {
         MutableStateFlow(null)
     }
-    override val modalAction: StateFlow<Unit?> get() = _modalAction.asStateFlow()
+
+    private val _closeModal: MutableStateFlow<Unit?> by lazy {
+        MutableStateFlow(null)
+    }
 
     private val _urlNavActions: MutableStateFlow<String?> by lazy {
         MutableStateFlow(null)
     }
 
+    override val closeModal: StateFlow<Unit?> get() = _closeModal.asStateFlow()
+
     override val urlNavActions: StateFlow<String?> get() = _urlNavActions.asStateFlow()
+
+    override val navigateBackAction: StateFlow<Unit?> get() = _navigateBackAction.asStateFlow()
+    override val modalAction: StateFlow<Unit?> get() = _modalAction.asStateFlow()
+    override val navAction: StateFlow<NavigationAction?> get() = _navAction.asStateFlow()
+
 
     override fun navigate(action: NavigationAction) {
         _navAction.update { action }
+    }
+
+    override fun navigateBack() {
+        _navigateBackAction.update { }
     }
 
     override fun showModal(screen: Modal) {
@@ -42,46 +53,49 @@ internal class AndroidAppNavigator(
         _modalAction.update { }
     }
 
-    override fun navigateBack() {
-        _navigateBackAction.update { }
+    override fun closeModal() {
+        _closeModal.update { }
     }
 
     override fun navigateToUrl(url: String) {
         _urlNavActions.update { url }
     }
 
-    override fun resetNavigationAction() {
-        _navAction.value = null
-    }
-
-    override fun resetModalAction() {
-        _modalAction.value = null
-    }
-
     override fun resetBackAction() {
         _navigateBackAction.value = null
+    }
+
+    override fun resetNavigationAction() {
+        _navAction.value = null
     }
 
     override fun resetNavigateToUrlAction() {
         _urlNavActions.value = null
     }
+
+    override fun resetModalAction() {
+        _modalAction.value = null
+        _closeModal.value = null
+    }
 }
 
 internal interface AndroidNavigator {
     fun navigate(action: NavigationAction)
-    fun showModal(screen: Modal)
     fun navigateBack()
     fun navigateToUrl(url: String)
+    fun showModal(screen: Modal)
+    fun closeModal()
 
     val navigateBackAction: StateFlow<Unit?>
     val navAction: StateFlow<NavigationAction?>
     val modalAction: StateFlow<Unit?>
+    val closeModal: StateFlow<Unit?>
     val urlNavActions: StateFlow<String?>
 
-    fun resetNavigationAction()
-    fun resetModalAction()
     fun resetBackAction()
+    fun resetNavigationAction()
     fun resetNavigateToUrlAction()
+    fun resetModalAction()
 }
 
 internal data class NavigationAction(

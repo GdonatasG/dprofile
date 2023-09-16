@@ -1,6 +1,6 @@
 package com.donatas.dprofile.composition.navigation.delegate
 
-import com.donatas.dprofile.composition.navigation.Navigator
+import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.flow.FilterFlow
 import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
 import com.donatas.dprofile.features.github.search.presentation.GithubSearchDelegate
