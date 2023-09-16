@@ -5,7 +5,6 @@ import com.donatas.dprofile.alerts.popup.PopUpController
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.loader.state.ListState
 import com.donatas.dprofile.loader.state.RefreshState
-import com.donatas.dprofile.paginator.DefaultPaginator
 import com.donatas.dprofile.paginator.Paginator
 import com.donatas.dprofile.paginator.state.PaginatorState
 import com.donatas.dprofile.viewmodel.ViewModel
@@ -158,5 +157,10 @@ class GithubViewModel(
     }
 
     fun onSearch() = delegate.onSearch()
-    fun onDetails(repository: Repository) = delegate.onDetails(repoUrl = repository.htmlUrl)
+    fun onDetails(repository: Repository) = delegate.onUrl(url = repository.htmlUrl)
+    fun onVisitProfile() {
+        val user = _user.value as? UserState.Data ?: return
+
+        delegate.onUrl(url = user.user.htmlUrl)
+    }
 }

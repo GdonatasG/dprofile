@@ -13,7 +13,7 @@ class DefaultGithubDelegate(
         get<GithubSearchFlow>().start()
     }
 
-    override fun onDetails(repoUrl: String) {
-        navigator.openBrowser(repoUrl)
+    override fun onUrl(url: String) {
+        navigator.openBrowser(url)
     }
 }

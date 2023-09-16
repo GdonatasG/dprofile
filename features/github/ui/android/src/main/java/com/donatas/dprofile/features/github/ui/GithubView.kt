@@ -6,7 +6,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.stopScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -40,7 +43,6 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
@@ -125,6 +127,10 @@ fun GithubView(model: GithubViewModel) {
 
                     override fun onSearch() {
                         model.onSearch()
+                    }
+
+                    override fun onVisitProfile() {
+                        model.onVisitProfile()
                     }
                 })
         }
@@ -245,6 +251,7 @@ private interface DataDelegate {
     fun onLoadNextPage()
     fun onRetryNextPage()
     fun onSearch()
+    fun onVisitProfile()
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -309,7 +316,8 @@ private fun Data(
             ) {
                 item {
                     Profile(
-                        state = userState
+                        state = userState,
+                        onVisitProfile = delegate::onVisitProfile
                     )
                 }
                 stickyHeader {
@@ -400,10 +408,11 @@ private fun Data(
 
 @Composable
 private fun Profile(
-    state: UserState
+    state: UserState,
+    onVisitProfile: () -> Unit
 ) {
     when (state) {
-        is UserState.Data -> LoadedProfile(user = state.user)
+        is UserState.Data -> LoadedProfile(user = state.user, onVisitProfile = onVisitProfile)
         else -> {}
     }
 }
@@ -448,7 +457,7 @@ private fun LoadingProfile() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun LoadedProfile(user: GithubUser) {
+private fun LoadedProfile(user: GithubUser, onVisitProfile: () -> Unit) {
     val secondaryTextColor = getSecondaryTextColor()
 
     val avatarModifier: Modifier = Modifier
@@ -476,13 +485,29 @@ private fun LoadedProfile(user: GithubUser) {
             )
         }
 
-        Text(
-            text = user.login,
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
-        )
+        Row(
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onVisitProfile
+            ),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = user.login,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
+            Icon(
+                modifier = Modifier.size(20.dp),
+                imageVector = Icons.Outlined.Language,
+                contentDescription = "Visit profile on Github"
+            )
+        }
+
         Row(
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center
         ) {
