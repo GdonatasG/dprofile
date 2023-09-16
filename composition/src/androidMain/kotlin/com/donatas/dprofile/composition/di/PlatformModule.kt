@@ -1,7 +1,6 @@
 package com.donatas.dprofile.composition.di
 
 import com.donatas.dprofile.alerts.Alert
-import com.donatas.dprofile.composition.MainScreen
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.presentation.alert.AlertController
 import com.donatas.dprofile.composition.presentation.alert.AlertControllerAdapter
@@ -34,8 +33,5 @@ internal val navigationModule = module {
             androidNavigator = get<AndroidNavigator>(),
             alertNavigator = get<AlertController>()
         )
-    }
-    factory<MainScreen> {
-        MainScreen()
     }
 }

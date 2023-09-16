@@ -1,6 +1,5 @@
 package com.donatas.dprofile.composition.di
 
-import com.donatas.dprofile.composition.MainScreen
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.flow.FilterFlow
 import com.donatas.dprofile.composition.navigation.flow.GithubSearchFlow
@@ -11,10 +10,9 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal val flowModule: Module = module {
-    single<MainFlow> {
+    factory<MainFlow> {
         MainFlow(
-            navigator = get<Navigator>(),
-            mainScreen = get<MainScreen>()
+            navigator = get<Navigator>()
         )
     }
 
@@ -25,7 +23,7 @@ internal val flowModule: Module = module {
         )
     }
 
-    single<FilterFlow> {
+    factory<FilterFlow> {
         FilterFlow(
             navigator = get<Navigator>(),
             filterFeature = get<FilterFeature>()

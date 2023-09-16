@@ -10,8 +10,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import com.donatas.dprofile.compose.theme.AppTheme
+import com.donatas.dprofile.composition.NavGraphs
 import com.donatas.dprofile.composition.presentation.navigation.AppNavigation
-import com.donatas.dprofile.composition.presentation.screen.NavGraphs
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 

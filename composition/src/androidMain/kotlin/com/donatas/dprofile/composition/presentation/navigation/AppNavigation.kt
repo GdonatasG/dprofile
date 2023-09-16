@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.provider.LocalParentNavController
 import com.donatas.dprofile.composition.navigation.flow.MainFlow
 import com.donatas.dprofile.composition.presentation.alert.AlertController
-import com.donatas.dprofile.composition.presentation.screen.destinations.AlertDestination
-import com.donatas.dprofile.composition.presentation.screen.destinations.ModalDestination
+import com.donatas.dprofile.composition.destinations.AlertDestination
+import com.donatas.dprofile.composition.destinations.ModalDestination
 import com.donatas.dprofile.composition.presentation.screen.modalRoute
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi

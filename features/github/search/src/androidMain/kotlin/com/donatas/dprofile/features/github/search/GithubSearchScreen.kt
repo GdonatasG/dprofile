@@ -1,5 +1,6 @@
 package com.donatas.dprofile.features.github.search
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -63,10 +64,13 @@ actual class GithubSearchScreen actual constructor() : Screen {
         const val route: String = "github_search_screen"
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose() {
         val viewModel: GithubSearchViewModel = getViewModel<GithubSearchViewModel>()
+
+        BackHandler {
+            viewModel.onBack()
+        }
 
         val searchField by viewModel.searchField.collectAsState()
         val popUp by viewModel.popUp.collectAsState()
