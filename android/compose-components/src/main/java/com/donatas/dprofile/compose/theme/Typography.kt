@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.sp
 
 private val DefaultTextStyle = TextStyle(
     fontFamily = SpaceGrotesk,
-    fontWeight = FontWeight.W300,
+    fontWeight = FontWeight.Light,
     fontSize = 16.sp,
     lineHeight = 24.sp,
     letterSpacing = 0.sp
@@ -20,13 +20,13 @@ val AppTypography = Typography(
     headlineLarge = DefaultTextStyle.copy(fontSize = 32.sp, lineHeight = 40.sp),
     headlineMedium = DefaultTextStyle.copy(fontSize = 28.sp, lineHeight = 36.sp),
     headlineSmall = DefaultTextStyle.copy(fontSize = 24.sp, lineHeight = 32.sp),
-    titleLarge = DefaultTextStyle.copy(fontSize = 22.sp, lineHeight = 28.sp),
-    titleMedium = DefaultTextStyle.copy(fontSize = 16.sp, lineHeight = 24.sp),
-    titleSmall = DefaultTextStyle.copy(fontSize = 13.sp, lineHeight = 20.sp),
+    titleLarge = DefaultTextStyle.copy(fontSize = 22.sp, lineHeight = 28.sp, fontWeight = FontWeight.Medium),
+    titleMedium = DefaultTextStyle.copy(fontSize = 16.sp, lineHeight = 24.sp, fontWeight = FontWeight.Medium),
+    titleSmall = DefaultTextStyle.copy(fontSize = 13.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium),
     bodyLarge = DefaultTextStyle.copy(fontSize = 16.sp, lineHeight = 24.sp),
     bodyMedium = DefaultTextStyle.copy(fontSize = 14.sp, lineHeight = 20.sp),
     bodySmall = DefaultTextStyle.copy(fontSize = 12.sp, lineHeight = 16.sp),
-    labelLarge = DefaultTextStyle.copy(fontSize = 14.sp, lineHeight = 20.sp),
-    labelMedium = DefaultTextStyle.copy(fontSize = 12.sp, lineHeight = 16.sp),
-    labelSmall = DefaultTextStyle.copy(fontSize = 11.sp, lineHeight = 16.sp)
+    labelLarge = DefaultTextStyle.copy(fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium),
+    labelMedium = DefaultTextStyle.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Medium),
+    labelSmall = DefaultTextStyle.copy(fontSize = 11.sp, lineHeight = 16.sp, fontWeight = FontWeight.Medium)
 )

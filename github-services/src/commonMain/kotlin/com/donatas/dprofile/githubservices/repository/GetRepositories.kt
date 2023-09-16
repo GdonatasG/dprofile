@@ -24,10 +24,10 @@ class GetRepositories : GithubRequest, Pageable<GetRepositories> {
             val query: String = buildString {
                 append(query)
                 language?.let {
-                    append("language:${it.value}")
+                    append(" language:${it.value}")
                 }
                 user?.let {
-                    append("+user:$it")
+                    append(" user:$it")
                 }
             }
 

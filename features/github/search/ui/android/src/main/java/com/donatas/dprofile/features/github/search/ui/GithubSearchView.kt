@@ -46,6 +46,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -254,7 +255,7 @@ private fun Data(
                             ) {
                                 Icon(
                                     modifier = Modifier.size(18.dp),
-                                    imageVector = if (orderType == ListOrder.Type.DESC) Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
+                                    imageVector = if (orderType == ListOrder.Type.DESC) Icons.Default.ArrowUpward else Icons.Default.ArrowDownward,
                                     contentDescription = "Change list order"
                                 )
                                 Text(
@@ -266,7 +267,7 @@ private fun Data(
                             }
                             Text(
                                 text = if (orderType == ListOrder.Type.DESC) "(Newest to oldest)" else "(Oldest to newest)",
-                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Normal),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )

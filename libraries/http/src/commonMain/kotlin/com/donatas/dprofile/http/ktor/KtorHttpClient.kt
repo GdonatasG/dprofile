@@ -61,7 +61,7 @@ internal class KtorHttpClient(
             this.url.takeFrom(URLBuilder(baseUrl + httpRequest.endpoint).apply {
                 httpRequest.params?.parameters?.map { param ->
                     if (param.encoded) {
-                        this.encodedParameters.append(param.key, param.value)
+                        this.encodedParameters.append(param.key, param.value.encodeURLParameter(spaceToPlus = true))
                     } else {
                         this.parameters.append(param.key, param.value)
                     }

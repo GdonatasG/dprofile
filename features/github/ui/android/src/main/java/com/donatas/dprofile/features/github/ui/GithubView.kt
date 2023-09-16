@@ -57,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -477,37 +478,46 @@ private fun LoadedProfile(user: GithubUser) {
 
         Text(
             text = user.login,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
         )
         Row(
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)
+            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center
         ) {
             Icon(
                 imageVector = Icons.Outlined.Group, contentDescription = null, tint = secondaryTextColor
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = user.followers.toString(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelMedium
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = "followers",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelMedium.copy(secondaryTextColor)
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
-                text = "·", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelMedium
+                text = "·",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelMedium
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = user.following.toString(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelMedium
             )
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
                 text = "following",
                 maxLines = 1,
@@ -517,18 +527,19 @@ private fun LoadedProfile(user: GithubUser) {
         }
         user.location?.let { location ->
             Row(
-                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
                     modifier = Modifier.size(20.dp),
                     imageVector = Icons.Outlined.LocationOn,
                     contentDescription = "location"
                 )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = location,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }

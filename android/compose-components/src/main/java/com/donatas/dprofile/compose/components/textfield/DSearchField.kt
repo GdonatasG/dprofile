@@ -30,6 +30,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,7 +51,7 @@ fun DSearchField(
 ) {
     var isFocused by remember { mutableStateOf(requestFocus) }
 
-    val textStyle = MaterialTheme.typography.labelMedium.copy(color = Color.White)
+    val textStyle = MaterialTheme.typography.labelMedium.copy(color = Color.White, fontWeight = FontWeight.Normal)
     val placeHolderTextStyle =
         textStyle.copy(color = getSecondaryTextColor())
     val placeHolderIconSize by animateDpAsState(targetValue = if (isFocused) 24.dp else 20.dp)

@@ -67,26 +67,26 @@ class GithubSearchViewModel(
     }
 
     private fun applyChanges() {
-        val query = _searchField.value.trim()
+        val trimmedQuery = _searchField.value.trim()
 
         paginator.reset()
+        searchJob?.cancel()
+        searchJob = null
 
-        if (query.isEmpty() && _appliedFiltersState.value is AppliedFiltersState.None) {
-            searchJob?.cancel()
-            searchJob = null
-            searchQueryHolder.setQuery("")
+        if (trimmedQuery.isEmpty()) {
+            searchQueryHolder.reset()
+        }
+
+        if (trimmedQuery.isEmpty() && _appliedFiltersState.value is AppliedFiltersState.None) {
             _viewState.value = GithubSearchViewState.defaultIdle()
 
             return
         }
 
-        searchJob?.cancel()
-        searchJob = null
-
         searchJob = scope.launch {
-            if (query.isNotEmpty() && query != searchQueryHolder.get()) {
+            if (trimmedQuery.isNotEmpty() && trimmedQuery != searchQueryHolder.get()) {
                 delay(500)
-                searchQueryHolder.setQuery(query)
+                searchQueryHolder.setQuery(trimmedQuery)
             }
 
             if (_viewState.value !is GithubSearchViewState.Searched) {
@@ -128,15 +128,9 @@ class GithubSearchViewModel(
 
     fun onSearch(query: String) {
         _searchField.value = query
-        val trimmerQuery = query.trim()
 
-        if (searchQueryHolder.query.value == trimmerQuery) return
 
-        /* if (trimmerQuery.isEmpty()) {
-             searchQueryHolder.setQuery("")
-             applyChanges()
-             return
-         }*/
+        if (searchQueryHolder.query.value == query.trim()) return
 
         applyChanges()
     }

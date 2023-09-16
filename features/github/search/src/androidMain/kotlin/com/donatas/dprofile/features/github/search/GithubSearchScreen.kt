@@ -121,7 +121,10 @@ actual class GithubSearchScreen actual constructor() : Screen {
                             viewModel.onSearch("")
                         })
                 }, centerTitle = false, actions = {
-                    ActionButton(onClick = viewModel::onFilter) {
+                    ActionButton(onClick = {
+                        focusManager.clearFocus(true)
+                        viewModel.onFilter()
+                    }) {
                         Box {
                             Icon(
                                 painter = painterResource(id = R.drawable.filter),
@@ -142,12 +145,13 @@ actual class GithubSearchScreen actual constructor() : Screen {
                 Row(
                     modifier = Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(modifier = Modifier.clickable(interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {
-                            focusManager.clearFocus(true)
-                            viewModel.onDescribeGlobalSearch()
-                        }), verticalAlignment = Alignment.CenterVertically
+                    Row(
+                        modifier = Modifier.clickable(interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                focusManager.clearFocus(true)
+                                viewModel.onDescribeGlobalSearch()
+                            }), verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(imageVector = Icons.Outlined.Info, contentDescription = "Describe global search")
                         Spacer(modifier = Modifier.width(8.dp))
