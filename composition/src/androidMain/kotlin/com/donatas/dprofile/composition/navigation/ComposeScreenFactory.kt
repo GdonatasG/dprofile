@@ -7,6 +7,7 @@ import com.donatas.dprofile.composition.navigation.screens.ContactsScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.EducationScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.ExperienceScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.GithubScreenFactory
+import com.donatas.dprofile.composition.navigation.screens.GithubSearchScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.RoadToProgrammingScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.SkillsScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.components.DefaultAboutMeScreenFactory
@@ -15,6 +16,7 @@ import com.donatas.dprofile.composition.navigation.screens.components.contacts.D
 import com.donatas.dprofile.composition.navigation.screens.components.education.DefaultEducationScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.components.experience.DefaultExperienceScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.components.github.DefaultGithubScreenFactory
+import com.donatas.dprofile.composition.navigation.screens.components.github_search.DefaultGithubSearchScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.components.road_to_programming.DefaultRoadToProgrammingScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.components.skills.DefaultSkillsScreenFactory
 
@@ -45,6 +47,10 @@ class ComposeScreenFactory : ScreenFactory {
 
     override fun github(): GithubScreenFactory {
         return DefaultGithubScreenFactory()
+    }
+
+    override fun githubSearch(): GithubSearchScreenFactory {
+        return DefaultGithubSearchScreenFactory()
     }
 
     override fun contacts(): ContactsScreenFactory {

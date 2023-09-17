@@ -42,11 +42,7 @@ include(":features:about-me:road-to-programming")
 
 include(":features:github")
 include(":features:github:shared")
-
 include(":features:github:search")
-include(":features:github:search:presentation")
-include(":features:github:search:ui:ios")
-include(":features:github:search:ui:android")
 
 include(":features:filter")
 include(":features:filter:presentation")

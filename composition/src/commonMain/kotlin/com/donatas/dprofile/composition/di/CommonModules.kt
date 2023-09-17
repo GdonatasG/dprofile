@@ -2,6 +2,7 @@ package com.donatas.dprofile.composition.di
 
 import com.donatas.dprofile.composition.navigation.core.ModalFactory
 import com.donatas.dprofile.composition.navigation.core.ScreenFactory
+import com.donatas.dprofile.composition.navigation.flow.GithubSearchFlow
 import com.donatas.dprofile.composition.navigation.flow.MainFlow
 
 internal fun commonModules(screenFactory: ScreenFactory, modalFactory: ModalFactory) = listOf(
@@ -12,5 +13,6 @@ internal fun commonModules(screenFactory: ScreenFactory, modalFactory: ModalFact
     githubServicesModule,
     networkingModule,
 
-    MainFlow.module
+    MainFlow.module,
+    GithubSearchFlow.module
 )

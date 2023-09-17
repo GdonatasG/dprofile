@@ -6,6 +6,7 @@ import com.donatas.dprofile.composition.navigation.screens.ContactsScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.EducationScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.ExperienceScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.GithubScreenFactory
+import com.donatas.dprofile.composition.navigation.screens.GithubSearchScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.RoadToProgrammingScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.SkillsScreenFactory
 
@@ -20,5 +21,8 @@ interface ScreenFactory {
 
 
     fun github(): GithubScreenFactory
+
+    fun githubSearch(): GithubSearchScreenFactory
+
     fun contacts(): ContactsScreenFactory
 }

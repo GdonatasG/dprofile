@@ -4,7 +4,6 @@ import com.donatas.dprofile.alerts.popup.DefaultPopUpController
 import com.donatas.dprofile.composition.di.Scopes
 import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
 import com.donatas.dprofile.composition.extensions.createScope
-import com.donatas.dprofile.composition.extensions.sharedViewModel
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.delegate.DefaultContactsDelegate
 import com.donatas.dprofile.composition.navigation.delegate.DefaultGithubDelegate
@@ -51,7 +50,6 @@ import com.donatas.dprofile.utils.isDebug
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.component.KoinScopeComponent
-import org.koin.core.component.get
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.ScopeDSL
@@ -218,7 +216,7 @@ private fun ScopeDSL.aboutMeScreenComponents() {
 
 internal class GithubUserLogin(val value: String)
 
-internal class DefaultGetRepositoriesUseCase(
+internal class DefaultGetRepositories(
     private val githubUserLogin: GithubUserLogin, private val repositoryService: RepositoryService
 ) : GetRepositories {
     override suspend fun invoke(page: Int, perPage: Int): LoadingResult<Repository> {
@@ -291,7 +289,7 @@ private fun ScopeDSL.githubScreenComponents() {
     scoped { GithubUserLogin(value = "GdonatasG") }
 
     scoped<GetRepositories> {
-        DefaultGetRepositoriesUseCase(
+        DefaultGetRepositories(
             githubUserLogin = get<GithubUserLogin>(), repositoryService = get<RepositoryService>()
         )
     }

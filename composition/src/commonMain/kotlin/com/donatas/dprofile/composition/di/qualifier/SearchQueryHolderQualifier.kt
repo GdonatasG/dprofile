@@ -1,6 +1,5 @@
 package com.donatas.dprofile.composition.di.qualifier
 
-enum class PaginatorQualifier {
-    GITHUB,
+enum class SearchQueryHolderQualifier {
     GITHUB_SEARCH
 }
