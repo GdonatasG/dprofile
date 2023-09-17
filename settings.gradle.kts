@@ -35,9 +35,6 @@ include(":libraries:loader")
 include(":libraries:paginator")
 
 include(":features:about-me")
-include(":features:about-me:presentation")
-include(":features:about-me:ui:ios")
-include(":features:about-me:ui:android")
 
 include(":features:about-me:experience")
 include(":features:about-me:experience:presentation")
@@ -60,9 +57,6 @@ include(":features:about-me:road-to-programming:ui:ios")
 include(":features:about-me:road-to-programming:ui:android")
 
 include(":features:github")
-include(":features:github:presentation")
-include(":features:github:ui:ios")
-include(":features:github:ui:android")
 include(":features:github:shared")
 
 include(":features:github:search")
@@ -78,12 +72,3 @@ include(":features:filter:ui:android")
 include(":features:filter:shared")
 
 include(":features:contacts")
-include(":features:contacts:presentation")
-include(":features:contacts:ui:ios")
-include(":features:contacts:ui:android")
-
-
-//include(":features:template")
-//include(":features:template:presentation")
-//include(":features:template:ui:ios")
-//include(":features:template:ui:android")

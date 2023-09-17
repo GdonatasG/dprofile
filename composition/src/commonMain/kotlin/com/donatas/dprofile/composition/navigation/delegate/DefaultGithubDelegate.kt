@@ -2,7 +2,7 @@ package com.donatas.dprofile.composition.navigation.delegate
 
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.flow.GithubSearchFlow
-import com.donatas.dprofile.features.github.presentation.GithubDelegate
+import com.donatas.dprofile.features.github.GithubDelegate
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 

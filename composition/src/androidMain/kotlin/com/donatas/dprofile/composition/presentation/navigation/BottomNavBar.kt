@@ -90,9 +90,9 @@ fun BottomNavBar(navController: NavController, tabs: List<BottomTab>, onSelect: 
                 onClick = Click@{
                     navController.navigate(tab.type.route) {
                         launchSingleTop = true
-                        restoreState = true
+                        restoreState = false
                         popUpTo(navController.graph.findStartDestination().route!!) {
-                            saveState = true
+                            saveState = false
                         }
                     }
                 },
