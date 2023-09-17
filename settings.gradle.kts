@@ -35,26 +35,10 @@ include(":libraries:loader")
 include(":libraries:paginator")
 
 include(":features:about-me")
-
 include(":features:about-me:experience")
-include(":features:about-me:experience:presentation")
-include(":features:about-me:experience:ui:ios")
-include(":features:about-me:experience:ui:android")
-
 include(":features:about-me:education")
-include(":features:about-me:education:presentation")
-include(":features:about-me:education:ui:ios")
-include(":features:about-me:education:ui:android")
-
 include(":features:about-me:skills")
-include(":features:about-me:skills:presentation")
-include(":features:about-me:skills:ui:ios")
-include(":features:about-me:skills:ui:android")
-
 include(":features:about-me:road-to-programming")
-include(":features:about-me:road-to-programming:presentation")
-include(":features:about-me:road-to-programming:ui:ios")
-include(":features:about-me:road-to-programming:ui:android")
 
 include(":features:github")
 include(":features:github:shared")

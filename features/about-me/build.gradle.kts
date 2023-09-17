@@ -17,6 +17,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":libraries:viewmodel"))
+                implementation(project(":libraries:feature"))
 
                 api(project("experience"))
                 api(project("education"))

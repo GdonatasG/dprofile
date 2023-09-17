@@ -3,7 +3,6 @@ package com.donatas.dprofile.composition.navigation.screens.components
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
@@ -11,99 +10,74 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.donatas.dprofile.compose.components.animation.EnterAnimation
 import com.donatas.dprofile.compose.components.appbar.DAppBar
 import com.donatas.dprofile.compose.components.layout.AppScaffold
 import com.donatas.dprofile.compose.components.tab.DLazyTabRow
 import com.donatas.dprofile.composition.navigation.screens.AboutMeScreenFactory
-import com.donatas.dprofile.features.aboutme.education.EducationFeature
-import com.donatas.dprofile.features.aboutme.experience.ExperienceFeature
+import com.donatas.dprofile.features.aboutme.AboutMeTab
 import com.donatas.dprofile.features.aboutme.AboutMeViewModel
-import com.donatas.dprofile.features.aboutme.Tab
-import com.donatas.dprofile.features.aboutme.roadtoprogramming.RoadToProgrammingFeature
-import com.donatas.dprofile.features.aboutme.skills.SkillsFeature
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import org.koin.androidx.compose.get
 
-private fun Tab.toInt(): Int = when (this) {
-    Tab.EXPERIENCE -> 0
-    Tab.EDUCATION -> 1
-    Tab.SKILLS -> 2
-    Tab.ROAD_TO_PROGRAMMING -> 3
-}
+private val AboutMeTab.Type.route: String
+    get() = when (this) {
+        AboutMeTab.Type.EXPERIENCE -> "experience"
+        AboutMeTab.Type.EDUCATION -> "education"
+        AboutMeTab.Type.SKILLS -> "skills"
+        AboutMeTab.Type.ROAD_TO_PROGRAMMING -> "road_to_programming"
+    }
 
-private fun Int.toTab(): Tab = when (this) {
-    0 -> Tab.EXPERIENCE
-    1 -> Tab.EDUCATION
-    2 -> Tab.SKILLS
-    3 -> Tab.ROAD_TO_PROGRAMMING
-    else -> throw RuntimeException("Tab not implemented")
-}
+private val AboutMeTab.Type.title: String
+    get() = when (this) {
+        AboutMeTab.Type.EXPERIENCE -> "Experience"
+        AboutMeTab.Type.EDUCATION -> "Education"
+        AboutMeTab.Type.SKILLS -> "Skills"
+        AboutMeTab.Type.ROAD_TO_PROGRAMMING -> "Road to programming"
+    }
 
-class DefaultAboutMeScreenFactory: AboutMeScreenFactory {
+class DefaultAboutMeScreenFactory : AboutMeScreenFactory {
     @OptIn(ExperimentalAnimationApi::class)
     @Composable
     override fun Compose(viewModel: AboutMeViewModel) {
         val navController: NavHostController = rememberAnimatedNavController()
 
         val selectedTab by viewModel.selectedTab.collectAsState()
+        AppScaffold(appBar = {
+            DAppBar(title = "About me")
+        }, tabBar = {
+            DLazyTabRow(selectedIndex = viewModel.tabs.indexOf(selectedTab),
+                items = viewModel.tabs.map { it.type.title },
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                onTabClick = Click@{ index ->
+                    val newTab: AboutMeTab = viewModel.tabs[index]
 
-        LaunchedEffect(selectedTab) {
-            navController.changeTab(selectedTab)
-        }
+                    if (selectedTab.type == newTab.type) return@Click
 
-        AppScaffold(
-            appBar = {
-                DAppBar(title = "About me")
-            },
-            tabBar = {
-                DLazyTabRow(
-                    selectedIndex = selectedTab.toInt(),
-                    items = listOf(
-                        "Experience",
-                        "Education",
-                        "Skills",
-                        "Road to programming"
-                    ),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 8.dp),
-                    onTabClick = { index ->
-                        val newTab: Tab = index.toTab()
-                        viewModel.setTab(newTab)
-                    }
-                )
-            }
-        ) {
+                    viewModel.select(newTab)
+                    navController.changeTab(selectedTab)
+                })
+        }) {
             NavHost(
-                navController = navController,
-                startDestination = Tab.EXPERIENCE.route
+                navController = navController, startDestination = AboutMeTab.Type.EXPERIENCE.route
             ) {
-                composable(Tab.EXPERIENCE.route) {
-                    EnterAnimation {
-                        get<ExperienceFeature>().screen().Compose()
-                    }
+                composable(AboutMeTab.Type.EXPERIENCE.route) {
+                    selectedTab.factory().Compose()
                 }
-                composable(Tab.EDUCATION.route) {
-                    EnterAnimation {
-                        get<EducationFeature>().screen().Compose()
-                    }
+                composable(AboutMeTab.Type.EDUCATION.route) {
+                    selectedTab.factory().Compose()
                 }
-                composable(Tab.SKILLS.route) {
-                    EnterAnimation {
-                        get<SkillsFeature>().screen().Compose()
-                    }
+                composable(AboutMeTab.Type.SKILLS.route) {
+                    selectedTab.factory().Compose()
                 }
-                composable(Tab.ROAD_TO_PROGRAMMING.route) {
-                    EnterAnimation {
-                        get<RoadToProgrammingFeature>().screen().Compose()
-                    }
+                composable(AboutMeTab.Type.ROAD_TO_PROGRAMMING.route) {
+                    selectedTab.factory().Compose()
                 }
             }
         }
     }
 
-    private fun NavHostController.changeTab(tab: Tab) {
+    private fun NavHostController.changeTab(tab: AboutMeTab) {
         this.popBackStack()
-        this.navigate(tab.route) {
+        this.navigate(tab.type.route) {
             launchSingleTop = true
             restoreState = true
             popUpTo(this@changeTab.graph.findStartDestination().route!!) {

@@ -4,7 +4,11 @@ import com.donatas.dprofile.composition.navigation.core.ScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.AboutMeScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.BottomTabBarScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.ContactsScreenFactory
+import com.donatas.dprofile.composition.navigation.screens.EducationScreenFactory
+import com.donatas.dprofile.composition.navigation.screens.ExperienceScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.GithubScreenFactory
+import com.donatas.dprofile.composition.navigation.screens.RoadToProgrammingScreenFactory
+import com.donatas.dprofile.composition.navigation.screens.SkillsScreenFactory
 import org.koin.dsl.module
 
 internal fun screenModule(factory: ScreenFactory) = module {
@@ -18,6 +22,22 @@ internal fun screenModule(factory: ScreenFactory) = module {
 
     single<AboutMeScreenFactory> {
         get<ScreenFactory>().aboutMe()
+    }
+
+    single<EducationScreenFactory> {
+        get<ScreenFactory>().education()
+    }
+
+    single<ExperienceScreenFactory> {
+        get<ScreenFactory>().experience()
+    }
+
+    single<SkillsScreenFactory> {
+        get<ScreenFactory>().skills()
+    }
+
+    single<RoadToProgrammingScreenFactory> {
+        get<ScreenFactory>().roadToProgramming()
     }
 
     single<GithubScreenFactory> {
