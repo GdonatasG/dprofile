@@ -1,4 +1,4 @@
-package com.donatas.dprofile.features.filter.presentation
+package com.donatas.dprofile.features.filter
 
 import com.donatas.dprofile.features.filter.shared.FilterStore
 import com.donatas.dprofile.utils.observer.Observer
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class FilterViewModel(
+class FiltersViewModel(
     private val delegate: FiltersDelegate,
     private val addFilterStoreObserver: AddFilterStoreObserver,
     private val removeFilterStoreObserver: RemoveFilterStoreObserver,
@@ -46,13 +46,13 @@ class FilterViewModel(
         }
     }
 
-    fun onResetFilters(){
+    fun onResetFilters() {
         _filterStore.value.data.forEach { filter ->
             filter.onReset()
         }
     }
 
-    fun onApply(){
+    fun onApply() {
         applyFilters(_filterStore.value)
         delegate.onBack()
     }
@@ -62,7 +62,5 @@ class FilterViewModel(
         removeFilterStoreObserver(filterStoreObserver)
     }
 
-
-
-
+    fun onBack() = delegate.onBack()
 }

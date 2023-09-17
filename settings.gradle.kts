@@ -45,10 +45,6 @@ include(":features:github:shared")
 include(":features:github:search")
 
 include(":features:filter")
-include(":features:filter:presentation")
-include(":features:filter:ui:ios")
-include(":features:filter:ui:android")
-
 include(":features:filter:shared")
 
 include(":features:contacts")

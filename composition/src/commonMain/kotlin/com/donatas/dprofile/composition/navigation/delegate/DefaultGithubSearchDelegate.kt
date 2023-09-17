@@ -1,17 +1,14 @@
 package com.donatas.dprofile.composition.navigation.delegate
 
 import com.donatas.dprofile.composition.navigation.core.Navigator
-import com.donatas.dprofile.composition.navigation.flow.FilterFlow
-import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
+import com.donatas.dprofile.composition.navigation.screens.FiltersModal
 import com.donatas.dprofile.features.github.search.GithubSearchDelegate
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.scope.Scope
 
 class DefaultGithubSearchDelegate(
     private val scope: Scope,
-    private val navigator: Navigator,
-    private val cache: FilterStoreObservableCache
+    private val navigator: Navigator
 ) : GithubSearchDelegate, KoinComponent {
     private var popped: Boolean = false
 
@@ -24,7 +21,9 @@ class DefaultGithubSearchDelegate(
     }
 
     override fun onFilter() {
-        get<FilterFlow>().start(cache)
+        val modal = scope.get<FiltersModal>()
+
+        navigator.push(modal)
     }
 
     override fun onDetails(repoUrl: String) {

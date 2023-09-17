@@ -85,6 +85,9 @@ internal fun AppNavigation(
 
     LaunchedEffect(navigateBack) {
         navigateBack?.let {
+            if (navHostController.currentDestination!!.route == modalRoute) {
+                navHostController.navigateUp()
+            }
             navHostController.navigateUp()
             navigator.resetBackAction()
         }
@@ -110,7 +113,7 @@ internal fun AppNavigation(
     }
 
     LaunchedEffect(closeModalAction) {
-        closeAlertAction?.let {
+        closeModalAction?.let {
             if (navHostController.currentDestination!!.route == modalRoute) {
                 navHostController.navigateUp()
             }

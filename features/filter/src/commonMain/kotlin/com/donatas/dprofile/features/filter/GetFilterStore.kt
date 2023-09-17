@@ -1,4 +1,4 @@
-package com.donatas.dprofile.features.filter.presentation
+package com.donatas.dprofile.features.filter
 
 import com.donatas.dprofile.features.filter.shared.FilterStore
 

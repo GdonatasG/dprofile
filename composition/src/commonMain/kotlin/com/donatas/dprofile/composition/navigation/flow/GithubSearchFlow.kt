@@ -11,8 +11,16 @@ import com.donatas.dprofile.composition.extensions.createScope
 import com.donatas.dprofile.composition.extensions.sharedViewModel
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.delegate.DefaultGithubSearchDelegate
+import com.donatas.dprofile.composition.navigation.screens.FiltersModal
+import com.donatas.dprofile.composition.navigation.screens.FiltersModalFactory
 import com.donatas.dprofile.composition.navigation.screens.GithubSearchScreen
 import com.donatas.dprofile.composition.navigation.screens.GithubSearchScreenFactory
+import com.donatas.dprofile.features.filter.AddFilterStoreObserver
+import com.donatas.dprofile.features.filter.ApplyFilters
+import com.donatas.dprofile.features.filter.FiltersDelegate
+import com.donatas.dprofile.features.filter.FiltersViewModel
+import com.donatas.dprofile.features.filter.GetFilterStore
+import com.donatas.dprofile.features.filter.RemoveFilterStoreObserver
 import com.donatas.dprofile.features.filter.shared.FilterStore
 import com.donatas.dprofile.features.filter.shared.FilterValue
 import com.donatas.dprofile.features.filter.shared.ParentData
@@ -33,6 +41,7 @@ import com.donatas.dprofile.loader.SearchQueryHolder
 import com.donatas.dprofile.paginator.DefaultPaginator
 import com.donatas.dprofile.paginator.Paginator
 import com.donatas.dprofile.paginator.PerPage
+import com.donatas.dprofile.utils.observer.Observer
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -45,10 +54,6 @@ class GithubSearchFlow(
 ) : KoinScopeComponent {
     override val scope: Scope by lazy {
         createScope<GithubSearchFlow>(scope = Scopes.GITHUB_SEARCH)
-    }
-
-    init {
-        println("FLOWWWW")
     }
 
     fun start() {
@@ -73,8 +78,7 @@ private val scope = module {
         scoped<GithubSearchDelegate>() {
             DefaultGithubSearchDelegate(
                 scope = this,
-                navigator = get<Navigator>(),
-                cache = get<FilterStoreObservableCache>(qualifier = named(FilterStoreObservableCacheQualifier.GITHUB_SEARCH))
+                navigator = get<Navigator>()
             )
         }
 
@@ -206,7 +210,88 @@ private val scope = module {
                 alert = get<Alert.Coordinator>()
             )
         }
+
+        factory<FiltersModal>() {
+            FiltersModal(
+                factory = get<FiltersModalFactory>(),
+                viewModel = get<FiltersViewModel>()
+            )
+        }
+
+        scoped<FiltersDelegate>(qualifier = named(Scopes.GITHUB_SEARCH)) {
+            object : FiltersDelegate {
+                override fun onBack() {
+                    get<Navigator>().closeModal()
+                }
+
+            }
+        }
+
+        scoped<AddFilterStoreObserver>(qualifier = named(Scopes.GITHUB_SEARCH)) {
+            DefaultAddFilterStoreObserver(
+                cache = get<FilterStoreObservableCache>(qualifier = named(FilterStoreObservableCacheQualifier.GITHUB_SEARCH))
+            )
+        }
+
+        scoped<RemoveFilterStoreObserver>(qualifier = named(Scopes.GITHUB_SEARCH)) {
+            DefaultRemoveFilterStoreObserver(
+                cache = get<FilterStoreObservableCache>(qualifier = named(FilterStoreObservableCacheQualifier.GITHUB_SEARCH))
+            )
+        }
+
+        scoped<GetFilterStore>(qualifier = named(Scopes.GITHUB_SEARCH)) {
+            DefaultGetFilterStore(
+                cache = get<FilterStoreObservableCache>(qualifier = named(FilterStoreObservableCacheQualifier.GITHUB_SEARCH))
+            )
+        }
+
+        scoped<ApplyFilters>(qualifier = named(Scopes.GITHUB_SEARCH)) {
+            DefaultApplyFilters(
+                cache = get<FilterStoreObservableCache>(qualifier = named(FilterStoreObservableCacheQualifier.GITHUB_SEARCH))
+            )
+        }
+
+        sharedViewModel {
+            FiltersViewModel(
+                delegate = get<FiltersDelegate>(qualifier = named(Scopes.GITHUB_SEARCH)),
+                addFilterStoreObserver = get<AddFilterStoreObserver>(qualifier = named(Scopes.GITHUB_SEARCH)),
+                removeFilterStoreObserver = get<RemoveFilterStoreObserver>(qualifier = named(Scopes.GITHUB_SEARCH)),
+                getFilterStore = get<GetFilterStore>(qualifier = named(Scopes.GITHUB_SEARCH)),
+                applyFilters = get<ApplyFilters>(qualifier = named(Scopes.GITHUB_SEARCH))
+            )
+        }
     }
+}
+
+private class DefaultAddFilterStoreObserver(
+    private val cache: FilterStoreObservableCache
+) : AddFilterStoreObserver {
+    override fun invoke(observer: Observer<FilterStore>) {
+        cache.add(observer)
+    }
+}
+
+private class DefaultRemoveFilterStoreObserver(
+    private val cache: FilterStoreObservableCache
+) : RemoveFilterStoreObserver {
+    override fun invoke(observer: Observer<FilterStore>) {
+        cache.remove(observer)
+    }
+}
+
+private class DefaultGetFilterStore(
+    private val cache: FilterStoreObservableCache
+) : GetFilterStore {
+    override fun invoke(): FilterStore = cache.get()
+}
+
+private class DefaultApplyFilters(
+    private val cache: FilterStoreObservableCache
+) : ApplyFilters {
+    override fun invoke(filterStore: FilterStore) {
+        cache.save(filterStore)
+    }
+
 }
 
 internal class DefaultSearchRepositoriesUseCase(

@@ -2,8 +2,6 @@ package com.donatas.dprofile.composition
 
 import android.app.Application
 import com.donatas.dprofile.composition.di.commonModules
-import com.donatas.dprofile.composition.di.delegateModule
-import com.donatas.dprofile.composition.di.featureModule
 import com.donatas.dprofile.composition.di.navigationModule
 import com.donatas.dprofile.composition.navigation.ComposeModalFactory
 import com.donatas.dprofile.composition.navigation.ComposeScreenFactory
@@ -21,14 +19,7 @@ actual open class App : Application(), KoinComponent {
             this.allowOverride(true)
             androidContext(this@App)
 
-            val modules = mutableListOf<Module>(
-                navigationModule,
-
-
-                // TODO: remove both after refactoring
-                featureModule,
-                delegateModule
-            )
+            val modules = mutableListOf<Module>(navigationModule)
 
             modules.addAll(
                 commonModules(

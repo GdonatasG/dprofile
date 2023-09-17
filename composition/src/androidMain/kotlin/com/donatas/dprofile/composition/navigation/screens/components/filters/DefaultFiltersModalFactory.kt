@@ -1,15 +1,10 @@
-package com.donatas.dprofile.features.filter
+package com.donatas.dprofile.composition.navigation.screens.components.filters
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,26 +13,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.ModalDivider
@@ -45,17 +32,19 @@ import com.donatas.dprofile.compose.components.appbar.AppBarTitle
 import com.donatas.dprofile.compose.components.button.FullWidthButton
 import com.donatas.dprofile.compose.components.layout.ModalScaffold
 import com.donatas.dprofile.compose.components.text.SectionTitle
-import com.donatas.dprofile.feature.Modal
-import com.donatas.dprofile.features.filter.presentation.FilterViewModel
-import org.koin.androidx.compose.getViewModel
+import com.donatas.dprofile.composition.navigation.screens.FiltersModalFactory
+import com.donatas.dprofile.features.filter.FiltersViewModel
 
-actual class FilterModal actual constructor() : Modal {
-    @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
+class DefaultFiltersModalFactory : FiltersModalFactory {
+
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
-    override fun Compose() {
-        val viewModel: FilterViewModel = getViewModel<FilterViewModel>()
-
+    override fun Compose(viewModel: FiltersViewModel) {
         val filters by viewModel.filterStore.collectAsState()
+
+        BackHandler {
+            viewModel.onBack()
+        }
 
         ModalScaffold {
             Box(
