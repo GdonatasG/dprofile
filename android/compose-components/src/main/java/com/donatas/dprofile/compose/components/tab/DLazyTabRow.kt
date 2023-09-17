@@ -10,13 +10,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 @Composable
 fun DLazyTabRow(
@@ -25,12 +28,14 @@ fun DLazyTabRow(
     contentPadding: PaddingValues = PaddingValues(),
     onTabClick: (index: Int) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+
     val listState = rememberLazyListState()
 
     var selected by remember { mutableIntStateOf(selectedIndex) }
 
     LaunchedEffect(selectedIndex) {
-        if (selectedIndex == selected) return@LaunchedEffect
+/*        if (selectedIndex == selected) return@LaunchedEffect*/
 
         val selectedItemInfo = listState.layoutInfo.visibleItemsInfo.find { it.index == selectedIndex }
         val isItemSelectedFullyVisible = selectedItemInfo?.run {
@@ -43,7 +48,7 @@ fun DLazyTabRow(
         } ?: false
 
         selected = selectedIndex
-        if (!isItemSelectedFullyVisible){
+        if (!isItemSelectedFullyVisible) {
             listState.animateScrollToItem(selectedIndex)
         }
 

@@ -1,13 +1,12 @@
 package com.donatas.dprofile.composition.di
 
 import com.donatas.dprofile.alerts.Alert
-import com.donatas.dprofile.composition.presentation.alert.AlertState
-import com.donatas.dprofile.composition.MainScreen
-import com.donatas.dprofile.composition.navigation.Navigator
+import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.presentation.alert.AlertController
 import com.donatas.dprofile.composition.presentation.alert.AlertControllerAdapter
+import com.donatas.dprofile.composition.presentation.alert.AlertCoordinator
+import com.donatas.dprofile.composition.presentation.alert.AlertState
 import com.donatas.dprofile.composition.presentation.alert.AlertStateAdapter
-import com.donatas.dprofile.composition.presentation.navigation.AndroidAlertNavigator
 import com.donatas.dprofile.composition.presentation.navigation.AndroidAppNavigator
 import com.donatas.dprofile.composition.presentation.navigation.AndroidNavigator
 import com.donatas.dprofile.composition.presentation.navigation.ModalState
@@ -20,8 +19,8 @@ internal val navigationModule = module {
     single<AlertState> { AlertStateAdapter() }
     single<AlertController> { AlertControllerAdapter(alertState = get()) }
     single<Alert.Coordinator>() {
-        AndroidAlertNavigator(
-            alert = get<AlertController>()
+        AlertCoordinator(
+            controller = get<AlertController>()
         )
     }
     single<AndroidNavigator>() {
@@ -31,10 +30,8 @@ internal val navigationModule = module {
     }
     single<Navigator> {
         PlatformNavigator(
-            androidNavigator = get<AndroidNavigator>()
+            androidNavigator = get<AndroidNavigator>(),
+            alertNavigator = get<AlertController>()
         )
-    }
-    factory<MainScreen> {
-        MainScreen()
     }
 }

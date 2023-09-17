@@ -8,17 +8,41 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.donatas.dprofile.compose.components.animation.EnterAnimation
 import com.donatas.dprofile.compose.provider.LocalParentNavController
+import com.donatas.dprofile.composition.presentation.BottomTab
 import com.donatas.dprofile.composition.presentation.screen.modalRoute
-import com.donatas.dprofile.features.aboutme.AboutMeFeature
-import com.donatas.dprofile.features.contacts.ContactsFeature
-import com.donatas.dprofile.features.github.GithubFeature
-import org.koin.androidx.compose.get
 
 @Composable
 fun MainScreenBottomNavigation(
-    bottomNavController: NavHostController
+    bottomNavController: NavHostController,
+    screen: @Composable () -> Unit,
+    onActivityDestroyed: () -> Unit
+) {
+
+    PrivateBackHandler(
+        bottomNavController = bottomNavController,
+        onActivityDestroyed = onActivityDestroyed
+    )
+
+    NavHost(
+        navController = bottomNavController, startDestination = BottomTab.Type.ABOUT_ME.route
+    ) {
+        composable(BottomTab.Type.ABOUT_ME.route) {
+            screen()
+        }
+        composable(BottomTab.Type.GITHUB.route) {
+            screen()
+        }
+        composable(BottomTab.Type.CONTACTS.route) {
+            screen()
+        }
+    }
+}
+
+@Composable
+private fun PrivateBackHandler(
+    bottomNavController: NavHostController,
+    onActivityDestroyed: () -> Unit
 ) {
     val activity = (LocalContext.current as? Activity)
     val parentNavController: NavController = LocalParentNavController.current
@@ -33,27 +57,8 @@ fun MainScreenBottomNavigation(
         val didPop = bottomNavController.popBackStack()
 
         if (!didPop) {
+            onActivityDestroyed()
             activity?.finish()
-        }
-    }
-
-    NavHost(
-        navController = bottomNavController, startDestination = Tab.ABOUT_ME.route
-    ) {
-        composable(Tab.ABOUT_ME.route) {
-            EnterAnimation {
-                get<AboutMeFeature>().screen().Compose()
-            }
-        }
-        composable(Tab.GITHUB.route) {
-            EnterAnimation {
-                get<GithubFeature>().screen().Compose()
-            }
-        }
-        composable(Tab.CONTACTS.route) {
-            EnterAnimation {
-                get<ContactsFeature>().screen().Compose()
-            }
         }
     }
 }

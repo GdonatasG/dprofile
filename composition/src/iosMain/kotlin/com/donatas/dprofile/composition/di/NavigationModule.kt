@@ -2,7 +2,7 @@ package com.donatas.dprofile.composition.di
 
 import com.donatas.dprofile.composition.MainScreen
 import com.donatas.dprofile.composition.UIKitNavigator
-import com.donatas.dprofile.composition.navigation.Navigator
+import com.donatas.dprofile.composition.navigation.core.Navigator
 import org.koin.dsl.module
 import platform.UIKit.UINavigationController
 

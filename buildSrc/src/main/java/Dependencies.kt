@@ -43,9 +43,6 @@ object Dependencies {
         const val testEspressoCore = "androidx.test.espresso:espresso-core:3.5.1"
         const val tesUIAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 
-        const val glide = "com.github.bumptech.glide:compose:1.0.0-alpha.5"
-
-
         object Compose {
             val composeBom = "androidx.compose:compose-bom:2023.06.01"
             const val runtime = "androidx.compose.runtime:runtime"
@@ -59,6 +56,7 @@ object Dependencies {
             const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
             const val animationAndroid = "androidx.compose.animation:animation-android:1.5.0-beta01"
             const val lottie = "com.airbnb.android:lottie-compose:${Versions.lottieCompose}"
+            const val glide = "com.github.bumptech.glide:compose:1.0.0-alpha.5"
 
             object Destinations {
                 const val core = "io.github.raamcosta.compose-destinations:core:${Versions.composeDestinations}"

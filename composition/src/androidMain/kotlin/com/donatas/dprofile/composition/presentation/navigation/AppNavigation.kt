@@ -19,8 +19,9 @@ import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.provider.LocalParentNavController
 import com.donatas.dprofile.composition.navigation.flow.MainFlow
 import com.donatas.dprofile.composition.presentation.alert.AlertController
-import com.donatas.dprofile.composition.presentation.screen.destinations.AlertDestination
-import com.donatas.dprofile.composition.presentation.screen.destinations.ModalDestination
+import com.donatas.dprofile.composition.destinations.AlertDestination
+import com.donatas.dprofile.composition.destinations.ModalDestination
+import com.donatas.dprofile.composition.presentation.screen.modalRoute
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
@@ -52,8 +53,11 @@ internal fun AppNavigation(
     val navHostController = navEngine.rememberNavController(bottomSheetNavigator)
 
     val navAction by navigator.navAction.collectAsState()
-    val modalAction by navigator.modalAction.collectAsState()
     val navigateBack by navigator.navigateBackAction.collectAsState()
+
+    val modalAction by navigator.modalAction.collectAsState()
+    val closeModalAction by navigator.closeModal.collectAsState()
+
     val urlAction by navigator.urlNavActions.collectAsState()
 
     val alertAction by alertController.navigationAction.collectAsState()
@@ -74,13 +78,16 @@ internal fun AppNavigation(
 
     LaunchedEffect(closeAlertAction) {
         closeAlertAction?.let {
-            navHostController.popBackStack()
+            navHostController.navigateUp()
             alertController.resetCloseAction()
         }
     }
 
     LaunchedEffect(navigateBack) {
         navigateBack?.let {
+            if (navHostController.currentDestination!!.route == modalRoute) {
+                navHostController.navigateUp()
+            }
             navHostController.navigateUp()
             navigator.resetBackAction()
         }
@@ -101,6 +108,15 @@ internal fun AppNavigation(
                     navOptions = AppNavOptions.Builder().setLaunchSingleTop(true).build()
                 )
             )
+            navigator.resetModalAction()
+        }
+    }
+
+    LaunchedEffect(closeModalAction) {
+        closeModalAction?.let {
+            if (navHostController.currentDestination!!.route == modalRoute) {
+                navHostController.navigateUp()
+            }
             navigator.resetModalAction()
         }
     }

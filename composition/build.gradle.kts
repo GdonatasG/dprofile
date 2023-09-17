@@ -55,6 +55,8 @@ kotlin {
                 implementation(Dependencies.Android.Compose.Destinations.core)
                 implementation(Dependencies.Android.Compose.Destinations.animations)
 
+                implementation(Dependencies.Android.Compose.glide)
+
                 implementation(Dependencies.Koin.compose)
                 api(Dependencies.Koin.android)
             }

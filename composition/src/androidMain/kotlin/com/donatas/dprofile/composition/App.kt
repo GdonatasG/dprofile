@@ -1,15 +1,14 @@
 package com.donatas.dprofile.composition
 
 import android.app.Application
-import com.donatas.dprofile.composition.di.delegateModule
-import com.donatas.dprofile.composition.di.featureModule
-import com.donatas.dprofile.composition.di.flowModule
-import com.donatas.dprofile.composition.di.githubServicesModule
+import com.donatas.dprofile.composition.di.commonModules
 import com.donatas.dprofile.composition.di.navigationModule
-import com.donatas.dprofile.composition.di.networkingModule
+import com.donatas.dprofile.composition.navigation.ComposeModalFactory
+import com.donatas.dprofile.composition.navigation.ComposeScreenFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 
 actual open class App : Application(), KoinComponent {
 
@@ -19,16 +18,17 @@ actual open class App : Application(), KoinComponent {
         startKoin {
             this.allowOverride(true)
             androidContext(this@App)
-            modules(
-                navigationModule
+
+            val modules = mutableListOf<Module>(navigationModule)
+
+            modules.addAll(
+                commonModules(
+                    screenFactory = ComposeScreenFactory(),
+                    modalFactory = ComposeModalFactory()
+                )
             )
-            modules(
-                flowModule,
-                featureModule,
-                delegateModule,
-                networkingModule,
-                githubServicesModule
-            )
+
+            modules(modules)
         }
     }
 }

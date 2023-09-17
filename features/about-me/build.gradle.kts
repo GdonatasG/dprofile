@@ -7,65 +7,25 @@ val module = ":features:about-me"
 
 kotlin {
     android()
-
-    val config: org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.(String) -> Unit = Config@{
-        if (org.jetbrains.kotlin.cli.common.isWindows) return@Config
-
-        val platform = when (name) {
-            "iosX64", "iosSimulatorArm64" -> "iphonesimulator"
-            "iosArm64" -> "iphoneos"
-            else -> error("Unsupported target: $name")
-        }
-
-        compilations.getByName("main") {
-            cinterops.create("UI") {
-                val interopTask = tasks[interopProcessingTaskName]
-                interopTask.dependsOn("$module:ui:ios:build${platform.capitalize()}")
-                includeDirs.headerFilterOnly("$projectDir/ui/ios/build/Release-$platform/include")
-            }
-        }
-    }
-
-    iosX64 {
-        config(name)
-    }
-
-    iosArm64 {
-        config(name)
-    }
-
-    iosSimulatorArm64 {
-        config(name)
-    }
-
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
     macosX64()
     macosArm64()
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":libraries:feature"))
                 implementation(project(":libraries:viewmodel"))
-                api(project("$module:presentation"))
+                implementation(project(":libraries:feature"))
 
-                implementation(project("experience"))
-                implementation(project("education"))
-                implementation(project("skills"))
-                implementation(project("road-to-programming"))
-
-                implementation(Dependencies.KotlinX.coroutinesCore)
-                implementation(Dependencies.Koin.core)
+                api(project("experience"))
+                api(project("education"))
+                api(project("skills"))
+                api(project("road-to-programming"))
             }
         }
-        val androidMain by getting {
-            dependencies {
-                implementation(project("$module:ui:android"))
-                implementation(project(":android:compose-components"))
-                implementation(Dependencies.Koin.android)
-                implementation(Dependencies.Koin.compose)
-                implementation(Dependencies.Android.Compose.Destinations.animations)
-            }
-        }
+        val androidMain by getting
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -95,13 +55,5 @@ android {
     compileOptions {
         sourceCompatibility = Dependencies.CompileOptions.sourceCompatibility
         targetCompatibility = Dependencies.CompileOptions.targetCompatibility
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
 }

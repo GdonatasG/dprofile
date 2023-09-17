@@ -1,21 +1,29 @@
 package com.donatas.dprofile.composition.navigation.delegate
 
-import com.donatas.dprofile.composition.navigation.Navigator
-import com.donatas.dprofile.composition.navigation.flow.FilterFlow
-import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
-import com.donatas.dprofile.features.github.search.presentation.GithubSearchDelegate
+import com.donatas.dprofile.composition.navigation.core.Navigator
+import com.donatas.dprofile.composition.navigation.screens.FiltersModal
+import com.donatas.dprofile.features.github.search.GithubSearchDelegate
+import org.koin.core.component.KoinComponent
+import org.koin.core.scope.Scope
 
 class DefaultGithubSearchDelegate(
-    private val navigator: Navigator,
-    private val cache: FilterStoreObservableCache,
-    private val filterFlow: FilterFlow
-) : GithubSearchDelegate {
+    private val scope: Scope,
+    private val navigator: Navigator
+) : GithubSearchDelegate, KoinComponent {
+    private var popped: Boolean = false
+
     override fun onBack() {
+        if (popped) return
+        popped = true
+
         navigator.pop()
+        scope.close()
     }
 
     override fun onFilter() {
-        filterFlow.start(cache)
+        val modal = scope.get<FiltersModal>()
+
+        navigator.push(modal)
     }
 
     override fun onDetails(repoUrl: String) {

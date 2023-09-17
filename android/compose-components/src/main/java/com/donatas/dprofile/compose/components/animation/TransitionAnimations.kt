@@ -8,45 +8,42 @@ import com.ramcosta.composedestinations.spec.DestinationStyleAnimated
 
 @OptIn(ExperimentalAnimationApi::class)
 object SlideFromSideTransition : DestinationStyleAnimated {
+    private const val ANIMATION_DURATION = 360
+
     override fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition(): EnterTransition =
-        SlideHorizontallyEnterTransition
-
-    override fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition(): ExitTransition =
-        slideOutHorizontally(
-            targetOffsetX = { -it / 2 },
-            animationSpec = tween(
-                durationMillis = AnimationDuration,
-                easing = FastOutSlowInEasing
-            )
-        ) + fadeOut(animationSpec = tween(AnimationDuration))
-
-    override fun AnimatedContentTransitionScope<NavBackStackEntry>.popExitTransition(): ExitTransition =
-        SlideHorizontalPopExitTransition
-
-    override fun AnimatedContentTransitionScope<NavBackStackEntry>.popEnterTransition(): EnterTransition =
         slideInHorizontally(
-            initialOffsetX = { -it / 2 },
+            initialOffsetX = { it },
             animationSpec = tween(
-                durationMillis = AnimationDuration,
+                durationMillis = ANIMATION_DURATION,
                 easing = FastOutSlowInEasing
             )
         )
+
+    override fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition(): ExitTransition =
+        slideOutHorizontally(
+            targetOffsetX = { -it / 3 },
+            animationSpec = tween(
+                durationMillis = ANIMATION_DURATION,
+                easing = FastOutSlowInEasing
+            )
+        )
+
+    override fun AnimatedContentTransitionScope<NavBackStackEntry>.popEnterTransition(): EnterTransition =
+        slideInHorizontally(
+            initialOffsetX = { -it / 3 },
+            animationSpec = tween(
+                durationMillis = ANIMATION_DURATION,
+                easing = FastOutSlowInEasing
+            )
+        )
+
+    override fun AnimatedContentTransitionScope<NavBackStackEntry>.popExitTransition(): ExitTransition =
+        slideOutHorizontally(
+            targetOffsetX = { it },
+            animationSpec = tween(
+                durationMillis = ANIMATION_DURATION,
+                easing = FastOutSlowInEasing
+            )
+        )
+
 }
-
-private const val AnimationDuration = 400
-
-private val SlideHorizontallyEnterTransition = slideInHorizontally(
-    initialOffsetX = { it / 2 },
-    animationSpec = tween(
-        durationMillis = AnimationDuration,
-        easing = FastOutSlowInEasing
-    )
-) + fadeIn(animationSpec = tween(AnimationDuration / 2))
-
-private val SlideHorizontalPopExitTransition = slideOutHorizontally(
-    targetOffsetX = { it / 2 },
-    animationSpec = tween(
-        durationMillis = AnimationDuration,
-        easing = FastOutSlowInEasing
-    )
-) + fadeOut(animationSpec = tween(AnimationDuration / 2))
