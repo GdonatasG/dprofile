@@ -92,7 +92,7 @@ fun BottomNavBar(navController: NavController, tabs: List<BottomTab>, onSelect: 
                         launchSingleTop = true
                         restoreState = false
                         popUpTo(navController.graph.findStartDestination().route!!) {
-                            saveState = false
+                            saveState = true
                         }
                     }
                 },
