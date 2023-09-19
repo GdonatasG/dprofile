@@ -1,6 +1,7 @@
 package com.donatas.dprofile.composition.navigation.flow
 
 import com.donatas.dprofile.alerts.popup.DefaultPopUpController
+import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.di.Scopes
 import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
 import com.donatas.dprofile.composition.extensions.createScope
@@ -118,11 +119,18 @@ class MainFlow(
 
 private val scope = module {
     scope<MainFlow> {
+        scoped<AppTutorial> {
+            AppTutorial()
+        }
+
         scoped<BottomTabBarScreen> {
             BottomTabBarScreen(
-                factory = get<BottomTabBarScreenFactory>(), tabController = get<BottomTabBarController>()
+                factory = get<BottomTabBarScreenFactory>(),
+                tabController = get<BottomTabBarController>(),
+                appTutorial = get<AppTutorial>()
             )
         }
+
 
         aboutMeScreenComponents()
         githubScreenComponents()
