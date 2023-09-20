@@ -1,11 +1,13 @@
 package com.donatas.dprofile.composition.presentation.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -30,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.donatas.dprofile.compose.components.AppDivider
+import com.donatas.dprofile.compose.components.ModalDivider
 import com.donatas.dprofile.compose.theme.getSecondaryTextColor
 import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.R
@@ -128,45 +133,47 @@ fun BottomNavBar(
             }
         }
     } else {
-        println("is not finished")
-        val iconTint = getSecondaryTextColor()
-        Row(
-            modifier = Modifier
-                .navigationBarsPadding()
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(MaterialTheme.colorScheme.background),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            if (tutorialState.step > 1) {
-                IconButton(onClick = appTutorial::previous) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowLeft,
-                        contentDescription = "Previous step",
-                        tint = iconTint
-                    )
+        Column {
+            ModalDivider()
+            Row(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                if (tutorialState.step > 1) {
+                    IconButton(onClick = appTutorial::previous) {
+                        Icon(
+                            modifier = Modifier.size(28.dp),
+                            imageVector = Icons.Default.KeyboardArrowLeft,
+                            contentDescription = "Previous step"
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-            if (tutorialState.isLastStep) {
-                IconButton(onClick = appTutorial::finish) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Finish tutorial",
-                        tint = iconTint
-                    )
-                }
-            } else {
-                IconButton(onClick = appTutorial::next) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowRight,
-                        contentDescription = "Next step",
-                        tint = iconTint
-                    )
+                if (tutorialState.isLastStep) {
+                    IconButton(onClick = appTutorial::finish) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "Finish tutorial"
+                        )
+                    }
+                } else {
+                    IconButton(onClick = appTutorial::next) {
+                        Icon(
+                            modifier = Modifier.size(28.dp),
+                            imageVector = Icons.Default.KeyboardArrowRight,
+                            contentDescription = "Next step"
+                        )
+                    }
                 }
             }
         }
+
     }
 }
 

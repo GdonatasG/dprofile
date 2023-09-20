@@ -141,7 +141,9 @@ private val scope = module {
 private fun ScopeDSL.aboutMeScreenComponents() {
     scoped<AboutMeScreen> {
         AboutMeScreen(
-            factory = get<AboutMeScreenFactory>(), viewModel = get<AboutMeViewModel>()
+            factory = get<AboutMeScreenFactory>(),
+            viewModel = get<AboutMeViewModel>(),
+            appTutorial = get<AppTutorial>()
         )
     }
 
@@ -290,7 +292,9 @@ internal class DefaultGetUserUseCase(
 private fun ScopeDSL.githubScreenComponents() {
     scoped<GithubScreen> {
         GithubScreen(
-            factory = get<GithubScreenFactory>(), viewModel = get<GithubViewModel>()
+            factory = get<GithubScreenFactory>(),
+            viewModel = get<GithubViewModel>(),
+            appTutorial = get<AppTutorial>()
         )
     }
 
@@ -338,7 +342,9 @@ private fun ScopeDSL.githubScreenComponents() {
 private fun ScopeDSL.contactsScreenComponents() {
     scoped<ContactsScreen> {
         ContactsScreen(
-            factory = get<ContactsScreenFactory>(), viewModel = get<ContactsViewModel>()
+            factory = get<ContactsScreenFactory>(),
+            viewModel = get<ContactsViewModel>(),
+            appTutorial = get<AppTutorial>()
         )
     }
 

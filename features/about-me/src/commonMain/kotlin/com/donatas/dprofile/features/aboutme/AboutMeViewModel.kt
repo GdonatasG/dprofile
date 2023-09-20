@@ -36,6 +36,7 @@ class AboutMeViewModel(
 
     fun select(tab: AboutMeTab) {
         if (!tabs.contains(tab)) return
+        if (_selectedTab.value == tab) return
         _selectedTab.value = tab
     }
 }

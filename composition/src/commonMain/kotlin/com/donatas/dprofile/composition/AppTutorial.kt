@@ -16,8 +16,8 @@ class AppTutorial {
     )
     val state: StateFlow<State> = _state.asStateFlow()
 
-    fun previous() {
-        if (_state.value.step <= 1) return
+    fun previous(): Boolean {
+        if (_state.value.step <= 1) return false
 
         val newStep = _state.value.step - 1
 
@@ -26,6 +26,8 @@ class AppTutorial {
             isLastStep = newStep == totalSteps,
             isFinished = false
         )
+
+        return true
     }
 
     fun next() {
@@ -36,6 +38,14 @@ class AppTutorial {
         _state.value = _state.value.copy(
             step = newStep,
             isLastStep = newStep == totalSteps,
+            isFinished = false
+        )
+    }
+
+    fun setStepManually(step: Int) {
+        _state.value = _state.value.copy(
+            step = step,
+            isLastStep = step == totalSteps,
             isFinished = false
         )
     }

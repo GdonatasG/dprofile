@@ -29,6 +29,8 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
         val bottomNavController = rememberAnimatedNavController()
 
         LaunchedEffect(tutorialState) {
+            if (tutorialState.isFinished) return@LaunchedEffect
+
             if (tutorialState.step < 6) {
                 bottomNavController.navigate(BottomTab.Type.ABOUT_ME.route) {
                     launchSingleTop = true
@@ -78,6 +80,7 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
             Box(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) {
                 MainScreenBottomNavigation(
                     bottomNavController = bottomNavController,
+                    appTutorial = appTutorial,
                     screen = {
                         selectedTab.factory().Compose()
                     },
