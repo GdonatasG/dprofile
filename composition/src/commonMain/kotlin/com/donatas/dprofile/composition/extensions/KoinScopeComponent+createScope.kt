@@ -8,3 +8,5 @@ internal inline fun <reified T : Any> KoinScopeComponent.createScope(scopeId: Sc
     getKoin().createScope<T>(scopeId = scopeId)
 
 internal inline fun <reified T: Any> KoinScopeComponent.createScope(scope: Scopes) = getKoin().createScope<T>(scopeId = scope.name)
+
+internal inline fun <reified T: Any> KoinScopeComponent.getOrCreateScope(scope: Scopes) = getKoin().getOrCreateScope<T>(scopeId = scope.name)

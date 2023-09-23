@@ -22,6 +22,8 @@ class DefaultContactsScreenFactory : ContactsScreenFactory {
     override fun Compose(viewModel: ContactsViewModel, appTutorial: AppTutorial) {
         val tutorialState by appTutorial.state.collectAsState()
 
+        println("rerender")
+
         AppScaffold(
             appBar = {
                 DAppBar(title = "Contacts")

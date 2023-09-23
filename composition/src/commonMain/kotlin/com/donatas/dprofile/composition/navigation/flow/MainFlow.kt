@@ -24,8 +24,8 @@ import com.donatas.dprofile.composition.navigation.screens.RoadToProgrammingScre
 import com.donatas.dprofile.composition.navigation.screens.RoadToProgrammingScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.SkillsScreen
 import com.donatas.dprofile.composition.navigation.screens.SkillsScreenFactory
-import com.donatas.dprofile.composition.presentation.BottomTabBarController
 import com.donatas.dprofile.composition.presentation.BottomTab
+import com.donatas.dprofile.composition.presentation.BottomTabBarController
 import com.donatas.dprofile.feature.Screen
 import com.donatas.dprofile.features.aboutme.AboutMeTab
 import com.donatas.dprofile.features.aboutme.AboutMeViewModel
@@ -62,6 +62,8 @@ import kotlin.coroutines.suspendCoroutine
 class MainFlow(
     private val navigator: Navigator
 ) : KoinScopeComponent {
+    private var started: Boolean = false
+
     override val scope: Scope by lazy {
         createScope<MainFlow>(scope = Scopes.BOTTOM_TAB)
     }
@@ -73,6 +75,8 @@ class MainFlow(
     }
 
     fun start() {
+        if (started) return
+        started = true
         var currentTab: Screen = scope.get<AboutMeScreen>()
 
         val tabs: List<BottomTab> = listOf(

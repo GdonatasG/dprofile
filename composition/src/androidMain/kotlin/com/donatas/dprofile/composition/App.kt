@@ -14,7 +14,6 @@ actual open class App : Application(), KoinComponent {
 
     override fun onCreate() {
         super.onCreate()
-
         startKoin {
             this.allowOverride(true)
             androidContext(this@App)

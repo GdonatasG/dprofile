@@ -113,6 +113,8 @@ fun BottomNavBar(
                         )
                     },
                     onClick = Click@{
+                        if (current.route == tab.type.route) return@Click
+
                         navController.navigate(tab.type.route) {
                             launchSingleTop = true
                             restoreState = false

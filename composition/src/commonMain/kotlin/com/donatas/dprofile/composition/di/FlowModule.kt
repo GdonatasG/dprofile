@@ -7,7 +7,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal val flowModule: Module = module {
-    factory<MainFlow> {
+    single<MainFlow> {
         MainFlow(
             navigator = get<Navigator>()
         )

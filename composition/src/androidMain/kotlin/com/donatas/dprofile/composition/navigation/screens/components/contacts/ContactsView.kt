@@ -56,6 +56,8 @@ import kotlinx.coroutines.delay
 fun ContactsView(model: ContactsViewModel) {
     val imageBorderColor: Color = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
 
+    println("ContactsView")
+
     var scaleStarted by remember { mutableStateOf(false) }
     var scaleFinished by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
@@ -101,7 +103,7 @@ fun ContactsView(model: ContactsViewModel) {
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "Donatas Žitkus",
+                    text = "Donatas Zitkus",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
@@ -210,14 +212,17 @@ private fun ContactListTile(
         ) {
             icon()
             Text(
-                modifier = Modifier.weight(1f),
                 text = title,
                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Normal),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
+                modifier = Modifier.weight(1f, fill = true),
                 text = trailingTitle,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.End,
                 style = MaterialTheme.typography.labelMedium.copy(color = secondaryTextColor),
             )
             Icon(
