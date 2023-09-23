@@ -75,8 +75,9 @@ class MainFlow(
     }
 
     fun start() {
-        if (started) return
-        started = true
+        println("MAIN FLOW START")
+    /*    if (started) return
+        started = true*/
         var currentTab: Screen = scope.get<AboutMeScreen>()
 
         val tabs: List<BottomTab> = listOf(
@@ -107,7 +108,7 @@ class MainFlow(
         )
 
         val bottomTabController = BottomTabBarController(tabs = tabs, onFinished = {
-            scope.close()
+            //scope.close()
         })
 
         scope.declare(bottomTabController)

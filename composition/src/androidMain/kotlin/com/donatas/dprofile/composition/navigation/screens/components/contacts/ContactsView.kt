@@ -56,8 +56,6 @@ import kotlinx.coroutines.delay
 fun ContactsView(model: ContactsViewModel) {
     val imageBorderColor: Color = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
 
-    println("ContactsView")
-
     var scaleStarted by remember { mutableStateOf(false) }
     var scaleFinished by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(

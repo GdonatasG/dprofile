@@ -16,7 +16,8 @@ class AppTutorial(
         State(
             step = 1,
             isLastStep = false,
-            isFinished = false
+            isFinished = false,
+            isStarted = false
         )
     )
     val state: StateFlow<State> = _state.asStateFlow()
@@ -24,11 +25,13 @@ class AppTutorial(
     init {
         val savedStep: Int = preferences.getObject<Int>(KEY_STEP) ?: 1
         val isFinished: Boolean = preferences.getObject<Boolean>(KEY_IS_FINISHED) ?: false
+        val isStarted: Boolean = preferences.getObject<Boolean>(KEY_IS_STARTED) ?: false
 
         _state.value = State(
             step = savedStep,
             isLastStep = savedStep == totalSteps,
-            isFinished = isFinished
+            isFinished = isFinished,
+            isStarted = isStarted
         )
     }
 
@@ -53,12 +56,17 @@ class AppTutorial(
 
         val newStep = _state.value.step + 1
 
+        if (newStep == 2) {
+            preferences.setObject<Boolean>(KEY_IS_STARTED, true)
+        }
+
         preferences.setObject<Int>(KEY_STEP, newStep)
 
         _state.value = _state.value.copy(
             step = newStep,
             isLastStep = newStep == totalSteps,
-            isFinished = false
+            isFinished = false,
+            isStarted = preferences.getObject<Boolean>(KEY_IS_STARTED) ?: false
         )
     }
 
@@ -83,11 +91,13 @@ class AppTutorial(
     data class State(
         val step: Int,
         val isLastStep: Boolean,
-        val isFinished: Boolean
+        val isFinished: Boolean,
+        val isStarted: Boolean
     )
 
     companion object {
         private const val KEY_STEP = "STEP"
         private const val KEY_IS_FINISHED = "IS_FINISHED"
+        private const val KEY_IS_STARTED = "IS_STARTED"
     }
 }

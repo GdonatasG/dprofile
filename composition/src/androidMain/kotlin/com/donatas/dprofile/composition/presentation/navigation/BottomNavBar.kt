@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +41,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.donatas.dprofile.compose.components.ModalDivider
+import com.donatas.dprofile.compose.components.extension.gradientShimmerEffect
+import com.donatas.dprofile.compose.components.extension.loadingShimmerEffect
 import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.R
 import com.donatas.dprofile.composition.presentation.BottomTab
@@ -140,6 +143,7 @@ fun BottomNavBar(
                     .fillMaxWidth()
                     .height(60.dp)
                     .background(MaterialTheme.colorScheme.background)
+                    .then(if (tutorialState.step == 1 && !tutorialState.isStarted) Modifier.gradientShimmerEffect() else Modifier)
                     .padding(end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
