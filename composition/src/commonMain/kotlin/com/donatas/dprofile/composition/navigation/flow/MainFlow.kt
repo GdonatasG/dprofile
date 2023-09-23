@@ -47,6 +47,7 @@ import com.donatas.dprofile.loader.LoadingResult
 import com.donatas.dprofile.paginator.DefaultPaginator
 import com.donatas.dprofile.paginator.Paginator
 import com.donatas.dprofile.paginator.PerPage
+import com.donatas.dprofile.preferences.Preferences
 import com.donatas.dprofile.utils.isDebug
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -120,7 +121,7 @@ class MainFlow(
 private val scope = module {
     scope<MainFlow> {
         scoped<AppTutorial> {
-            AppTutorial()
+            AppTutorial(preferences = get<Preferences>())
         }
 
         scoped<BottomTabBarScreen> {
@@ -141,9 +142,7 @@ private val scope = module {
 private fun ScopeDSL.aboutMeScreenComponents() {
     scoped<AboutMeScreen> {
         AboutMeScreen(
-            factory = get<AboutMeScreenFactory>(),
-            viewModel = get<AboutMeViewModel>(),
-            appTutorial = get<AppTutorial>()
+            factory = get<AboutMeScreenFactory>(), viewModel = get<AboutMeViewModel>(), appTutorial = get<AppTutorial>()
         )
     }
 
@@ -292,9 +291,7 @@ internal class DefaultGetUserUseCase(
 private fun ScopeDSL.githubScreenComponents() {
     scoped<GithubScreen> {
         GithubScreen(
-            factory = get<GithubScreenFactory>(),
-            viewModel = get<GithubViewModel>(),
-            appTutorial = get<AppTutorial>()
+            factory = get<GithubScreenFactory>(), viewModel = get<GithubViewModel>(), appTutorial = get<AppTutorial>()
         )
     }
 

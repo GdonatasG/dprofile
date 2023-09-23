@@ -67,8 +67,6 @@ private fun PrivateBackHandler(
             bottomNavController.popBackStack()
         }
 
-//        val didPop: Boolean  = bottomNavController.popBackStack()
-
         if (!didPop) {
             onActivityDestroyed()
             activity?.finish()

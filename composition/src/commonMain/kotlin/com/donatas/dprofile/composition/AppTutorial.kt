@@ -1,10 +1,15 @@
 package com.donatas.dprofile.composition
 
+import com.donatas.dprofile.preferences.Preferences
+import com.donatas.dprofile.preferences.getObject
+import com.donatas.dprofile.preferences.setObject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class AppTutorial {
+class AppTutorial(
+    private val preferences: Preferences
+) {
     private val totalSteps: Int = 9
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(
@@ -16,10 +21,23 @@ class AppTutorial {
     )
     val state: StateFlow<State> = _state.asStateFlow()
 
+    init {
+        val savedStep: Int = preferences.getObject<Int>(KEY_STEP) ?: 1
+        val isFinished: Boolean = preferences.getObject<Boolean>(KEY_IS_FINISHED) ?: false
+
+        _state.value = State(
+            step = savedStep,
+            isLastStep = savedStep == totalSteps,
+            isFinished = isFinished
+        )
+    }
+
     fun previous(): Boolean {
         if (_state.value.step <= 1) return false
 
         val newStep = _state.value.step - 1
+
+        preferences.setObject<Int>(KEY_STEP, newStep)
 
         _state.value = _state.value.copy(
             step = newStep,
@@ -35,6 +53,8 @@ class AppTutorial {
 
         val newStep = _state.value.step + 1
 
+        preferences.setObject<Int>(KEY_STEP, newStep)
+
         _state.value = _state.value.copy(
             step = newStep,
             isLastStep = newStep == totalSteps,
@@ -43,6 +63,8 @@ class AppTutorial {
     }
 
     fun setStepManually(step: Int) {
+        preferences.setObject<Int>(KEY_STEP, step)
+
         _state.value = _state.value.copy(
             step = step,
             isLastStep = step == totalSteps,
@@ -51,6 +73,8 @@ class AppTutorial {
     }
 
     fun finish() {
+        preferences.setObject<Boolean>(KEY_IS_FINISHED, true)
+
         _state.value = _state.value.copy(
             isFinished = true
         )
@@ -61,4 +85,9 @@ class AppTutorial {
         val isLastStep: Boolean,
         val isFinished: Boolean
     )
+
+    companion object {
+        private const val KEY_STEP = "STEP"
+        private const val KEY_IS_FINISHED = "IS_FINISHED"
+    }
 }

@@ -12,6 +12,7 @@ internal fun commonModules(screenFactory: ScreenFactory, modalFactory: ModalFact
     flowModule,
     githubServicesModule,
     networkingModule,
+    internalLibsModule,
 
     MainFlow.module,
     GithubSearchFlow.module

@@ -31,7 +31,7 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
         LaunchedEffect(tutorialState) {
             if (tutorialState.isFinished) return@LaunchedEffect
 
-            if (tutorialState.step < 6) {
+            if (tutorialState.step in 1..5) {
                 bottomNavController.navigate(BottomTab.Type.ABOUT_ME.route) {
                     launchSingleTop = true
                     restoreState = false
@@ -42,7 +42,7 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
                 return@LaunchedEffect
             }
 
-            if (tutorialState.step == 6) {
+            if (tutorialState.step in 6..7) {
                 bottomNavController.navigate(BottomTab.Type.GITHUB.route) {
                     launchSingleTop = true
                     restoreState = false
@@ -53,7 +53,7 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
                 return@LaunchedEffect
             }
 
-            if (tutorialState.step == 8) {
+            if (tutorialState.step in 8..9) {
                 bottomNavController.navigate(BottomTab.Type.CONTACTS.route) {
                     launchSingleTop = true
                     restoreState = false
