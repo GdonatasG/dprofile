@@ -3,7 +3,10 @@ package com.donatas.dprofile.composition.navigation.screens.components.github
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,6 +17,7 @@ import com.donatas.dprofile.compose.components.appbar.DAppBar
 import com.donatas.dprofile.compose.components.layout.AppScaffold
 import com.donatas.dprofile.compose.components.popup.ErrorPopUp
 import com.donatas.dprofile.composition.AppTutorial
+import com.donatas.dprofile.composition.components.Message
 import com.donatas.dprofile.composition.navigation.screens.GithubScreenFactory
 import com.donatas.dprofile.features.github.GithubViewModel
 
@@ -47,7 +51,16 @@ class DefaultGithubScreenFactory : GithubScreenFactory {
             }
         }) {
             if (tutorialState.step == 6) {
-                Text(text = "Some tutorial message")
+                Box(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 16.dp)
+                ) {
+                    Message(
+                        message = "In this section, you can review my Github repositories. " +
+                                "Don’t forget to try searching and filtering functionalities!"
+                    )
+                }
                 return@AppScaffold
             }
 

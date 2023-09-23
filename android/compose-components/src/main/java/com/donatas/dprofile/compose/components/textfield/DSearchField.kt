@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.donatas.dprofile.compose.theme.getSecondaryTextColor
+import com.donatas.dprofile.compose.theme.getSecondaryColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +53,7 @@ fun DSearchField(
 
     val textStyle = MaterialTheme.typography.labelMedium.copy(color = Color.White, fontWeight = FontWeight.Normal)
     val placeHolderTextStyle =
-        textStyle.copy(color = getSecondaryTextColor())
+        textStyle.copy(color = getSecondaryColor())
     val placeHolderIconSize by animateDpAsState(targetValue = if (isFocused) 24.dp else 20.dp)
 
     val focusManager = LocalFocusManager.current

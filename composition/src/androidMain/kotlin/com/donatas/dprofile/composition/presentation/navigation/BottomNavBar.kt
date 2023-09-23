@@ -32,7 +32,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,9 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.donatas.dprofile.compose.components.AppDivider
 import com.donatas.dprofile.compose.components.ModalDivider
-import com.donatas.dprofile.compose.theme.getSecondaryTextColor
 import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.R
 import com.donatas.dprofile.composition.presentation.BottomTab

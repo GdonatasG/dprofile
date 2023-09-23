@@ -1,12 +1,17 @@
 package com.donatas.dprofile.composition.navigation.screens.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -16,6 +21,7 @@ import com.donatas.dprofile.compose.components.appbar.DAppBar
 import com.donatas.dprofile.compose.components.layout.AppScaffold
 import com.donatas.dprofile.compose.components.tab.DLazyTabRow
 import com.donatas.dprofile.composition.AppTutorial
+import com.donatas.dprofile.composition.components.Message
 import com.donatas.dprofile.composition.navigation.screens.AboutMeScreenFactory
 import com.donatas.dprofile.features.aboutme.AboutMeTab
 import com.donatas.dprofile.features.aboutme.AboutMeViewModel
@@ -118,7 +124,16 @@ class DefaultAboutMeScreenFactory : AboutMeScreenFactory {
                     }
                 }
             } else {
-                Text(text = "Some tutorial message")
+                Box(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 16.dp)
+                ) {
+                    Message(message = "Hi! I'm Donatas, mobile applications developer.\n\n" +
+                            "Nice to meet you and thank you for downloading my profile (virtual CV) application. " +
+                            "In the following steps, you will find an introduction about me, where you will be able to get to know me better.\n\n" +
+                            "Have a good journey!")
+                }
             }
 
         }

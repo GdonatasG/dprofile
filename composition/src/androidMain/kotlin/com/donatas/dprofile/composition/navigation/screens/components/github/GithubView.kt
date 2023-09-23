@@ -72,7 +72,7 @@ import com.donatas.dprofile.compose.components.extension.loadingShimmerEffect
 import com.donatas.dprofile.compose.components.layout.EmptyView
 import com.donatas.dprofile.compose.components.layout.ErrorView
 import com.donatas.dprofile.compose.components.text.SectionTitle
-import com.donatas.dprofile.compose.theme.getSecondaryTextColor
+import com.donatas.dprofile.compose.theme.getSecondaryColor
 import com.donatas.dprofile.composition.R
 import com.donatas.dprofile.features.github.GithubListState
 import com.donatas.dprofile.features.github.GithubRefreshState
@@ -459,7 +459,7 @@ private fun LoadingProfile() {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun LoadedProfile(user: GithubUser, onVisitProfile: () -> Unit) {
-    val secondaryTextColor = getSecondaryTextColor()
+    val secondaryTextColor = getSecondaryColor()
 
     val avatarModifier: Modifier = Modifier
         .size(100.dp)
