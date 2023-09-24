@@ -11,11 +11,13 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import com.donatas.dprofile.compose.theme.AppTheme
 import com.donatas.dprofile.composition.NavGraphs
+import com.donatas.dprofile.composition.di.Scopes
 import com.donatas.dprofile.composition.presentation.navigation.AppNavigation
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import org.koin.core.component.KoinComponent
 
-class MainActivity : FragmentActivity() {
+class MainActivity : FragmentActivity(), KoinComponent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -37,8 +39,18 @@ class MainActivity : FragmentActivity() {
                     systemUIController.setNavigationBarColor(backgroundColor)
                 }
 
-                AppNavigation(navGraph = NavGraphs.main)
+                AppNavigation(
+                    navGraph = NavGraphs.main
+                )
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            getKoin().getScope(Scopes.BOTTOM_TAB.name).close()
+        } catch (_: Exception) {
         }
     }
 

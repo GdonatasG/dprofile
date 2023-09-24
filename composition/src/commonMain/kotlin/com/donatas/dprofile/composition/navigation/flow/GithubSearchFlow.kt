@@ -196,6 +196,7 @@ private val scope = module {
 
         sharedViewModel {
             GithubSearchViewModel(
+                koinScope = this,
                 globalSearchHandler = get<GlobalSearchHandler>(),
                 searchQueryHolder = get<SearchQueryHolder>(qualifier = named(SearchQueryHolderQualifier.GITHUB_SEARCH)),
                 listOrder = get<ListOrder>(),
@@ -207,7 +208,7 @@ private val scope = module {
                 paginator = get<Paginator<Repository>>(qualifier = named(PaginatorQualifier.GITHUB_SEARCH)),
                 popUpController = DefaultPopUpController(),
                 delegate = get<GithubSearchDelegate>(),
-                alert = get<Alert.Coordinator>()
+                alert = get<Alert.Coordinator>(),
             )
         }
 
@@ -318,7 +319,6 @@ internal class DefaultSearchRepositoriesUseCase(
                 this.user("GdonatasG")
             }
             filters.get("language")?.filterSelected()?.firstOrNull()?.let {
-                println("selected: $it")
                 val selectedLanguage: com.donatas.dprofile.githubservices.repository.GetRepositories.Language? =
                     when (it) {
                         "java" -> com.donatas.dprofile.githubservices.repository.GetRepositories.Language.JAVA
@@ -362,7 +362,6 @@ internal class DefaultSearchRepositoriesUseCase(
                     )
                 )
             }.onFailure {
-                println(it.printStackTrace())
                 continuation.resume(
                     LoadingResult.Error(
                         title = "Failed!", message = "Unable to load repositories, try again"

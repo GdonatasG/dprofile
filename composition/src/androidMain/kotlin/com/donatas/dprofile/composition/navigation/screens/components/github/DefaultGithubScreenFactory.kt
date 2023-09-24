@@ -32,7 +32,7 @@ class DefaultGithubScreenFactory : GithubScreenFactory {
         AppScaffold(appBar = {
             DAppBar(title = "Github")
         }, snackBar = {
-            if (tutorialState.step == 7) {
+            if (tutorialState.step == 7 || tutorialState.isFinished) {
                 AnimatedVisibility(
                     visible = popUp != null,
                     enter = fadeIn(),

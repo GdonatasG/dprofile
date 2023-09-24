@@ -16,6 +16,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(Dependencies.Koin.core)
                 implementation(project(":libraries:viewmodel"))
 
                 api(project(":features:github:shared"))

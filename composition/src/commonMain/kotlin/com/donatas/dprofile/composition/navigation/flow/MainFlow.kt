@@ -4,7 +4,7 @@ import com.donatas.dprofile.alerts.popup.DefaultPopUpController
 import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.di.Scopes
 import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
-import com.donatas.dprofile.composition.extensions.createScope
+import com.donatas.dprofile.composition.extensions.getOrCreateScope
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.delegate.DefaultContactsDelegate
 import com.donatas.dprofile.composition.navigation.delegate.DefaultGithubDelegate
@@ -47,10 +47,6 @@ import com.donatas.dprofile.loader.LoadingResult
 import com.donatas.dprofile.paginator.DefaultPaginator
 import com.donatas.dprofile.paginator.Paginator
 import com.donatas.dprofile.paginator.PerPage
-import com.donatas.dprofile.preferences.Preferences
-import com.donatas.dprofile.utils.isDebug
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -62,22 +58,11 @@ import kotlin.coroutines.suspendCoroutine
 class MainFlow(
     private val navigator: Navigator
 ) : KoinScopeComponent {
-    private var started: Boolean = false
-
     override val scope: Scope by lazy {
-        createScope<MainFlow>(scope = Scopes.BOTTOM_TAB)
-    }
-
-    init {
-        if (isDebug) {
-            Napier.base(DebugAntilog())
-        }
+        getOrCreateScope<MainFlow>(scope = Scopes.BOTTOM_TAB)
     }
 
     fun start() {
-        println("MAIN FLOW START")
-    /*    if (started) return
-        started = true*/
         var currentTab: Screen = scope.get<AboutMeScreen>()
 
         val tabs: List<BottomTab> = listOf(
@@ -108,7 +93,7 @@ class MainFlow(
         )
 
         val bottomTabController = BottomTabBarController(tabs = tabs, onFinished = {
-            //scope.close()
+//            scope.close()
         })
 
         scope.declare(bottomTabController)
@@ -125,10 +110,6 @@ class MainFlow(
 
 private val scope = module {
     scope<MainFlow> {
-        scoped<AppTutorial> {
-            AppTutorial(preferences = get<Preferences>())
-        }
-
         scoped<BottomTabBarScreen> {
             BottomTabBarScreen(
                 factory = get<BottomTabBarScreenFactory>(),

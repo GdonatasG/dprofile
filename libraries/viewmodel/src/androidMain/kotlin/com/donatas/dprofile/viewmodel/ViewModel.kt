@@ -12,9 +12,11 @@ actual abstract class ViewModel : androidx.lifecycle.ViewModel() {
     actual open fun onCreate() {}
     actual open fun onAppear() {}
     actual open fun onDisappear() {}
+    actual open fun onClear() {}
 
     override fun onCleared() {
         super.onCleared()
+        onClear()
         println("Cleared: ${this.javaClass.simpleName}")
     }
 }

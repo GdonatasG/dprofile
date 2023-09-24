@@ -19,8 +19,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.scope.Scope
 
 class GithubSearchViewModel(
+    private val koinScope: Scope,
     private val globalSearchHandler: GlobalSearchHandler,
     private val searchQueryHolder: SearchQueryHolder,
     private val listOrder: ListOrder,
@@ -28,7 +30,7 @@ class GithubSearchViewModel(
     private val paginator: Paginator<Repository>,
     private val popUpController: PopUpController,
     private val delegate: GithubSearchDelegate,
-    private val alert: Alert.Coordinator,
+    private val alert: Alert.Coordinator
 ) : ViewModel() {
     private val _viewState: MutableStateFlow<GithubSearchViewState> =
         MutableStateFlow(GithubSearchViewState.defaultIdle())
@@ -197,6 +199,14 @@ class GithubSearchViewModel(
     override fun onDisappear() {
         super.onDisappear()
         appliedFiltersObservable.remove(appliedFiltersObserver)
+    }
+
+    override fun onClear() {
+        super.onClear()
+        try {
+            koinScope.close()
+        } catch (_: Exception) {
+        }
     }
 
     // region NAVIGATION
