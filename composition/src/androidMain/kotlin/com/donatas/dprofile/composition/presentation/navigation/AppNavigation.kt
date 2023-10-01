@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.provider.LocalParentNavController
@@ -143,7 +144,8 @@ internal fun AppNavigation(
             sheetBackgroundColor = MaterialTheme.colorScheme.background,
             sheetShape = RoundedCornerShape(
                 topEnd = 14.dp, topStart = 14.dp
-            )
+            ),
+            scrimColor = Color.Black.copy(alpha = 0.5f)
         ) {
             Scaffold {
                 DestinationsNavHost(

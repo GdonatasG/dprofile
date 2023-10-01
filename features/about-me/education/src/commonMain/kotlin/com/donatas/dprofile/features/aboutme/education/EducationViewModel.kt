@@ -11,7 +11,7 @@ class EducationViewModel: ViewModel() {
             location = "Vytautas Magnus University"
         ),
         EducationTimelineItem(
-            title = "Java development",
+            title = "Java development course",
             subtitle = "2018 (3 mos.)",
             description = "Learned Java development, OOP, SQL and Android Development basics",
             location = "Kaunas Coding School"

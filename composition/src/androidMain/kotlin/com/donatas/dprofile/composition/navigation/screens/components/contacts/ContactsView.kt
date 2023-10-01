@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.AppDivider
+import com.donatas.dprofile.compose.components.ModalDivider
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
 import com.donatas.dprofile.composition.R
@@ -228,7 +229,7 @@ private fun ContactListTile(
             )
         }
         if (divided) {
-            AppDivider(
+            ModalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }

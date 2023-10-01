@@ -8,6 +8,7 @@ import com.donatas.dprofile.composition.di.qualifier.FilterStoreObservableCacheQ
 import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
 import com.donatas.dprofile.composition.di.qualifier.SearchQueryHolderQualifier
 import com.donatas.dprofile.composition.extensions.createScope
+import com.donatas.dprofile.composition.extensions.getOrCreateScope
 import com.donatas.dprofile.composition.extensions.sharedViewModel
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.delegate.DefaultGithubSearchDelegate
@@ -53,7 +54,7 @@ class GithubSearchFlow(
     private val navigator: Navigator
 ) : KoinScopeComponent {
     override val scope: Scope by lazy {
-        createScope<GithubSearchFlow>(scope = Scopes.GITHUB_SEARCH)
+        getOrCreateScope<GithubSearchFlow>(scope = Scopes.GITHUB_SEARCH)
     }
 
     fun start() {

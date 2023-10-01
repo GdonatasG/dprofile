@@ -558,7 +558,8 @@ private fun LoadedProfile(user: GithubUser, onVisitProfile: () -> Unit) {
                 Icon(
                     modifier = Modifier.size(20.dp),
                     imageVector = Icons.Outlined.LocationOn,
-                    contentDescription = "location"
+                    contentDescription = null,
+                    tint = secondaryTextColor
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
