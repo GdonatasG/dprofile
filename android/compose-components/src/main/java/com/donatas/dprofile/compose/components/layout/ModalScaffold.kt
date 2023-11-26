@@ -49,7 +49,7 @@ fun ModalScaffold(content: @Composable ColumnScope.() -> Unit) {
                 ) {
                     Box(
                         modifier = Modifier
-                            .width(48.dp)
+                            .width(36.dp)
                             .height(4.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.onPrimary)

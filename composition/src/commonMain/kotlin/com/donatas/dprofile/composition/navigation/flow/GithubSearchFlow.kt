@@ -8,6 +8,7 @@ import com.donatas.dprofile.composition.di.qualifier.FilterStoreObservableCacheQ
 import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
 import com.donatas.dprofile.composition.di.qualifier.SearchQueryHolderQualifier
 import com.donatas.dprofile.composition.extensions.createScope
+import com.donatas.dprofile.composition.extensions.getOrCreateScope
 import com.donatas.dprofile.composition.extensions.sharedViewModel
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.delegate.DefaultGithubSearchDelegate
@@ -53,7 +54,7 @@ class GithubSearchFlow(
     private val navigator: Navigator
 ) : KoinScopeComponent {
     override val scope: Scope by lazy {
-        createScope<GithubSearchFlow>(scope = Scopes.GITHUB_SEARCH)
+        getOrCreateScope<GithubSearchFlow>(scope = Scopes.GITHUB_SEARCH)
     }
 
     fun start() {
@@ -196,6 +197,7 @@ private val scope = module {
 
         sharedViewModel {
             GithubSearchViewModel(
+                koinScope = this,
                 globalSearchHandler = get<GlobalSearchHandler>(),
                 searchQueryHolder = get<SearchQueryHolder>(qualifier = named(SearchQueryHolderQualifier.GITHUB_SEARCH)),
                 listOrder = get<ListOrder>(),
@@ -207,7 +209,7 @@ private val scope = module {
                 paginator = get<Paginator<Repository>>(qualifier = named(PaginatorQualifier.GITHUB_SEARCH)),
                 popUpController = DefaultPopUpController(),
                 delegate = get<GithubSearchDelegate>(),
-                alert = get<Alert.Coordinator>()
+                alert = get<Alert.Coordinator>(),
             )
         }
 
@@ -318,7 +320,6 @@ internal class DefaultSearchRepositoriesUseCase(
                 this.user("GdonatasG")
             }
             filters.get("language")?.filterSelected()?.firstOrNull()?.let {
-                println("selected: $it")
                 val selectedLanguage: com.donatas.dprofile.githubservices.repository.GetRepositories.Language? =
                     when (it) {
                         "java" -> com.donatas.dprofile.githubservices.repository.GetRepositories.Language.JAVA
@@ -362,7 +363,6 @@ internal class DefaultSearchRepositoriesUseCase(
                     )
                 )
             }.onFailure {
-                println(it.printStackTrace())
                 continuation.resume(
                     LoadingResult.Error(
                         title = "Failed!", message = "Unable to load repositories, try again"

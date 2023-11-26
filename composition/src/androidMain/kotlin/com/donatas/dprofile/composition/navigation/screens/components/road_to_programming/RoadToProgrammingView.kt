@@ -17,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.donatas.dprofile.compose.components.AppDivider
@@ -141,7 +143,9 @@ private fun Heading(title: String) {
             AppDivider(modifier = Modifier.weight(1f))
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = title, style = textStyle
+                text = title,
+                style = textStyle,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.width(12.dp))
             AppDivider(modifier = Modifier.weight(1f))

@@ -26,6 +26,7 @@ fun ModalDivider(
     modifier: Modifier = Modifier
 ) {
     AppDivider(
+        modifier = modifier,
         color = Color.White.copy(alpha = 0.1f)
     )
 }

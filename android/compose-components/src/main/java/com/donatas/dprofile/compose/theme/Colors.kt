@@ -60,5 +60,5 @@ val AppDarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun getSecondaryTextColor(): Color = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
+fun getSecondaryColor(): Color = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
 

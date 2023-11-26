@@ -10,6 +10,7 @@ expect abstract class ViewModel() {
     open fun onCreate()
     open fun onAppear()
     open fun onDisappear()
+    open fun onClear()
 }
 
 fun <R, T : StateFlow<R>> ViewModel.bindStateFlow(state: T, binding: (R) -> Unit) {

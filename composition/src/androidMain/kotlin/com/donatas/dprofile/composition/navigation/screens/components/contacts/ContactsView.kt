@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.AppDivider
+import com.donatas.dprofile.compose.components.ModalDivider
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
 import com.donatas.dprofile.composition.R
@@ -101,7 +102,7 @@ fun ContactsView(model: ContactsViewModel) {
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "Donatas Žitkus",
+                    text = "Donatas Zitkus",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
@@ -210,14 +211,17 @@ private fun ContactListTile(
         ) {
             icon()
             Text(
-                modifier = Modifier.weight(1f),
                 text = title,
                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Normal),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
+                modifier = Modifier.weight(1f, fill = true),
                 text = trailingTitle,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.End,
                 style = MaterialTheme.typography.labelMedium.copy(color = secondaryTextColor),
             )
             Icon(
@@ -225,7 +229,7 @@ private fun ContactListTile(
             )
         }
         if (divided) {
-            AppDivider(
+            ModalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }

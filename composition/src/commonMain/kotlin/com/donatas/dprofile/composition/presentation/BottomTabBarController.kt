@@ -33,6 +33,7 @@ class BottomTabBarController(
 
     fun select(tab: BottomTab) {
         if (!tabs.contains(tab)) return
+        if (_selectedTab.value == tab) return
         _selectedTab.value = tab
     }
 

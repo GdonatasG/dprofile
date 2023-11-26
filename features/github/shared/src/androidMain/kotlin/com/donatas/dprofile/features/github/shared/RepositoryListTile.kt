@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.donatas.dprofile.compose.components.AppDivider
+import com.donatas.dprofile.compose.components.ModalDivider
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
 
@@ -78,7 +79,7 @@ fun RepositoryListTile(
             )
         }
         if (divided) {
-            AppDivider()
+            ModalDivider()
         }
     }
 }

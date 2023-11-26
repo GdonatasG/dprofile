@@ -1,9 +1,10 @@
 package com.donatas.dprofile.composition.navigation.flow
 
 import com.donatas.dprofile.alerts.popup.DefaultPopUpController
+import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.di.Scopes
 import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
-import com.donatas.dprofile.composition.extensions.createScope
+import com.donatas.dprofile.composition.extensions.getOrCreateScope
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.delegate.DefaultContactsDelegate
 import com.donatas.dprofile.composition.navigation.delegate.DefaultGithubDelegate
@@ -23,8 +24,8 @@ import com.donatas.dprofile.composition.navigation.screens.RoadToProgrammingScre
 import com.donatas.dprofile.composition.navigation.screens.RoadToProgrammingScreenFactory
 import com.donatas.dprofile.composition.navigation.screens.SkillsScreen
 import com.donatas.dprofile.composition.navigation.screens.SkillsScreenFactory
-import com.donatas.dprofile.composition.presentation.BottomTabBarController
 import com.donatas.dprofile.composition.presentation.BottomTab
+import com.donatas.dprofile.composition.presentation.BottomTabBarController
 import com.donatas.dprofile.feature.Screen
 import com.donatas.dprofile.features.aboutme.AboutMeTab
 import com.donatas.dprofile.features.aboutme.AboutMeViewModel
@@ -46,9 +47,6 @@ import com.donatas.dprofile.loader.LoadingResult
 import com.donatas.dprofile.paginator.DefaultPaginator
 import com.donatas.dprofile.paginator.Paginator
 import com.donatas.dprofile.paginator.PerPage
-import com.donatas.dprofile.utils.isDebug
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -61,13 +59,7 @@ class MainFlow(
     private val navigator: Navigator
 ) : KoinScopeComponent {
     override val scope: Scope by lazy {
-        createScope<MainFlow>(scope = Scopes.BOTTOM_TAB)
-    }
-
-    init {
-        if (isDebug) {
-            Napier.base(DebugAntilog())
-        }
+        getOrCreateScope<MainFlow>(scope = Scopes.BOTTOM_TAB)
     }
 
     fun start() {
@@ -101,7 +93,7 @@ class MainFlow(
         )
 
         val bottomTabController = BottomTabBarController(tabs = tabs, onFinished = {
-            scope.close()
+//            scope.close()
         })
 
         scope.declare(bottomTabController)
@@ -120,9 +112,12 @@ private val scope = module {
     scope<MainFlow> {
         scoped<BottomTabBarScreen> {
             BottomTabBarScreen(
-                factory = get<BottomTabBarScreenFactory>(), tabController = get<BottomTabBarController>()
+                factory = get<BottomTabBarScreenFactory>(),
+                tabController = get<BottomTabBarController>(),
+                appTutorial = get<AppTutorial>()
             )
         }
+
 
         aboutMeScreenComponents()
         githubScreenComponents()
@@ -133,7 +128,7 @@ private val scope = module {
 private fun ScopeDSL.aboutMeScreenComponents() {
     scoped<AboutMeScreen> {
         AboutMeScreen(
-            factory = get<AboutMeScreenFactory>(), viewModel = get<AboutMeViewModel>()
+            factory = get<AboutMeScreenFactory>(), viewModel = get<AboutMeViewModel>(), appTutorial = get<AppTutorial>()
         )
     }
 
@@ -282,7 +277,7 @@ internal class DefaultGetUserUseCase(
 private fun ScopeDSL.githubScreenComponents() {
     scoped<GithubScreen> {
         GithubScreen(
-            factory = get<GithubScreenFactory>(), viewModel = get<GithubViewModel>()
+            factory = get<GithubScreenFactory>(), viewModel = get<GithubViewModel>(), appTutorial = get<AppTutorial>()
         )
     }
 
@@ -330,7 +325,9 @@ private fun ScopeDSL.githubScreenComponents() {
 private fun ScopeDSL.contactsScreenComponents() {
     scoped<ContactsScreen> {
         ContactsScreen(
-            factory = get<ContactsScreenFactory>(), viewModel = get<ContactsViewModel>()
+            factory = get<ContactsScreenFactory>(),
+            viewModel = get<ContactsViewModel>(),
+            appTutorial = get<AppTutorial>()
         )
     }
 

@@ -28,7 +28,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.donatas.dprofile.compose.components.R
 import com.donatas.dprofile.compose.components.button.FullWidthButton
 import com.donatas.dprofile.compose.components.state.getImeWithNavigationBarsPadding
-import com.donatas.dprofile.compose.theme.getSecondaryTextColor
+import com.donatas.dprofile.compose.theme.getSecondaryColor
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -65,7 +65,7 @@ fun ErrorView(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = message,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = getSecondaryTextColor()),
+                    style = MaterialTheme.typography.bodyMedium.copy(color = getSecondaryColor()),
                     textAlign = TextAlign.Center
                 )
             }
