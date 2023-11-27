@@ -34,9 +34,10 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
             if (tutorialState.step in 1..5) {
                 if (bottomNavController.currentBackStackEntry?.destination?.route == BottomTab.Type.ABOUT_ME.route) return@LaunchedEffect
 
+                tabController.select(tabController.tabs.first { it.type == BottomTab.Type.ABOUT_ME })
                 bottomNavController.navigate(BottomTab.Type.ABOUT_ME.route) {
                     launchSingleTop = true
-                    restoreState = false
+                    restoreState = true
                     popUpTo(bottomNavController.graph.findStartDestination().route!!) {
                         saveState = true
                     }
@@ -47,9 +48,10 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
             if (tutorialState.step in 6..7) {
                 if (bottomNavController.currentBackStackEntry?.destination?.route == BottomTab.Type.GITHUB.route) return@LaunchedEffect
 
+                tabController.select(tabController.tabs.first { it.type == BottomTab.Type.GITHUB })
                 bottomNavController.navigate(BottomTab.Type.GITHUB.route) {
                     launchSingleTop = true
-                    restoreState = false
+                    restoreState = true
                     popUpTo(bottomNavController.graph.findStartDestination().route!!) {
                         saveState = true
                     }
@@ -60,9 +62,10 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
             if (tutorialState.step in 8..9) {
                 if (bottomNavController.currentBackStackEntry?.destination?.route == BottomTab.Type.CONTACTS.route) return@LaunchedEffect
 
+                tabController.select(tabController.tabs.first { it.type == BottomTab.Type.CONTACTS })
                 bottomNavController.navigate(BottomTab.Type.CONTACTS.route) {
                     launchSingleTop = true
-                    restoreState = false
+                    restoreState = true
                     popUpTo(bottomNavController.graph.findStartDestination().route!!) {
                         saveState = true
                     }
@@ -72,26 +75,25 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
             }
         }
 
-        Scaffold(
-            modifier = Modifier,
-            bottomBar = {
-                BottomNavBar(
-                    navController = bottomNavController,
-                    tabs = tabController.tabs,
-                    onSelect = tabController::select,
-                    appTutorial = appTutorial
-                )
-            }
-        ) {
+        Scaffold(modifier = Modifier, bottomBar = {
+            BottomNavBar(
+                navController = bottomNavController,
+                tabs = tabController.tabs,
+                onSelect = tabController::select,
+                appTutorial = appTutorial
+            )
+        }) {
             Box(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) {
-                MainScreenBottomNavigation(
-                    bottomNavController = bottomNavController,
+                MainScreenBottomNavigation(bottomNavController = bottomNavController,
                     appTutorial = appTutorial,
                     screen = {
                         selectedTab.factory().Compose()
                     },
-                    onActivityDestroyed = tabController::onFinish
-                )
+                    onActivityDestroyed = tabController::onFinish,
+                    tabs = tabController.tabs,
+                    onChanged = { tab ->
+                        tabController.select(tab)
+                    })
             }
         }
     }

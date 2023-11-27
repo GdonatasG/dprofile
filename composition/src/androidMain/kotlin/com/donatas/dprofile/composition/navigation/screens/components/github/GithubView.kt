@@ -265,7 +265,7 @@ private fun Data(
     scrollToTop: Boolean,
     endReached: Boolean,
     total: Int,
-    delegate: DataDelegate
+    delegate: DataDelegate,
 ) {
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()

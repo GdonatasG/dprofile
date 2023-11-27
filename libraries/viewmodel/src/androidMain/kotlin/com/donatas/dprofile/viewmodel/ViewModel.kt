@@ -6,7 +6,7 @@ actual abstract class ViewModel : androidx.lifecycle.ViewModel() {
     actual val scope = viewModelScope
 
     init {
-        println("Created: ${this.javaClass.simpleName}")
+        println("Created: $this")
     }
 
     actual open fun onCreate() {}
@@ -17,6 +17,6 @@ actual abstract class ViewModel : androidx.lifecycle.ViewModel() {
     override fun onCleared() {
         super.onCleared()
         onClear()
-        println("Cleared: ${this.javaClass.simpleName}")
+        println("Cleared: $this")
     }
 }

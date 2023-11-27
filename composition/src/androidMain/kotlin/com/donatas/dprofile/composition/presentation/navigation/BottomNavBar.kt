@@ -86,12 +86,6 @@ fun BottomNavBar(
     val current by navController.currentBottomNavScreenAsState()
     val tutorialState by appTutorial.state.collectAsState()
 
-    LaunchedEffect(current) {
-        tabs.firstOrNull { it.type == current }?.let {
-            onSelect(it)
-        }
-    }
-
     if (tutorialState.isFinished) {
         NavigationBar(
             // modifier = Modifier.shadow(8.dp),
@@ -118,12 +112,13 @@ fun BottomNavBar(
                     onClick = Click@{
                         if (current.route == tab.type.route) return@Click
 
+                        onSelect(tab)
                         navController.navigate(tab.type.route) {
-                            launchSingleTop = true
-                            restoreState = false
-                            popUpTo(navController.graph.findStartDestination().route!!) {
+                            launchSingleTop = false
+                            restoreState = true
+                           /* popUpTo(navController.graph.findStartDestination().route!!) {
                                 saveState = true
-                            }
+                            }*/
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(

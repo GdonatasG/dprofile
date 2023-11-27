@@ -5,6 +5,7 @@ import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.di.Scopes
 import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
 import com.donatas.dprofile.composition.extensions.getOrCreateScope
+import com.donatas.dprofile.composition.extensions.sharedViewModel
 import com.donatas.dprofile.composition.navigation.core.Navigator
 import com.donatas.dprofile.composition.navigation.delegate.DefaultContactsDelegate
 import com.donatas.dprofile.composition.navigation.delegate.DefaultGithubDelegate
@@ -67,28 +68,13 @@ class MainFlow(
 
         val tabs: List<BottomTab> = listOf(
             BottomTab(type = BottomTab.Type.ABOUT_ME, factory = {
-                if (currentTab is AboutMeScreen) {
-                    currentTab
-                } else {
-                    currentTab = scope.get<AboutMeScreen>()
-                    currentTab
-                }
+                scope.get<AboutMeScreen>()
             }),
             BottomTab(type = BottomTab.Type.GITHUB, factory = {
-                if (currentTab is GithubScreen) {
-                    currentTab
-                } else {
-                    currentTab = scope.get<GithubScreen>()
-                    currentTab
-                }
+                scope.get<GithubScreen>()
             }),
             BottomTab(type = BottomTab.Type.CONTACTS, factory = {
-                if (currentTab is ContactsScreen) {
-                    currentTab
-                } else {
-                    currentTab = scope.get<ContactsScreen>()
-                    currentTab
-                }
+                scope.get<ContactsScreen>()
             }),
         )
 
@@ -128,83 +114,61 @@ private val scope = module {
 private fun ScopeDSL.aboutMeScreenComponents() {
     scoped<AboutMeScreen> {
         AboutMeScreen(
-            factory = get<AboutMeScreenFactory>(), viewModel = get<AboutMeViewModel>(), appTutorial = get<AppTutorial>()
+            scope = this, factory = get<AboutMeScreenFactory>(), appTutorial = get<AppTutorial>()
         )
     }
 
-    factory<ExperienceViewModel> {
+    sharedViewModel {
+        AboutMeViewModel(tabs = listOf(AboutMeTab(type = AboutMeTab.Type.EXPERIENCE, factory = {
+            this.get<ExperienceScreen>()
+        }), AboutMeTab(type = AboutMeTab.Type.EDUCATION, factory = {
+            this.get<EducationScreen>()
+        }), AboutMeTab(type = AboutMeTab.Type.SKILLS, factory = {
+            this.get<SkillsScreen>()
+        }), AboutMeTab(type = AboutMeTab.Type.ROAD_TO_PROGRAMMING, factory = {
+            this.get<RoadToProgrammingScreen>()
+        })
+        )
+        )
+    }
+
+    sharedViewModel<ExperienceViewModel> {
         ExperienceViewModel()
     }
 
-    factory<ExperienceScreen> {
+    scoped<ExperienceScreen> {
         ExperienceScreen(
             scope = this, factory = get<ExperienceScreenFactory>()
         )
     }
 
-    factory<EducationViewModel> {
+    sharedViewModel<EducationViewModel> {
         EducationViewModel()
     }
 
-    factory<EducationScreen> {
+    scoped<EducationScreen> {
         EducationScreen(
             scope = this, factory = get<EducationScreenFactory>()
         )
     }
 
-    factory<SkillsViewModel> {
+    sharedViewModel<SkillsViewModel> {
         SkillsViewModel()
     }
 
-    factory<SkillsScreen> {
+    scoped<SkillsScreen> {
         SkillsScreen(
             scope = this, factory = get<SkillsScreenFactory>()
         )
     }
 
-    factory<RoadToProgrammingViewModel> {
+    sharedViewModel<RoadToProgrammingViewModel> {
         RoadToProgrammingViewModel()
     }
 
-    factory<RoadToProgrammingScreen> {
+    scoped<RoadToProgrammingScreen> {
         RoadToProgrammingScreen(
             scope = this, factory = get<RoadToProgrammingScreenFactory>()
-        )
-    }
-
-    scoped {
-        var currentTab: Screen = this.get<EducationScreen>()
-
-        AboutMeViewModel(tabs = listOf(AboutMeTab(type = AboutMeTab.Type.EXPERIENCE, factory = {
-            if (currentTab is ExperienceScreen) {
-                currentTab
-            } else {
-                currentTab = this.get<ExperienceScreen>()
-                currentTab
-            }
-        }), AboutMeTab(type = AboutMeTab.Type.EDUCATION, factory = {
-            if (currentTab is EducationScreen) {
-                currentTab
-            } else {
-                currentTab = this.get<EducationScreen>()
-                currentTab
-            }
-        }), AboutMeTab(type = AboutMeTab.Type.SKILLS, factory = {
-            if (currentTab is SkillsScreen) {
-                currentTab
-            } else {
-                currentTab = this.get<SkillsScreen>()
-                currentTab
-            }
-        }), AboutMeTab(type = AboutMeTab.Type.ROAD_TO_PROGRAMMING, factory = {
-            if (currentTab is RoadToProgrammingScreen) {
-                currentTab
-            } else {
-                currentTab = this.get<RoadToProgrammingScreen>()
-                currentTab
-            }
-        })
-        )
         )
     }
 }
@@ -277,15 +241,7 @@ internal class DefaultGetUserUseCase(
 private fun ScopeDSL.githubScreenComponents() {
     scoped<GithubScreen> {
         GithubScreen(
-            factory = get<GithubScreenFactory>(), viewModel = get<GithubViewModel>(), appTutorial = get<AppTutorial>()
-        )
-    }
-
-    scoped { GithubUserLogin(value = "GdonatasG") }
-
-    scoped<GetRepositories> {
-        DefaultGetRepositories(
-            githubUserLogin = get<GithubUserLogin>(), repositoryService = get<RepositoryService>()
+            scope = this, factory = get<GithubScreenFactory>(), appTutorial = get<AppTutorial>()
         )
     }
 
@@ -301,20 +257,20 @@ private fun ScopeDSL.githubScreenComponents() {
         )
     }
 
-    scoped<Paginator<Repository>>(qualifier = named(PaginatorQualifier.GITHUB)) {
-        val getRepositories: GetRepositories = get<GetRepositories>()
+    sharedViewModel {
+        val login = GithubUserLogin("GdonatasG")
+        val getRepositories: GetRepositories =
+            DefaultGetRepositories(githubUserLogin = login, repositoryService = get<RepositoryService>())
+        val paginator: Paginator<Repository> =
+            DefaultPaginator<Repository>(perPage = PerPage(30), onLoad = { page, perPage ->
+                getRepositories(
+                    page = page.value, perPage = perPage.value
+                )
+            })
 
-        DefaultPaginator<Repository>(perPage = PerPage(30), onLoad = { page, perPage ->
-            getRepositories(
-                page = page.value, perPage = perPage.value
-            )
-        })
-    }
-
-    scoped {
         GithubViewModel(
-            githubUserLogin = get<GithubUserLogin>().value,
-            paginator = get<Paginator<Repository>>(qualifier = named(PaginatorQualifier.GITHUB)),
+            githubUserLogin = login.value,
+            paginator = paginator,
             getUser = get<GetUser>(),
             popUpController = DefaultPopUpController(),
             delegate = get<GithubDelegate>()
@@ -325,9 +281,7 @@ private fun ScopeDSL.githubScreenComponents() {
 private fun ScopeDSL.contactsScreenComponents() {
     scoped<ContactsScreen> {
         ContactsScreen(
-            factory = get<ContactsScreenFactory>(),
-            viewModel = get<ContactsViewModel>(),
-            appTutorial = get<AppTutorial>()
+            scope = this, factory = get<ContactsScreenFactory>(), appTutorial = get<AppTutorial>()
         )
     }
 
@@ -337,7 +291,7 @@ private fun ScopeDSL.contactsScreenComponents() {
         )
     }
 
-    scoped {
+    sharedViewModel {
         ContactsViewModel(
             delegate = get<ContactsDelegate>()
         )

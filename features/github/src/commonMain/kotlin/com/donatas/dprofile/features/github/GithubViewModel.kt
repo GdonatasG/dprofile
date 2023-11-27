@@ -10,9 +10,11 @@ import com.donatas.dprofile.paginator.state.PaginatorState
 import com.donatas.dprofile.viewmodel.ViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class GithubViewModel(
