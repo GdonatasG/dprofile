@@ -5,7 +5,9 @@ import com.donatas.dprofile.alerts.popup.PopUpController
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.loader.state.ListState
 import com.donatas.dprofile.loader.state.RefreshState
+import com.donatas.dprofile.paginator.DefaultPaginator
 import com.donatas.dprofile.paginator.Paginator
+import com.donatas.dprofile.paginator.PerPage
 import com.donatas.dprofile.paginator.state.PaginatorState
 import com.donatas.dprofile.viewmodel.ViewModel
 import kotlinx.coroutines.async
@@ -18,12 +20,17 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class GithubViewModel(
-    private val githubUserLogin: String,
-    private val paginator: Paginator<Repository>,
+    private val userLogin: String,
     private val getUser: GetUser,
     private val popUpController: PopUpController,
+    private val getRepositories: GetRepositories,
     private val delegate: GithubDelegate,
 ) : ViewModel() {
+    private val paginator = DefaultPaginator<Repository>(perPage = PerPage(30), onLoad = { page, perPage ->
+        getRepositories(
+            page = page.value, perPage = perPage.value, login = userLogin
+        )
+    })
 
     private val _listState: MutableStateFlow<GithubListState> = MutableStateFlow(GithubListState.Loading)
     val listState: StateFlow<GithubListState> = _listState.asStateFlow()
@@ -52,7 +59,7 @@ class GithubViewModel(
                 paginator.init()
             },
             async {
-                getUser(githubUserLogin).onSuccess {
+                getUser(userLogin).onSuccess {
                     _user.value = UserState.Data(user = it)
                 }.onFailure {
                     _user.value = UserState.Error(title = "Unable to load Github profile, try again")
@@ -133,7 +140,7 @@ class GithubViewModel(
                     paginator.refresh()
                 },
                 async {
-                    getUser(githubUserLogin).onSuccess {
+                    getUser(userLogin).onSuccess {
                         _user.value = UserState.Data(user = it)
                         userRefreshSuccessful = true
                     }.onFailure {

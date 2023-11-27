@@ -36,6 +36,7 @@ import com.donatas.dprofile.features.aboutme.roadtoprogramming.RoadToProgramming
 import com.donatas.dprofile.features.aboutme.skills.SkillsViewModel
 import com.donatas.dprofile.features.contacts.ContactsDelegate
 import com.donatas.dprofile.features.contacts.ContactsViewModel
+import com.donatas.dprofile.features.github.GetRepositories
 import com.donatas.dprofile.features.github.GetUser
 import com.donatas.dprofile.features.github.GithubDelegate
 import com.donatas.dprofile.features.github.GithubUser
@@ -176,15 +177,15 @@ private fun ScopeDSL.aboutMeScreenComponents() {
 internal class GithubUserLogin(val value: String)
 
 internal class DefaultGetRepositories(
-    private val githubUserLogin: GithubUserLogin, private val repositoryService: RepositoryService
+    private val repositoryService: RepositoryService
 ) : GetRepositories {
-    override suspend fun invoke(page: Int, perPage: Int): LoadingResult<Repository> {
+    override suspend fun invoke(page: Int, perPage: Int, login: String): LoadingResult<Repository> {
         val result = repositoryService.getRepositories {
             this.page {
                 this.page = page
                 this.perPage = perPage
             }
-            this.user(githubUserLogin.value)
+            this.user(login)
         }
 
         return suspendCoroutine<LoadingResult<Repository>> { continuation ->
@@ -214,11 +215,6 @@ internal class DefaultGetRepositories(
 private fun RepositoryResponse.toDomain(): Repository = Repository(
     title = this.name, language = this.language, htmlUrl = this.htmlUrl
 )
-
-
-internal interface GetRepositories {
-    suspend operator fun invoke(page: Int, perPage: Int): LoadingResult<Repository>
-}
 
 internal class DefaultGetUserUseCase(
     private val userService: UserService
@@ -257,21 +253,17 @@ private fun ScopeDSL.githubScreenComponents() {
         )
     }
 
-    sharedViewModel {
-        val login = GithubUserLogin("GdonatasG")
-        val getRepositories: GetRepositories =
-            DefaultGetRepositories(githubUserLogin = login, repositoryService = get<RepositoryService>())
-        val paginator: Paginator<Repository> =
-            DefaultPaginator<Repository>(perPage = PerPage(30), onLoad = { page, perPage ->
-                getRepositories(
-                    page = page.value, perPage = perPage.value
-                )
-            })
+    scoped<GetRepositories> {
+        DefaultGetRepositories(
+            repositoryService = get<RepositoryService>()
+        )
+    }
 
+    sharedViewModel {
         GithubViewModel(
-            githubUserLogin = login.value,
-            paginator = paginator,
+            userLogin = "GdonatasG",
             getUser = get<GetUser>(),
+            getRepositories = get<GetRepositories>(),
             popUpController = DefaultPopUpController(),
             delegate = get<GithubDelegate>()
         )

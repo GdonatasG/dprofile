@@ -53,6 +53,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -155,6 +156,24 @@ fun GithubView(model: GithubViewModel) {
 private fun Loading() {
     val shimmerBackgroundColor = MaterialTheme.colorScheme.inverseSurface
 
+    val tileGroup = @Composable {
+        ShimmerTile(
+            titleWidth = 100.dp,
+            subtitleWidth = 180.dp,
+            background = MaterialTheme.colorScheme.inverseSurface
+        )
+        ShimmerTile(
+            titleWidth = 140.dp,
+            subtitleWidth = 100.dp,
+            background = MaterialTheme.colorScheme.inverseSurface
+        )
+        ShimmerTile(
+            titleWidth = 180.dp,
+            subtitleWidth = 120.dp,
+            background = MaterialTheme.colorScheme.inverseSurface
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,57 +211,54 @@ private fun Loading() {
             )
         }
         Spacer(modifier = Modifier.height(60.dp))
-        repeat(15) {
-            Row(
-                modifier = Modifier.padding(vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .width(32.dp)
-                        .height(32.dp)
-                        .loadingShimmerEffect(shimmerBackgroundColor)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .width(randomWidth())
-                            .height(15.dp)
-                            .loadingShimmerEffect(shimmerBackgroundColor)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .width(randomWidth())
-                            .height(15.dp)
-                            .loadingShimmerEffect(shimmerBackgroundColor)
-                    )
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Box(
-                    modifier = Modifier
-                        .width(24.dp)
-                        .height(24.dp)
-                        .loadingShimmerEffect(shimmerBackgroundColor)
-                )
-            }
+        repeat(5) {
+            tileGroup()
         }
     }
 }
 
-private fun randomWidth(): Dp {
-    val dps = listOf(
-        100.dp,
-        120.dp,
-        140.dp,
-        180.dp,
-        200.dp
-    )
-
-    return dps.random()
+@Composable
+private fun ShimmerTile(
+    titleWidth: Dp,
+    subtitleWidth: Dp,
+    background: Color
+) {
+    Row(
+        modifier = Modifier.padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .width(32.dp)
+                .height(32.dp)
+                .loadingShimmerEffect(background)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(titleWidth)
+                    .height(15.dp)
+                    .loadingShimmerEffect(background)
+            )
+            Box(
+                modifier = Modifier
+                    .width(subtitleWidth)
+                    .height(15.dp)
+                    .loadingShimmerEffect(background)
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Box(
+            modifier = Modifier
+                .width(24.dp)
+                .height(24.dp)
+                .loadingShimmerEffect(background)
+        )
+    }
 }
 
 private interface DataDelegate {
