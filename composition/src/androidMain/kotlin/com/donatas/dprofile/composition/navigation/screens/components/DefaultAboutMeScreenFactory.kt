@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +23,7 @@ import com.donatas.dprofile.compose.components.layout.AppScaffold
 import com.donatas.dprofile.compose.components.tab.DLazyTabRow
 import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.components.Message
+import com.donatas.dprofile.composition.components.locals.LocalNavController
 import com.donatas.dprofile.composition.navigation.screens.AboutMeScreenFactory
 import com.donatas.dprofile.features.aboutme.AboutMeTab
 import com.donatas.dprofile.features.aboutme.AboutMeViewModel
@@ -107,20 +109,24 @@ class DefaultAboutMeScreenFactory : AboutMeScreenFactory {
             }
         }) {
             if (tutorialState.isFinished || tutorialState.step > 1) {
-                NavHost(
-                    navController = navController, startDestination = AboutMeTab.Type.EXPERIENCE.route
+                CompositionLocalProvider(
+                    LocalNavController provides navController
                 ) {
-                    composable(AboutMeTab.Type.EXPERIENCE.route) {
-                        selectedTab.factory().Compose()
-                    }
-                    composable(AboutMeTab.Type.EDUCATION.route) {
-                        selectedTab.factory().Compose()
-                    }
-                    composable(AboutMeTab.Type.SKILLS.route) {
-                        selectedTab.factory().Compose()
-                    }
-                    composable(AboutMeTab.Type.ROAD_TO_PROGRAMMING.route) {
-                        selectedTab.factory().Compose()
+                    NavHost(
+                        navController = navController, startDestination = AboutMeTab.Type.EXPERIENCE.route
+                    ) {
+                        composable(AboutMeTab.Type.EXPERIENCE.route) {
+                            selectedTab.factory().Compose()
+                        }
+                        composable(AboutMeTab.Type.EDUCATION.route) {
+                            selectedTab.factory().Compose()
+                        }
+                        composable(AboutMeTab.Type.SKILLS.route) {
+                            selectedTab.factory().Compose()
+                        }
+                        composable(AboutMeTab.Type.ROAD_TO_PROGRAMMING.route) {
+                            selectedTab.factory().Compose()
+                        }
                     }
                 }
             } else {
@@ -129,10 +135,12 @@ class DefaultAboutMeScreenFactory : AboutMeScreenFactory {
                         .verticalScroll(rememberScrollState())
                         .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 16.dp)
                 ) {
-                    Message(message = "Hi! I'm Donatas, mobile applications developer.\n\n" +
-                            "Nice to meet you and thank you for downloading my profile (virtual CV) application. " +
-                            "In the following steps, you will find an introduction about me, where you will be able to get to know me better.\n\n" +
-                            "Have a good journey!")
+                    Message(
+                        message = "Hi! I'm Donatas, mobile applications developer.\n\n" +
+                                "Nice to meet you and thank you for downloading my profile (virtual CV) application. " +
+                                "In the following steps, you will find an introduction about me, where you will be able to get to know me better.\n\n" +
+                                "Have a good journey!"
+                    )
                 }
             }
 
@@ -145,7 +153,7 @@ class DefaultAboutMeScreenFactory : AboutMeScreenFactory {
             launchSingleTop = true
             restoreState = true
             popUpTo(this@changeTab.graph.findStartDestination().route!!) {
-                inclusive = true
+                saveState = true
             }
         }
     }
