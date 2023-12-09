@@ -20,11 +20,6 @@ import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +31,6 @@ import com.donatas.dprofile.compose.components.card.DCard
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.features.aboutme.skills.Skill
 import com.donatas.dprofile.features.aboutme.skills.SkillsViewModel
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -100,42 +94,28 @@ private fun Skill(skill: Skill) {
                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
             )
             Spacer(modifier = Modifier.height(10.dp))
-            LevelRow(level = skill.level, maxLevel = skill.maxLevel, animate = !skill.animated, onFinished = {
-                skill.animated = true
-            })
+            LevelRow(level = skill.level, maxLevel = skill.maxLevel)
         }
     }
 }
 
 @Composable
-private fun LevelRow(level: Int, maxLevel: Int, animate: Boolean, onFinished: () -> Unit) {
+private fun LevelRow(level: Int, maxLevel: Int) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         repeat(maxLevel) { index ->
             val currentLevel = index + 1
-            LevelItem(level = currentLevel, active = currentLevel <= level, animate = animate).also {
-                if (currentLevel == maxLevel) {
-                    onFinished()
-                }
-            }
+            LevelItem(active = currentLevel <= level)
         }
     }
 }
 
 @Composable
-private fun LevelItem(level: Int, active: Boolean, animate: Boolean) {
-    val levelDelayInMillis: Long = 80L
+private fun LevelItem(active: Boolean) {
     val inactiveColor: Color = Color.White.copy(alpha = 0.25f)
     val activeColor: Color = Color.White.copy(alpha = 0.95f)
-    var backgroundColor by remember { mutableStateOf(if (active && animate) inactiveColor else if (active) activeColor else inactiveColor) }
-
-    LaunchedEffect(active) {
-        if (active && animate) {
-            delay(levelDelayInMillis * level)
-            backgroundColor = activeColor
-        }
-    }
+    var backgroundColor = if (active) activeColor else inactiveColor
 
     Box(
         modifier = Modifier

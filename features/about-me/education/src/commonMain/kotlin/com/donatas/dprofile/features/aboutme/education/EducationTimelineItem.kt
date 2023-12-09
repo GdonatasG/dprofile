@@ -4,6 +4,5 @@ data class EducationTimelineItem(
     val title: String,
     val subtitle: String,
     val description: String,
-    val location: String,
-    var animated: Boolean = false
+    val location: String
 )

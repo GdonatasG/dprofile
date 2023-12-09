@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.rememberNavController
 import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.navigation.screens.BottomTabBarScreenFactory
 import com.donatas.dprofile.composition.presentation.BottomTab
@@ -20,13 +21,12 @@ import com.donatas.dprofile.composition.presentation.navigation.route
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
-    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     override fun Compose(tabController: BottomTabBarController, appTutorial: AppTutorial) {
         val selectedTab by tabController.selectedTab.collectAsState()
         val tutorialState by appTutorial.state.collectAsState()
 
-        val bottomNavController = rememberAnimatedNavController()
+        val bottomNavController = rememberNavController()
 
         LaunchedEffect(tutorialState) {
             if (tutorialState.isFinished) return@LaunchedEffect

@@ -1,8 +1,5 @@
 package com.donatas.dprofile.composition.navigation.screens.components.contacts
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -29,15 +26,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -45,46 +36,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.donatas.dprofile.compose.components.AppDivider
 import com.donatas.dprofile.compose.components.ModalDivider
 import com.donatas.dprofile.compose.theme.secondaryTextColorDark
 import com.donatas.dprofile.compose.theme.secondaryTextColorLight
 import com.donatas.dprofile.composition.R
 import com.donatas.dprofile.features.contacts.ContactsViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun ContactsView(model: ContactsViewModel) {
     val imageBorderColor: Color = if (isSystemInDarkTheme()) secondaryTextColorDark else secondaryTextColorLight
 
-    var scaleStarted by remember { mutableStateOf(false) }
-    var scaleFinished by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (scaleStarted) 1f else 0.2f, animationSpec = tween(800)
-    )
-
-    LaunchedEffect(true) {
-        delay(50)
-        scaleStarted = true
-    }
-
-    LaunchedEffect(scale) {
-        scaleFinished = scale == 1f
-    }
-
     Card(
         modifier = Modifier
-            .padding(16.dp)
-            .scale(scale), elevation = CardDefaults.elevatedCardElevation(
+            .padding(16.dp),
+        elevation = CardDefaults.elevatedCardElevation(
             defaultElevation = 5.dp
         )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(
-                    state = rememberScrollState(), enabled = scaleFinished
-                ), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+                .verticalScroll(state = rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -132,61 +106,59 @@ fun ContactsView(model: ContactsViewModel) {
                     )
                 }
             }
-            AnimatedVisibility(visible = scaleFinished) {
-                Spacer(modifier = Modifier.height(48.dp))
-                Column {
-                    ContactListTile(
-                        icon = {
-                            Icon(
-                                modifier = Modifier.size(28.dp),
-                                painter = painterResource(id = R.drawable.email),
-                                contentDescription = "Email",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }, title = "Email", trailingTitle = "Email me", divided = true, onClick = model::onEmail
-                    )
-                    ContactListTile(
-                        icon = {
-                            Image(
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                painter = painterResource(id = R.drawable.linkedin),
-                                contentDescription = "LinkedIn"
-                            )
-                        },
-                        title = "LinkedIn",
-                        trailingTitle = "Let's connect",
-                        divided = true,
-                        onClick = model::onLinkedIn
-                    )
-                    ContactListTile(
-                        icon = {
-                            Image(
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                painter = painterResource(id = R.drawable.upwork),
-                                contentDescription = "Upwork"
-                            )
-                        }, title = "Upwork", trailingTitle = "View profile", divided = true, onClick = model::onUpwork
-                    )
-                    ContactListTile(
-                        icon = {
-                            Image(
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                painter = painterResource(id = R.drawable.freelancer),
-                                contentDescription = "Freelancer"
-                            )
-                        },
-                        title = "Freelancer",
-                        trailingTitle = "View profile",
-                        divided = false,
-                        onClick = model::onFreelancer
-                    )
-                }
+            Spacer(modifier = Modifier.height(48.dp))
+            Column {
+                ContactListTile(
+                    icon = {
+                        Icon(
+                            modifier = Modifier.size(28.dp),
+                            painter = painterResource(id = R.drawable.email),
+                            contentDescription = "Email",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }, title = "Email", trailingTitle = "Email me", divided = true, onClick = model::onEmail
+                )
+                ContactListTile(
+                    icon = {
+                        Image(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(RoundedCornerShape(4.dp)),
+                            painter = painterResource(id = R.drawable.linkedin),
+                            contentDescription = "LinkedIn"
+                        )
+                    },
+                    title = "LinkedIn",
+                    trailingTitle = "Let's connect",
+                    divided = true,
+                    onClick = model::onLinkedIn
+                )
+                ContactListTile(
+                    icon = {
+                        Image(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(RoundedCornerShape(4.dp)),
+                            painter = painterResource(id = R.drawable.upwork),
+                            contentDescription = "Upwork"
+                        )
+                    }, title = "Upwork", trailingTitle = "View profile", divided = true, onClick = model::onUpwork
+                )
+                ContactListTile(
+                    icon = {
+                        Image(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(RoundedCornerShape(4.dp)),
+                            painter = painterResource(id = R.drawable.freelancer),
+                            contentDescription = "Freelancer"
+                        )
+                    },
+                    title = "Freelancer",
+                    trailingTitle = "View profile",
+                    divided = false,
+                    onClick = model::onFreelancer
+                )
             }
         }
     }
