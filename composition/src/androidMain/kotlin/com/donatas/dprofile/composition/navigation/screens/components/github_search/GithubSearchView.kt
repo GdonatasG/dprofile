@@ -60,7 +60,7 @@ import com.donatas.dprofile.compose.components.state.getImeWithNavigationBarsPad
 import com.donatas.dprofile.compose.components.text.SectionTitle
 import com.donatas.dprofile.features.github.search.GithubSearchViewModel
 import com.donatas.dprofile.features.github.search.GithubSearchViewState
-import com.donatas.dprofile.features.github.search.ListOrder
+import com.donatas.dprofile.features.github.search.Order
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.features.github.shared.RepositoryListTile
 import com.donatas.dprofile.loader.state.ListState
@@ -83,7 +83,7 @@ fun GithubSearchView(model: GithubSearchViewModel) {
             val scrollToTop by model.scrollToTop.collectAsState()
             val endReached by model.endReached.collectAsState()
 
-            val orderType by model.orderType.collectAsState()
+            val orderType by model.order.collectAsState()
 
 
             when (val type = listState) {
@@ -173,7 +173,7 @@ private fun Data(
     scrollToTop: Boolean,
     endReached: Boolean,
     total: Int,
-    orderType: ListOrder.Type,
+    orderType: Order,
     delegate: DataDelegate
 ) {
     val scope = rememberCoroutineScope()
@@ -255,7 +255,7 @@ private fun Data(
                             ) {
                                 Icon(
                                     modifier = Modifier.size(18.dp),
-                                    imageVector = if (orderType == ListOrder.Type.DESC) Icons.Default.ArrowUpward else Icons.Default.ArrowDownward,
+                                    imageVector = if (orderType == Order.DESC) Icons.Default.ArrowUpward else Icons.Default.ArrowDownward,
                                     contentDescription = "Change list order"
                                 )
                                 Text(
@@ -266,7 +266,7 @@ private fun Data(
                                 )
                             }
                             Text(
-                                text = if (orderType == ListOrder.Type.DESC) "(Newest to oldest)" else "(Oldest to newest)",
+                                text = if (orderType == Order.DESC) "(Newest to oldest)" else "(Oldest to newest)",
                                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Normal),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis

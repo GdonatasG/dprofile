@@ -6,10 +6,11 @@ import com.donatas.dprofile.alerts.popup.PopUpController
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFilters
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObservable
 import com.donatas.dprofile.features.github.shared.Repository
-import com.donatas.dprofile.loader.SearchQueryHolder
 import com.donatas.dprofile.loader.state.ListState
 import com.donatas.dprofile.loader.state.RefreshState
+import com.donatas.dprofile.paginator.DefaultPaginator
 import com.donatas.dprofile.paginator.Paginator
+import com.donatas.dprofile.paginator.PerPage
 import com.donatas.dprofile.paginator.state.PaginatorState
 import com.donatas.dprofile.utils.observer.Observer
 import com.donatas.dprofile.viewmodel.ViewModel
@@ -22,16 +23,25 @@ import kotlinx.coroutines.launch
 import org.koin.core.scope.Scope
 
 class GithubSearchViewModel(
-    private val koinScope: Scope,
-    private val globalSearchHandler: GlobalSearchHandler,
-    private val searchQueryHolder: SearchQueryHolder,
-    private val listOrder: ListOrder,
     private val appliedFiltersObservable: AppliedFiltersObservable,
-    private val paginator: Paginator<Repository>,
+    private val getRepositories: GetRepositories,
     private val popUpController: PopUpController,
     private val delegate: GithubSearchDelegate,
     private val alert: Alert.Coordinator
 ) : ViewModel() {
+    private var requestQuery: String = ""
+
+    private val paginator: Paginator<Repository> =
+        DefaultPaginator<Repository>(perPage = PerPage(30), onLoad = { page, perPage ->
+            getRepositories(
+                page = page.value,
+                perPage = perPage.value,
+                globalSearch = _globalSearch.value,
+                query = requestQuery,
+                order = _order.value
+            )
+        })
+
     private val _viewState: MutableStateFlow<GithubSearchViewState> =
         MutableStateFlow(GithubSearchViewState.defaultIdle())
     val viewState: StateFlow<GithubSearchViewState> = _viewState.asStateFlow()
@@ -49,11 +59,13 @@ class GithubSearchViewModel(
     private val _searchField: MutableStateFlow<String> = MutableStateFlow("")
     val searchField: StateFlow<String> = _searchField.asStateFlow()
 
-    val globalSearch: StateFlow<Boolean> = globalSearchHandler.value
+    private val _globalSearch: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val globalSearch: StateFlow<Boolean> = _globalSearch.asStateFlow()
 
     val popUp: StateFlow<PopUp?> = popUpController.popUp
 
-    val orderType: StateFlow<ListOrder.Type> = listOrder.value
+    private val _order: MutableStateFlow<Order> = MutableStateFlow(Order.DESC)
+    val order: StateFlow<Order> = _order.asStateFlow()
 
     private val _appliedFiltersState: MutableStateFlow<AppliedFiltersState> = MutableStateFlow(AppliedFiltersState.None)
     val appliedFiltersState: StateFlow<AppliedFiltersState> = _appliedFiltersState.asStateFlow()
@@ -76,19 +88,20 @@ class GithubSearchViewModel(
         searchJob = null
 
         if (trimmedQuery.isEmpty()) {
-            searchQueryHolder.reset()
+            requestQuery = ""
         }
 
         if (trimmedQuery.isEmpty() && _appliedFiltersState.value is AppliedFiltersState.None) {
             _viewState.value = GithubSearchViewState.defaultIdle()
+            _order.value = Order.DESC
 
             return
         }
 
         searchJob = scope.launch {
-            if (trimmedQuery.isNotEmpty() && trimmedQuery != searchQueryHolder.get()) {
+            if (trimmedQuery.isNotEmpty() && trimmedQuery != requestQuery) {
                 delay(500)
-                searchQueryHolder.setQuery(trimmedQuery)
+                requestQuery = trimmedQuery
             }
 
             if (_viewState.value !is GithubSearchViewState.Searched) {
@@ -131,22 +144,21 @@ class GithubSearchViewModel(
     fun onSearch(query: String) {
         _searchField.value = query
 
-
-        if (searchQueryHolder.query.value == query.trim()) return
+        if (requestQuery == query.trim()) return
 
         applyChanges()
     }
 
     fun onGlobalSearchChanged(value: Boolean) {
-        if (globalSearchHandler.value.value == value) return
+        if (_globalSearch.value == value) return
 
-        globalSearchHandler.change(value)
+        _globalSearch.value = value
 
         applyChanges()
     }
 
     fun onListOrderChanged() {
-        listOrder.change()
+        _order.value = if (_order.value == Order.DESC) Order.ASC else Order.DESC
         applyChanges()
     }
 
@@ -199,14 +211,6 @@ class GithubSearchViewModel(
     override fun onDisappear() {
         super.onDisappear()
         appliedFiltersObservable.remove(appliedFiltersObserver)
-    }
-
-    override fun onClear() {
-        super.onClear()
-        try {
-            koinScope.close()
-        } catch (_: Exception) {
-        }
     }
 
     // region NAVIGATION

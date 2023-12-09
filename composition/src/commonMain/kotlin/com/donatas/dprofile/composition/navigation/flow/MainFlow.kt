@@ -3,7 +3,6 @@ package com.donatas.dprofile.composition.navigation.flow
 import com.donatas.dprofile.alerts.popup.DefaultPopUpController
 import com.donatas.dprofile.composition.AppTutorial
 import com.donatas.dprofile.composition.di.Scopes
-import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
 import com.donatas.dprofile.composition.extensions.getOrCreateScope
 import com.donatas.dprofile.composition.extensions.sharedViewModel
 import com.donatas.dprofile.composition.navigation.core.Navigator
@@ -46,11 +45,7 @@ import com.donatas.dprofile.githubservices.repository.RepositoryResponse
 import com.donatas.dprofile.githubservices.repository.RepositoryService
 import com.donatas.dprofile.githubservices.user.UserService
 import com.donatas.dprofile.loader.LoadingResult
-import com.donatas.dprofile.paginator.DefaultPaginator
-import com.donatas.dprofile.paginator.Paginator
-import com.donatas.dprofile.paginator.PerPage
 import org.koin.core.component.KoinScopeComponent
-import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.ScopeDSL
 import org.koin.dsl.module
