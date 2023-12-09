@@ -9,19 +9,11 @@ android {
     namespace = "com.donatas.dprofile"
     compileSdk = Dependencies.Android.compileSDK
 
-    signingConfigs {
-        create("release") {
-            storeFile = file("key.keystore")
-            storePassword = "test123"
-            keyAlias = "projectspace"
-            keyPassword = "test123"
-        }
-    }
     defaultConfig {
         applicationId = "com.donatas.dprofile"
         minSdk = Dependencies.Android.minSDK
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -29,13 +21,6 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            this.signingConfig = signingConfigs.getByName("release")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
     compileOptions {
         sourceCompatibility = Dependencies.CompileOptions.sourceCompatibility
         targetCompatibility = Dependencies.CompileOptions.targetCompatibility
