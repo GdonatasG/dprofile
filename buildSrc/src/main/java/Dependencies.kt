@@ -34,6 +34,12 @@ object Dependencies {
                 "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
         }
 
+        object Firebase {
+            const val firebaseBom = "com.google.firebase:firebase-bom:32.7.0"
+            const val crashlytics = "com.google.firebase:firebase-crashlytics"
+            const val analytics = "com.google.firebase:firebase-analytics"
+        }
+
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
         const val appCompat = "androidx.appcompat:appcompat:1.6.1"
         const val material = "com.google.android.material:material:1.9.0"

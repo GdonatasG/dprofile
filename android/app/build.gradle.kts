@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -51,6 +53,9 @@ android {
 }
 
 dependencies {
+    implementation(platform(Dependencies.Android.Firebase.firebaseBom))
+    implementation(Dependencies.Android.Firebase.analytics)
+    implementation(Dependencies.Android.Firebase.crashlytics)
     implementation(project(":android:compose-components"))
     implementation(project(":composition"))
 
