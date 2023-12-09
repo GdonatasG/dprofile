@@ -60,17 +60,29 @@ class MainFlow(
     }
 
     fun start() {
-        var currentTab: Screen = scope.get<AboutMeScreen>()
 
         val tabs: List<BottomTab> = listOf(
-            BottomTab(type = BottomTab.Type.ABOUT_ME, factory = {
-                scope.get<AboutMeScreen>()
+            BottomTab(type = BottomTab.Type.ABOUT_ME, factory = factory@{
+                try {
+                    scope.get<AboutMeScreen>()
+                } catch (_: Exception) {
+                    null
+                }
+
             }),
             BottomTab(type = BottomTab.Type.GITHUB, factory = {
-                scope.get<GithubScreen>()
+                try {
+                    scope.get<GithubScreen>()
+                } catch (_: Exception) {
+                    null
+                }
             }),
             BottomTab(type = BottomTab.Type.CONTACTS, factory = {
-                scope.get<ContactsScreen>()
+                try {
+                    scope.get<ContactsScreen>()
+                } catch (_: Exception) {
+                    null
+                }
             }),
         )
 
@@ -116,13 +128,30 @@ private fun ScopeDSL.aboutMeScreenComponents() {
 
     sharedViewModel {
         AboutMeViewModel(tabs = listOf(AboutMeTab(type = AboutMeTab.Type.EXPERIENCE, factory = {
-            this.get<ExperienceScreen>()
+            try {
+                this.get<ExperienceScreen>()
+            } catch (_: Exception) {
+                null
+            }
+
         }), AboutMeTab(type = AboutMeTab.Type.EDUCATION, factory = {
-            this.get<EducationScreen>()
+            try {
+                this.get<EducationScreen>()
+            } catch (_: Exception) {
+                null
+            }
         }), AboutMeTab(type = AboutMeTab.Type.SKILLS, factory = {
-            this.get<SkillsScreen>()
+            try {
+                this.get<SkillsScreen>()
+            } catch (_: Exception) {
+                null
+            }
         }), AboutMeTab(type = AboutMeTab.Type.ROAD_TO_PROGRAMMING, factory = {
-            this.get<RoadToProgrammingScreen>()
+            try {
+                this.get<RoadToProgrammingScreen>()
+            } catch (_: Exception) {
+                null
+            }
         })
         )
         )

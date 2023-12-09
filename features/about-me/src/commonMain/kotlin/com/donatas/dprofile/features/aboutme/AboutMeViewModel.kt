@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class AboutMeTab(
     val type: Type,
-    val factory: () -> Screen
+    val factory: () -> Screen?
 ) {
     enum class Type {
         EXPERIENCE,

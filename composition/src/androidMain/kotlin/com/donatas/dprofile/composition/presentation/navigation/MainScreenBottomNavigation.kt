@@ -94,10 +94,5 @@ private fun PrivateBackHandler(
                 onChanged(tabs.first { it.type.route == route })
             }
         }
-
-
-        /*  if (tutorialState.isFinished) {
-              onPopped()
-          }*/
     }
 }

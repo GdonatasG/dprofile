@@ -116,16 +116,16 @@ class DefaultAboutMeScreenFactory : AboutMeScreenFactory {
                         navController = navController, startDestination = AboutMeTab.Type.EXPERIENCE.route
                     ) {
                         composable(AboutMeTab.Type.EXPERIENCE.route) {
-                            selectedTab.factory().Compose()
+                            selectedTab.factory()?.Compose()
                         }
                         composable(AboutMeTab.Type.EDUCATION.route) {
-                            selectedTab.factory().Compose()
+                            selectedTab.factory()?.Compose()
                         }
                         composable(AboutMeTab.Type.SKILLS.route) {
-                            selectedTab.factory().Compose()
+                            selectedTab.factory()?.Compose()
                         }
                         composable(AboutMeTab.Type.ROAD_TO_PROGRAMMING.route) {
-                            selectedTab.factory().Compose()
+                            selectedTab.factory()?.Compose()
                         }
                     }
                 }

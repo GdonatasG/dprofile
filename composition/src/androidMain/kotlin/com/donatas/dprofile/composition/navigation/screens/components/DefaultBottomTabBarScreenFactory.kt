@@ -87,7 +87,7 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
                 MainScreenBottomNavigation(bottomNavController = bottomNavController,
                     appTutorial = appTutorial,
                     screen = {
-                        selectedTab.factory().Compose()
+                        selectedTab.factory()?.Compose()
                     },
                     onActivityDestroyed = tabController::onFinish,
                     tabs = tabController.tabs,

@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.scope.Scope
 
 class GithubSearchViewModel(
+    private val koinScope: Scope,
     private val appliedFiltersObservable: AppliedFiltersObservable,
     private val getRepositories: GetRepositories,
     private val popUpController: PopUpController,
@@ -211,6 +212,14 @@ class GithubSearchViewModel(
     override fun onDisappear() {
         super.onDisappear()
         appliedFiltersObservable.remove(appliedFiltersObserver)
+    }
+
+    override fun onClear() {
+        super.onClear()
+        try {
+            koinScope.close()
+        } catch (_: Exception) {
+        }
     }
 
     // region NAVIGATION

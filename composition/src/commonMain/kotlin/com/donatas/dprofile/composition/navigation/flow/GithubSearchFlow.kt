@@ -168,6 +168,7 @@ private val scope = module {
 
         sharedViewModel {
             GithubSearchViewModel(
+                koinScope = this,
                 appliedFiltersObservable = get<AppliedFiltersObservable>(
                     qualifier = named(
                         AppliedFiltersObservableQualifier.GITHUB_SEARCH
