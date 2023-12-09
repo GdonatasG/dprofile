@@ -5,16 +5,29 @@ import com.donatas.dprofile.viewmodel.ViewModel
 class SkillsViewModel : ViewModel() {
     val categories: List<Category> = listOf(
         Category(
-            name = "Mobile development", skills = listOf(
+            name = "Programming languages", skills = listOf(
                 Skill(
                     value = "Kotlin", level = 4
-                ), Skill(
+                ),
+                Skill(
+                    value = "Dart", level = 4
+                ),
+                Skill(
+                    value = "Java", level = 3
+                ),
+            )
+        ),
+        Category(
+            name = "Mobile development", skills = listOf(
+                Skill(
                     value = "Kotlin Multiplatform", level = 4
-                ), Skill(
+                ),
+                Skill(
                     value = "Jetpack Compose", level = 4
-                ), Skill(
-                    value = "Flutter & Dart", level = 3
-                )
+                ),
+                Skill(
+                    value = "Flutter", level = 4
+                ),
             )
         ), Category(
             name = "Database", skills = listOf(
@@ -31,14 +44,13 @@ class SkillsViewModel : ViewModel() {
                 Skill(
                     value = "Spring Boot", level = 3
                 ), Skill(
-                    value = "Java", level = 3
-                ), Skill(
                     value = "HTML", level = 3
                 ), Skill(
                     value = "CSS", level = 3
                 )
             )
-        ), Category(
+        ),
+        Category(
             name = "Version Control System", skills = listOf(
                 Skill(
                     value = "Github", level = 4
