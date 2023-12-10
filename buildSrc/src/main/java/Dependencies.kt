@@ -25,8 +25,9 @@ object Dependencies {
 
     object Android {
         const val minSDK = 26
+        const val targetSDK = 33
         const val compileSDK = 34
-        const val maxSDK = 33
+        const val maxSDK = 34
 
         object Accompanist {
             const val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist}"

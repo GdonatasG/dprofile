@@ -12,12 +12,25 @@ android {
     defaultConfig {
         applicationId = "com.donatas.dprofile"
         minSdk = Dependencies.Android.minSDK
-        versionCode = 1
+        targetSdk = Dependencies.Android.targetSDK
+        versionCode = 2
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    buildTypes {
+        release {
+            this.isMinifyEnabled = true
+            this.isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
         }
     }
 
