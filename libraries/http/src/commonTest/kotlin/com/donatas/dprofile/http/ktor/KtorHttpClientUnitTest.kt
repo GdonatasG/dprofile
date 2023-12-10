@@ -219,13 +219,11 @@ class KtorHttpClientUnitTest {
         coroutineScope: CoroutineScope
     ) {
         val mockEngine = MockEngine {
-            println("request")
             respond("any response")
         }
         val sut = makeSUT(mockEngine, testBaseUrl)
 
         val job = coroutineScope.launch {
-            println("do job")
             assertFailsWith<CancellationException> {
                 request(sut)
             }

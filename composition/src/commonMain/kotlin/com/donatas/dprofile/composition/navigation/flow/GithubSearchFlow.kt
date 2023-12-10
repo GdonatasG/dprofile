@@ -5,9 +5,6 @@ import com.donatas.dprofile.alerts.popup.DefaultPopUpController
 import com.donatas.dprofile.composition.di.Scopes
 import com.donatas.dprofile.composition.di.qualifier.AppliedFiltersObservableQualifier
 import com.donatas.dprofile.composition.di.qualifier.FilterStoreObservableCacheQualifier
-import com.donatas.dprofile.composition.di.qualifier.PaginatorQualifier
-import com.donatas.dprofile.composition.di.qualifier.SearchQueryHolderQualifier
-import com.donatas.dprofile.composition.extensions.createScope
 import com.donatas.dprofile.composition.extensions.getOrCreateScope
 import com.donatas.dprofile.composition.extensions.sharedViewModel
 import com.donatas.dprofile.composition.navigation.core.Navigator
@@ -29,10 +26,9 @@ import com.donatas.dprofile.features.filter.shared.filterSelected
 import com.donatas.dprofile.features.filter.shared.model.SingleChoicePredefinedFilterModel
 import com.donatas.dprofile.features.filter.shared.observable.AppliedFiltersObservable
 import com.donatas.dprofile.features.filter.shared.observable.FilterStoreObservableCache
+import com.donatas.dprofile.features.github.search.GetRepositories
 import com.donatas.dprofile.features.github.search.GithubSearchDelegate
 import com.donatas.dprofile.features.github.search.GithubSearchViewModel
-import com.donatas.dprofile.features.github.search.GlobalSearchHandler
-import com.donatas.dprofile.features.github.search.ListOrder
 import com.donatas.dprofile.features.github.shared.Repository
 import com.donatas.dprofile.githubservices.common.Order
 import com.donatas.dprofile.githubservices.repository.RepositoryResponse
@@ -83,40 +79,15 @@ private val scope = module {
             )
         }
 
-        scoped<GlobalSearchHandler>() {
-            GlobalSearchHandler(initiallySearchGlobally = false)
-        }
-
-        scoped<SearchQueryHolder>(qualifier = named(SearchQueryHolderQualifier.GITHUB_SEARCH)) {
-            SearchQueryHolder()
-        }
-
-        scoped<ListOrder> {
-            ListOrder()
-        }
-
-        scoped<SearchRepositories> {
-            DefaultSearchRepositoriesUseCase(
+        scoped<GetRepositories> {
+            DefaultGetRepositoriesUseCase(
                 filterStoreObservableCache = get<FilterStoreObservableCache>(
                     qualifier = named(
                         FilterStoreObservableCacheQualifier.GITHUB_SEARCH
                     )
                 ),
-                globalSearchHandler = get<GlobalSearchHandler>(),
-                searchQueryHolder = get<SearchQueryHolder>(qualifier = named(SearchQueryHolderQualifier.GITHUB_SEARCH)),
-                listOrder = get<ListOrder>(),
                 repositoryService = get<RepositoryService>()
             )
-        }
-
-        scoped<Paginator<Repository>>(qualifier = named(PaginatorQualifier.GITHUB_SEARCH)) {
-            val searchRepositories: SearchRepositories = get<SearchRepositories>()
-
-            DefaultPaginator<Repository>(perPage = PerPage(30), onLoad = { page, perPage ->
-                searchRepositories(
-                    page = page.value, perPage = perPage.value
-                )
-            })
         }
 
         scoped<FilterStoreObservableCache>(qualifier = named(FilterStoreObservableCacheQualifier.GITHUB_SEARCH)) {
@@ -198,15 +169,12 @@ private val scope = module {
         sharedViewModel {
             GithubSearchViewModel(
                 koinScope = this,
-                globalSearchHandler = get<GlobalSearchHandler>(),
-                searchQueryHolder = get<SearchQueryHolder>(qualifier = named(SearchQueryHolderQualifier.GITHUB_SEARCH)),
-                listOrder = get<ListOrder>(),
                 appliedFiltersObservable = get<AppliedFiltersObservable>(
                     qualifier = named(
                         AppliedFiltersObservableQualifier.GITHUB_SEARCH
                     )
                 ),
-                paginator = get<Paginator<Repository>>(qualifier = named(PaginatorQualifier.GITHUB_SEARCH)),
+                getRepositories = get<GetRepositories>(),
                 popUpController = DefaultPopUpController(),
                 delegate = get<GithubSearchDelegate>(),
                 alert = get<Alert.Coordinator>(),
@@ -296,16 +264,17 @@ private class DefaultApplyFilters(
 
 }
 
-internal class DefaultSearchRepositoriesUseCase(
+internal class DefaultGetRepositoriesUseCase(
     private val filterStoreObservableCache: FilterStoreObservableCache,
-    private val globalSearchHandler: GlobalSearchHandler,
-    private val searchQueryHolder: SearchQueryHolder,
-    private val listOrder: ListOrder,
     private val repositoryService: RepositoryService
-) : SearchRepositories {
-    override suspend fun invoke(page: Int, perPage: Int): LoadingResult<Repository> {
-        val query = searchQueryHolder.get()
-        val searchGlobally = globalSearchHandler.value.value
+) : GetRepositories {
+    override suspend fun invoke(
+        page: Int,
+        perPage: Int,
+        globalSearch: Boolean,
+        query: String,
+        order: com.donatas.dprofile.features.github.search.Order
+    ): LoadingResult<Repository> {
         val filters = filterStoreObservableCache.get()
 
         val result = repositoryService.getRepositories {
@@ -316,7 +285,7 @@ internal class DefaultSearchRepositoriesUseCase(
             if (query.isNotEmpty()) {
                 this.query(query)
             }
-            if (!searchGlobally) {
+            if (!globalSearch) {
                 this.user("GdonatasG")
             }
             filters.get("language")?.filterSelected()?.firstOrNull()?.let {
@@ -344,7 +313,7 @@ internal class DefaultSearchRepositoriesUseCase(
                 }
             }
             this.order(
-                order = if (listOrder.value.value == ListOrder.Type.DESC) Order.DESC else Order.ASC,
+                order = if (order == com.donatas.dprofile.features.github.search.Order.DESC) Order.DESC else Order.ASC,
                 byField = com.donatas.dprofile.githubservices.repository.GetRepositories.SortField.UPDATED
             )
         }
@@ -376,7 +345,3 @@ internal class DefaultSearchRepositoriesUseCase(
 private fun RepositoryResponse.toDomain(): Repository = Repository(
     title = this.name, language = this.language, htmlUrl = this.htmlUrl
 )
-
-private interface SearchRepositories {
-    suspend operator fun invoke(page: Int, perPage: Int): LoadingResult<Repository>
-}

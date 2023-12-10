@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class BottomTab(
     val type: Type,
-    val factory: () -> Screen
+    val factory: () -> Screen?
 ) {
     enum class Type {
         ABOUT_ME,

@@ -25,13 +25,20 @@ object Dependencies {
 
     object Android {
         const val minSDK = 26
+        const val targetSDK = 33
         const val compileSDK = 34
-        const val maxSDK = 33
+        const val maxSDK = 34
 
         object Accompanist {
             const val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist}"
             const val systemUiController =
                 "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
+        }
+
+        object Firebase {
+            const val firebaseBom = "com.google.firebase:firebase-bom:32.7.0"
+            const val crashlytics = "com.google.firebase:firebase-crashlytics"
+            const val analytics = "com.google.firebase:firebase-analytics"
         }
 
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
