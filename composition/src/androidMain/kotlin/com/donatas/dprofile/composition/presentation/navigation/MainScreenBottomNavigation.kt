@@ -75,24 +75,35 @@ private fun PrivateBackHandler(
             return@BackHandler
         }
 
-        val didPop: Boolean = if (!tutorialState.isFinished) {
+        if (!tutorialState.isFinished) {
+           if (!appTutorial.previous()){
+               onActivityDestroyed()
+               activity?.finish()
+           }
+            return@BackHandler
+        }
+
+       /* val didPop: Boolean = if (!tutorialState.isFinished) {
             appTutorial.previous()
         } else {
             bottomNavController.navigateUp()
         }
+*/
 
-        if (!didPop) {
+        onActivityDestroyed()
+        activity?.finish()
+        /*if (!didPop) {
             onActivityDestroyed()
             activity?.finish()
 
             return@BackHandler
-        }
+        }*/
 
-        if (tutorialState.isFinished) {
+   /*     if (tutorialState.isFinished) {
             val currentRoute: String? = bottomNavController.currentBackStack.value.lastOrNull()?.destination?.route
             currentRoute?.let { route ->
                 onChanged(tabs.first { it.type.route == route })
             }
-        }
+        }*/
     }
 }

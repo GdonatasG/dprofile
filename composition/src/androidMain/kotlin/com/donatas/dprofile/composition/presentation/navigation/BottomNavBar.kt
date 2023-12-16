@@ -114,11 +114,11 @@ fun BottomNavBar(
 
                         onSelect(tab)
                         navController.navigate(tab.type.route) {
-                            launchSingleTop = false
-                            restoreState = true
-                           /* popUpTo(navController.graph.findStartDestination().route!!) {
-                                saveState = true
-                            }*/
+                            launchSingleTop = true
+                            restoreState = false
+                            popUpTo(navController.graph.findStartDestination().route!!) {
+                                saveState = false
+                            }
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
