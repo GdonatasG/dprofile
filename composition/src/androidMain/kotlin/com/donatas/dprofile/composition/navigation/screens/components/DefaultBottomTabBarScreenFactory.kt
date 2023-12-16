@@ -37,9 +37,9 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
                 tabController.select(tabController.tabs.first { it.type == BottomTab.Type.ABOUT_ME })
                 bottomNavController.navigate(BottomTab.Type.ABOUT_ME.route) {
                     launchSingleTop = true
-                    restoreState = true
+                    restoreState = false
                     popUpTo(bottomNavController.graph.findStartDestination().route!!) {
-                        saveState = true
+                        saveState = false
                     }
                 }
                 return@LaunchedEffect
@@ -51,9 +51,9 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
                 tabController.select(tabController.tabs.first { it.type == BottomTab.Type.GITHUB })
                 bottomNavController.navigate(BottomTab.Type.GITHUB.route) {
                     launchSingleTop = true
-                    restoreState = true
+                    restoreState = false
                     popUpTo(bottomNavController.graph.findStartDestination().route!!) {
-                        saveState = true
+                        saveState = false
                     }
                 }
                 return@LaunchedEffect
@@ -65,9 +65,9 @@ class DefaultBottomTabBarScreenFactory : BottomTabBarScreenFactory {
                 tabController.select(tabController.tabs.first { it.type == BottomTab.Type.CONTACTS })
                 bottomNavController.navigate(BottomTab.Type.CONTACTS.route) {
                     launchSingleTop = true
-                    restoreState = true
+                    restoreState = false
                     popUpTo(bottomNavController.graph.findStartDestination().route!!) {
-                        saveState = true
+                        saveState = false
                     }
                 }
 

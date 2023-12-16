@@ -13,7 +13,7 @@ android {
         applicationId = "com.donatas.dprofile"
         minSdk = Dependencies.Android.minSDK
         targetSdk = Dependencies.Android.targetSDK
-        versionCode = 2
+        versionCode = 4
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -24,13 +24,12 @@ android {
 
     buildTypes {
         release {
-            this.isMinifyEnabled = true
-            this.isShrinkResources = true
+            this.isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
