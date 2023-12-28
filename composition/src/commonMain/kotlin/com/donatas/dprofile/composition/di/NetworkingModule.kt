@@ -27,11 +27,6 @@ internal val networkingModule: Module = module {
             client = get<HttpClient>()
         )
             .baseUrl(Config.BASE_URL)
-            .addAuthorizationHandler {
-                Token(type = TokenType.BEARER, value = "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")
-            }
             .specifyAPIVersion(version = GithubAPIVersion.NOVEMBER_28_2022)
     }
-
-
 }

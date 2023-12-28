@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DProfile"
+rootProject.name = "dprofile"
 
 include(":composition")
 include(":android:app")
